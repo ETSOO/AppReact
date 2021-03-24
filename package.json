@@ -1,0 +1,69 @@
+{
+    "name": "@etsoo/notificationui",
+    "version": "1.0.33",
+    "description": "TypeScript notification component for extending with all features described and partially implemented",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "format": "prettier --write src/**/*.{ts,tsx}",
+        "lint": "eslint --ext .ts,.tsx src/",
+        "test": "jest",
+        "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
+    },
+    "jest": {
+        "automock": false,
+        "testMatch": [
+            "<rootDir>/__tests__/**/*.{ts,tsx}"
+        ],
+        "testEnvironment": "jsdom",
+        "transform": {
+            ".+\\.jsx?$": "babel-jest",
+            ".+\\.tsx?$": "ts-jest"
+        },
+        "transformIgnorePatterns": [
+            "/node_modules/(?!@etsoo/).+\\.js$"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ETSOO/NotificationBase.git"
+    },
+    "keywords": [
+        "notification",
+        "TypeScript"
+    ],
+    "author": "Garry Xiao",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ETSOO/NotificationBase/issues"
+    },
+    "homepage": "https://github.com/ETSOO/NotificationBase#readme",
+    "dependencies": {
+        "@etsoo/notificationbase": "^1.0.36",
+        "@etsoo/shared": "^1.0.8",
+        "@types/react": "^17.0.3",
+        "@types/react-dom": "^17.0.2",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1",
+        "typescript": "^4.2.3"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.13.10",
+        "@babel/preset-env": "^7.13.10",
+        "@types/jest": "^26.0.21",
+        "@types/react-test-renderer": "^17.0.1",
+        "@typescript-eslint/eslint-plugin": "^4.18.0",
+        "@typescript-eslint/parser": "^4.18.0",
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^26.6.3",
+        "eslint": "^7.22.0",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-react": "^7.22.0",
+        "jest": "^26.6.3",
+        "react-test-renderer": "^17.0.1",
+        "regenerator-runtime": "^0.13.7",
+        "ts-jest": "^26.5.4"
+    }
+}
