@@ -3,6 +3,7 @@
         /* Visit https://aka.ms/tsconfig.json to read more about this file */
         "target": "ES2019",
         "module": "ES6",
+        "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
         "moduleResolution": "node",
         "isolatedModules": true,
