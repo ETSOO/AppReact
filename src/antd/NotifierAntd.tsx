@@ -59,7 +59,7 @@ export class NotifierAntd
     extends NotificationContainer<React.ReactNode>
     implements INotifierReact {
     // Container
-    private container: HTMLElement;
+    private container?: HTMLElement;
 
     // Labels
     private labels: DataTypes.ReadonlyStringDictionary;
@@ -69,12 +69,12 @@ export class NotifierAntd
 
     /**
      * Constructor
-     * @param container Container
      * @param labels Labels
+     * @param container Container
      */
     constructor(
-        container: HTMLElement,
-        labels: DataTypes.ReadonlyStringDictionary
+        labels: DataTypes.ReadonlyStringDictionary,
+        container: HTMLElement | undefined = undefined
     ) {
         // Update action
         super((notification, dismiss) => {
@@ -114,12 +114,14 @@ export class NotifierAntd
         });
 
         // Container
-        notificationAntd.config({
-            getContainer: () => container
-        });
-        message.config({
-            getContainer: () => container
-        });
+        if (container) {
+            notificationAntd.config({
+                getContainer: () => container
+            });
+            message.config({
+                getContainer: () => container
+            });
+        }
         this.container = container;
 
         // Labels
@@ -227,7 +229,6 @@ export class NotifierAntd
             title,
             renderSetup
         } = notification;
-
         if (title) {
             // Configuration
             const config: NArgsProps = {

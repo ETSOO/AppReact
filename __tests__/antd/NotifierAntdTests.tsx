@@ -1,10 +1,10 @@
-import { NotifierAntd } from '../../src';
+import { NotificationMessageType, NotifierAntd } from '../../src';
 
 // Root
 const root: HTMLElement = document.body;
 
 // Notifier
-const notifier = new NotifierAntd(root, {});
+const notifier = new NotifierAntd({});
 
 // Timer mock
 // https://jestjs.io/docs/en/timer-mocks
@@ -67,4 +67,16 @@ test('Prompt tests', () => {
     expect(button[1].innerHTML).toContain('OK');
     button[1].click();
     expect(handleClick).toBeCalled();
+});
+
+test('Message tests', () => {
+    // Add the notification
+    notifier.message(NotificationMessageType.Danger, 'Error Message');
+
+    expect(root.innerHTML).toContain('Error Message');
+
+    // Fast forward
+    jest.runOnlyPendingTimers();
+
+    expect(root.innerHTML).not.toContain('Error Message');
 });
