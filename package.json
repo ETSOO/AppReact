@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "TypeScript ReactJs framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -41,7 +41,7 @@
     "homepage": "https://github.com/ETSOO/NotificationBase#readme",
     "dependencies": {
         "@ant-design/icons": "^4.6.2",
-        "@etsoo/appscript": "^1.0.4",
+        "@etsoo/appscript": "^1.0.5",
         "@etsoo/notificationbase": "^1.0.43",
         "@etsoo/shared": "^1.0.8",
         "@types/react": "^17.0.3",
