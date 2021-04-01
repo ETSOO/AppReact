@@ -12,12 +12,14 @@ import {
     Input,
     InputNumber,
     message,
+    notification as notificationAntd,
     Slider,
     Space,
     Switch,
     TimePicker
 } from 'antd';
 import { ArgsProps, MessageType } from 'antd/lib/message';
+import { ArgsProps as NArgsProps } from 'antd/lib/notification';
 import modal, { ModalFuncProps } from 'antd/lib/modal';
 import React from 'react';
 import {
@@ -56,6 +58,9 @@ export class NotificationAntd extends NotificationReact {
 export class NotifierAntd
     extends NotificationContainer<React.ReactNode>
     implements INotifierReact {
+    // Container
+    private container: HTMLElement;
+
     // Labels
     private labels: DataTypes.ReadonlyStringDictionary;
 
@@ -64,9 +69,13 @@ export class NotifierAntd
 
     /**
      * Constructor
+     * @param container Container
      * @param labels Labels
      */
-    constructor(labels: DataTypes.ReadonlyStringDictionary) {
+    constructor(
+        container: HTMLElement,
+        labels: DataTypes.ReadonlyStringDictionary
+    ) {
         // Update action
         super((notification, dismiss) => {
             // Type
@@ -104,6 +113,15 @@ export class NotifierAntd
             }
         });
 
+        // Container
+        notificationAntd.config({
+            getContainer: () => container
+        });
+        message.config({
+            getContainer: () => container
+        });
+        this.container = container;
+
         // Labels
         this.labels = labels;
     }
@@ -121,6 +139,7 @@ export class NotifierAntd
         const props: ModalFuncProps = {
             title,
             content,
+            getContainer: this.container,
             okText: this.createGetOKLabel(),
             onOk: onReturn
         };
@@ -145,6 +164,7 @@ export class NotifierAntd
         const props: ModalFuncProps = {
             title,
             content,
+            getContainer: this.container,
             okText: this.createGetOKLabel(),
             cancelText: this.labels.cancel ?? 'Cancel',
             onOk: () => {
@@ -164,10 +184,22 @@ export class NotifierAntd
 
     private createLoading(notification: INotificationReact) {
         // Destruct
-        const { content, timespan } = notification;
+        const { content, timespan, id, renderSetup } = notification;
+
+        // Direct parameters
+        const config: Omit<ArgsProps, 'type'> = {
+            content,
+            duration: timespan,
+            key: id
+        };
+
+        // Renderer setup
+        if (renderSetup) renderSetup(config);
 
         // Show loading
-        notification.ref = message.loading(content, timespan);
+        notification.ref = message.loading(config);
+
+        // Reference
         this.lastLoading = notification.ref;
     }
 
@@ -187,18 +219,48 @@ export class NotifierAntd
 
     private createMessage(notification: INotificationReact) {
         // Destruct
-        const { type, content, timespan, id } = notification;
-
-        // Configuration
-        const config: ArgsProps = {
-            type: this.createMessageType(type),
+        const {
+            type,
             content,
-            duration: timespan,
-            key: id
-        };
+            timespan,
+            id,
+            title,
+            renderSetup
+        } = notification;
 
-        // Show up
-        notification.ref = message.open(config);
+        if (title) {
+            // Configuration
+            const config: NArgsProps = {
+                type: this.createMessageType(type),
+                message: title,
+                description: content,
+                duration: timespan,
+                key: id
+            };
+
+            // Renderer setup
+            if (renderSetup) renderSetup(config);
+
+            // Show up
+            notificationAntd.open(config);
+            notification.ref = () => {
+                notificationAntd.close(id);
+            };
+        } else {
+            // Configuration
+            const config: ArgsProps = {
+                type: this.createMessageType(type),
+                content,
+                duration: timespan,
+                key: id
+            };
+
+            // Renderer setup
+            if (renderSetup) renderSetup(config);
+
+            // Show up
+            notification.ref = message.open(config);
+        }
     }
 
     private createPrompt(notification: INotificationReact) {
@@ -260,6 +322,7 @@ export class NotifierAntd
         const props: ModalFuncProps = {
             title,
             content: contentContainer,
+            getContainer: this.container,
             okText: this.createGetOKLabel(),
             onOk: () => {
                 if (inputValue == null || inputValue === '') {
@@ -326,7 +389,11 @@ export class NotifierAntd
         callback?: NotificationReturn<boolean>
     ): void {
         // Setup
-        const n = new NotificationAntd(NotificationType.Confirm, message);
+        const n = new NotificationAntd(
+            NotificationType.Confirm,
+            message,
+            title
+        );
 
         // Callback
         n.onReturn = callback;

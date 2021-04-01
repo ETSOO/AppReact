@@ -1,10 +1,10 @@
 import { NotifierAntd } from '../../src';
 
-// Notifier
-const notifier = new NotifierAntd({});
-
 // Root
 const root: HTMLElement = document.body;
+
+// Notifier
+const notifier = new NotifierAntd(root, {});
 
 // Timer mock
 // https://jestjs.io/docs/en/timer-mocks
