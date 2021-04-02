@@ -5,7 +5,7 @@ import React from 'react';
  * State UI creator
  */
 export interface IUICreator<S extends IState, A extends IAction> {
-    (state: S, dispatch: React.Dispatch<A>): JSX.Element;
+    (state: S, dispatch: React.Dispatch<A>): React.ReactElement;
 }
 
 /**

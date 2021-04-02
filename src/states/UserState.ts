@@ -1,11 +1,12 @@
-import { IAction, IUser, IUserData } from "@etsoo/appscript";
-import { State } from "./State";
+import { IAction, IUser, IUserData } from '@etsoo/appscript';
+import { IUpdate } from './IState';
+import { State } from './State';
 
 /**
  * User action type
  * Style like 'const enum' will remove definition of the enum and cause module errors
  */
- export enum UserActionType {
+export enum UserActionType {
     // Login action
     Login = 'LOGIN',
 
@@ -29,7 +30,7 @@ export interface IUserUpdate {
 /**
  * User action to manage the user
  */
- export interface UserAction extends IAction {
+export interface UserAction extends IAction {
     /**
      * Action type
      */
@@ -49,31 +50,44 @@ export interface IUserUpdate {
 /**
  * User state
  */
-export class UserState {
+export class UserState<D extends IUser> {
     /**
-     * Create user state
-     * @returns User context and provider
+     * Context
      */
-    public static create<D extends IUser>() {
-        return State.create((
-            state: D, action: UserAction
-        ) => {
-            // User reducer
-            switch (action.type) {
-                case UserActionType.Login:
-                    return { ...action.user!, authorized: true } as D;
-                case UserActionType.Logout:
-                    return { ...state, authorized: false };
-                case UserActionType.Update:
-                    if(action.update) {
-                        var newState = { ... state };
-                        action.update(newState);
-                        return newState;
-                    }
-                    return state;
-                default:
-                    return state;
-            }
-        }, {} as D);
+    readonly context: React.Context<IUpdate<D, UserAction>>;
+
+    /**
+     * Provider
+     */
+    readonly provider: React.FunctionComponent;
+
+    /**
+     * Constructor
+     */
+    constructor() {
+        const { context, provider } = State.create(
+            (state: D, action: UserAction) => {
+                // User reducer
+                switch (action.type) {
+                    case UserActionType.Login:
+                        return { ...action.user!, authorized: true } as D;
+                    case UserActionType.Logout:
+                        return { ...state, authorized: false };
+                    case UserActionType.Update:
+                        if (action.update) {
+                            var newState = { ...state };
+                            action.update(newState);
+                            return newState;
+                        }
+                        return state;
+                    default:
+                        return state;
+                }
+            },
+            {} as D
+        );
+
+        this.context = context;
+        this.provider = provider;
     }
 }

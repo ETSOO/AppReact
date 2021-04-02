@@ -74,7 +74,7 @@ export class NotifierAntd
      */
     constructor(
         labels: DataTypes.ReadonlyStringDictionary,
-        container: HTMLElement | undefined = undefined
+        container?: HTMLElement
     ) {
         // Update action
         super((notification, dismiss) => {
@@ -475,7 +475,10 @@ export class NotifierAntd
      */
     showLoading(title?: string): void {
         // Setup
-        const n = new NotificationAntd(NotificationType.Loading, title ?? '');
+        const n = new NotificationAntd(
+            NotificationType.Loading,
+            title ?? this.labels.loading ?? 'Loading...'
+        );
 
         // Timespan to 0
         n.timespan = 0;

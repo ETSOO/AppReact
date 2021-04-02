@@ -4,6 +4,9 @@ export * from './antd/NotifierAntd';
 // app
 export * from './app/ReactApp';
 
+// mu
+export * from './mu/NotifierMU';
+
 // notifier
 export * from './notifier/Notifier';
 export * from '@etsoo/notificationbase';

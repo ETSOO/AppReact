@@ -1,6 +1,6 @@
-import { IAction, IState } from "@etsoo/appscript";
-import React from "react";
-import { IUICreator, IUpdate } from "./IState";
+import { IAction, IState } from '@etsoo/appscript';
+import React from 'react';
+import { IUICreator, IUpdate } from './IState';
 
 /**
  * State
@@ -16,8 +16,7 @@ export class State {
         reducer: React.Reducer<S, A>,
         initState: S,
         uiCreator?: IUICreator<S, A>
-    )
-    {
+    ) {
         // State context
         const context = React.createContext({} as IUpdate<S, A>);
 
@@ -32,14 +31,15 @@ export class State {
             // Context default value
             const contextValue = { state, dispatch };
 
-            return (
-                <>
-                    {uiCreator && uiCreator(state, dispatch)}
+            if (uiCreator) {
+                return uiCreator(state, dispatch);
+            } else {
+                return (
                     <context.Provider value={contextValue}>
                         {children}
                     </context.Provider>
-                </>
-            );
+                );
+            }
         };
 
         // Return
