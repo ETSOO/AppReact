@@ -404,8 +404,8 @@ export class NotifierMU
                 }
             },
             backdrop: {
-                zIndex: theme.zIndex.modal + 1,
-                color: '#fff'
+                zIndex: `${theme.zIndex.modal + 1}!important` as any,
+                color: 'transparent'
             },
             iconTitle: {
                 cursor: 'move',
@@ -631,7 +631,7 @@ export class NotifierMU
         const n = new NotificationMU(
             NotificationType.Confirm,
             message,
-            title ?? this.labels.input ?? 'Input'
+            title ?? this.labels.confirm ?? 'Confirm'
         );
 
         // Render setup
@@ -698,10 +698,20 @@ export class NotifierMU
         props?: any
     ): void {
         // Setup
-        const n = new NotificationMU(NotificationType.Prompt, message, title);
+        const n = new NotificationMU(
+            NotificationType.Prompt,
+            message,
+            title ?? this.labels.input ?? 'Input'
+        );
 
         // Additional parameters
         n.inputProps = props;
+
+        // Render setup
+        n.renderSetup = (options: PromptProps) => {
+            options.yesLabel = this.labels.ok ?? 'OK';
+            options.noLabel = this.labels.cancel ?? 'Cancel';
+        };
 
         // Callback
         n.onReturn = callback;
@@ -712,7 +722,7 @@ export class NotifierMU
 
     /**
      * Show loading
-     * @param title Title
+     * @param title Title, pass '' to hide the text
      */
     showLoading(title?: string): void {
         // Setup
