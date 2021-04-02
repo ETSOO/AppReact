@@ -405,7 +405,7 @@ export class NotifierMU
             },
             backdrop: {
                 zIndex: `${theme.zIndex.modal + 1}!important` as any,
-                color: 'transparent'
+                color: '#fff'
             },
             iconTitle: {
                 cursor: 'move',
