@@ -5,6 +5,7 @@ export * from './antd/NotifierAntd';
 export * from './app/ReactApp';
 
 // mu
+export * from './mu/LanguageChooser';
 export * from './mu/NotifierMU';
 
 // notifier
