@@ -1,11 +1,11 @@
 import {
-    NotificationContainer,
+    INotificaseBase,
+    NotificationAlign,
     NotificationMessageType,
-    NotificationParameters,
-    NotificationReturn,
-    NotificationType
+    NotificationRenderProps,
+    NotificationType,
+    NotifierLabelKeys
 } from '@etsoo/notificationbase';
-import { DataTypes } from '@etsoo/shared';
 import {
     Checkbox,
     DatePicker,
@@ -15,18 +15,21 @@ import {
     notification as notificationAntd,
     Slider,
     Space,
+    Spin,
+    SpinProps,
     Switch,
     TimePicker
 } from 'antd';
-import { ArgsProps, MessageType } from 'antd/lib/message';
+import { ArgsProps } from 'antd/lib/message';
 import { ArgsProps as NArgsProps } from 'antd/lib/notification';
 import modal, { ModalFuncProps } from 'antd/lib/modal';
 import React from 'react';
 import {
     INotificationReact,
-    INotifierReact,
-    NotificationReact
+    NotificationReact,
+    NotifierReact
 } from '../notifier/Notifier';
+import { css, jsx } from '@emotion/react';
 
 // Modal ref
 interface IModalRef {
@@ -43,132 +46,93 @@ function isModalRef(target: any): target is IModalRef {
  * Antd notification
  */
 export class NotificationAntd extends NotificationReact {
-    /**
-     * Render method
-     * @param className Style class name
-     */
-    render(_className?: string) {
-        return undefined;
-    }
-}
+    private createLoading(props: NotificationRenderProps, className: string) {
+        // Only for loading bar
+        if (!this.open) {
+            return <React.Fragment key={this.id}></React.Fragment>;
+        }
 
-/**
- * Antd notifier
- */
-export class NotifierAntd
-    extends NotificationContainer<React.ReactNode>
-    implements INotifierReact {
-    // Container
-    private container?: HTMLElement;
-
-    // Labels
-    private labels: DataTypes.ReadonlyStringDictionary;
-
-    // Last loading
-    private lastLoading?: MessageType;
-
-    /**
-     * Constructor
-     * @param labels Labels
-     * @param container Container
-     */
-    constructor(
-        labels: DataTypes.ReadonlyStringDictionary,
-        container?: HTMLElement
-    ) {
-        // Update action
-        super((notification, dismiss) => {
-            // Type
-            const { type, ref } = notification;
-
-            // When dismiss
-            if (dismiss) {
-                if (ref != null) {
-                    if (isModalRef(ref)) {
-                        ref.destroy();
-                    } else {
-                        ref();
-                    }
-                }
-                return;
-            }
-
-            // Type cases
-            switch (type) {
-                case NotificationType.Confirm:
-                    this.createConfirm(notification);
-                    break;
-                case NotificationType.Error:
-                    this.createAlert(notification);
-                    break;
-                case NotificationType.Prompt:
-                    this.createPrompt(notification);
-                    break;
-                case NotificationType.Loading:
-                    this.createLoading(notification);
-                    break;
-                default:
-                    this.createMessage(notification);
-                    break;
-            }
+        const style = css({
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)'
         });
 
-        // Container
-        if (container) {
-            notificationAntd.config({
-                getContainer: () => container
-            });
-            message.config({
-                getContainer: () => container
-            });
-        }
-        this.container = container;
+        const setupProps: SpinProps = { size: 'large' };
 
-        // Labels
-        this.labels = labels;
+        // Setup callback
+        if (this.renderSetup) this.renderSetup(setupProps);
+
+        // Content
+        let content = this.content;
+        if (content === '@')
+            content = props.labels[NotifierLabelKeys.loading] ?? 'Loading...';
+
+        return (
+            <Space
+                key={this.id}
+                className={className + ' ' + style.name}
+                direction="vertical"
+                align="center"
+            >
+                <Spin {...setupProps} />
+                {content && <div>{content}</div>}
+            </Space>
+        );
     }
 
-    private createAlert(notification: INotificationReact) {
+    private createAlert(props: NotificationRenderProps, className: string) {
+        // Labels
+        const labels = props.labels;
+        const okText = labels[NotifierLabelKeys.alertOK] ?? 'OK';
+
         // Destruct
         const {
-            title = this.labels.warning ?? 'Warning',
+            title = labels[NotifierLabelKeys.alertTitle] ?? 'Warning',
             content,
             onReturn,
             renderSetup
-        } = notification;
+        } = this;
 
         // Direct parameters
-        const props: ModalFuncProps = {
+        const setupProps: ModalFuncProps = {
             title,
             content,
-            getContainer: this.container,
-            okText: this.createGetOKLabel(),
+            className,
+            okText,
             onOk: onReturn
         };
 
         // Renderer setup
-        if (renderSetup) renderSetup(props);
+        if (renderSetup) renderSetup(setupProps);
 
         // Show up
-        notification.ref = modal.warning(props);
+        this.ref = modal.warning(setupProps);
     }
 
-    private createConfirm(notification: INotificationReact) {
+    private createConfirm(props: NotificationRenderProps, className: string) {
+        // Labels
+        const labels = props.labels;
+
+        const cancelText = labels[NotifierLabelKeys.confirmNo] ?? 'Cancel';
+        const okText = labels[NotifierLabelKeys.confirmYes] ?? 'OK';
+
         // Destruct
         const {
-            title = this.labels.confirm ?? 'Confirm',
+            title = labels[NotifierLabelKeys.confirmTitle] ?? 'Confirm',
             content,
             onReturn,
             renderSetup
-        } = notification;
+        } = this;
 
         // Direct parameters
-        const props: ModalFuncProps = {
+        const setupProps: ModalFuncProps = {
             title,
             content,
-            getContainer: this.container,
-            okText: this.createGetOKLabel(),
-            cancelText: this.labels.cancel ?? 'Cancel',
+            className,
+            okText,
+            cancelText,
             onOk: () => {
                 if (onReturn) onReturn(true);
             },
@@ -178,31 +142,10 @@ export class NotifierAntd
         };
 
         // Renderer setup
-        if (renderSetup) renderSetup(props);
+        if (renderSetup) renderSetup(setupProps);
 
         // Show up
-        notification.ref = modal.confirm(props);
-    }
-
-    private createLoading(notification: INotificationReact) {
-        // Destruct
-        const { content, timespan, id, renderSetup } = notification;
-
-        // Direct parameters
-        const config: Omit<ArgsProps, 'type'> = {
-            content,
-            duration: timespan,
-            key: id
-        };
-
-        // Renderer setup
-        if (renderSetup) renderSetup(config);
-
-        // Show loading
-        notification.ref = message.loading(config);
-
-        // Reference
-        this.lastLoading = notification.ref;
+        this.ref = modal.confirm(setupProps);
     }
 
     private createMessageType(type: NotificationType) {
@@ -219,16 +162,9 @@ export class NotifierAntd
         return 'info';
     }
 
-    private createMessage(notification: INotificationReact) {
+    private createMessage(_props: NotificationRenderProps, className: string) {
         // Destruct
-        const {
-            type,
-            content,
-            timespan,
-            id,
-            title,
-            renderSetup
-        } = notification;
+        const { type, content, timespan, id, title, renderSetup } = this;
         if (title) {
             // Configuration
             const config: NArgsProps = {
@@ -236,7 +172,8 @@ export class NotifierAntd
                 message: title,
                 description: content,
                 duration: timespan,
-                key: id
+                key: id,
+                className
             };
 
             // Renderer setup
@@ -244,7 +181,7 @@ export class NotifierAntd
 
             // Show up
             notificationAntd.open(config);
-            notification.ref = () => {
+            this.ref = () => {
                 notificationAntd.close(id);
             };
         } else {
@@ -253,26 +190,32 @@ export class NotifierAntd
                 type: this.createMessageType(type),
                 content,
                 duration: timespan,
-                key: id
+                key: id,
+                className
             };
 
             // Renderer setup
             if (renderSetup) renderSetup(config);
 
             // Show up
-            notification.ref = message.open(config);
+            this.ref = message.open(config);
         }
     }
 
-    private createPrompt(notification: INotificationReact) {
+    private createPrompt(props: NotificationRenderProps, className: string) {
+        // Labels
+        const labels = props.labels;
+        const cancelText = labels[NotifierLabelKeys.promptCancel] ?? 'Cancel';
+        const okText = labels[NotifierLabelKeys.promptOK] ?? 'OK';
+
         // Props
         const {
             content,
             inputProps = {},
             onReturn,
             renderSetup,
-            title = this.labels.input ?? 'Input'
-        } = notification;
+            title = labels[NotifierLabelKeys.promptTitle] ?? 'Input'
+        } = this;
 
         // Input
         const inputRef = React.createRef<HTMLInputElement>();
@@ -320,11 +263,12 @@ export class NotifierAntd
         );
 
         // Direct parameters
-        const props: ModalFuncProps = {
+        const setupProps: ModalFuncProps = {
             title,
             content: contentContainer,
-            getContainer: this.container,
-            okText: this.createGetOKLabel(),
+            className,
+            cancelText,
+            okText,
             onOk: () => {
                 if (inputValue == null || inputValue === '') {
                     if (inputRef.current) inputRef.current.focus();
@@ -340,150 +284,114 @@ export class NotifierAntd
         };
 
         // Renderer setup
-        if (renderSetup) renderSetup(props);
+        if (renderSetup) renderSetup(setupProps);
 
         // Show up
-        notification.ref = modal.info(props);
-    }
-
-    private createGetOKLabel() {
-        return this.labels.ok ?? 'OK';
+        this.ref = modal.info(setupProps);
     }
 
     /**
-     * Report error
-     * @param error Error message
-     * @param callback Callback
-     * @param buttonLabel Confirm button label
+     * Render method
+     * @param props Props
+     * @param className Style class name
+     * @param classes Style classes
      */
-    alert(
-        error: string,
-        callback?: NotificationReturn<void>,
-        buttonLabel?: string
-    ): void {
-        // Setup
-        const n = new NotificationAntd(NotificationType.Error, error);
-
-        // Callback
-        n.onReturn = callback;
-
-        // Render setup
-        if (buttonLabel) {
-            n.renderSetup = (options: ModalFuncProps) => {
-                options.okText = buttonLabel;
-            };
-        }
-
-        // Add to the collection
-        this.add(n);
-    }
-
-    /**
-     * Confirm action
-     * @param message Message
-     * @param title Title
-     * @param callback Callback
-     */
-    confirm(
-        message: string,
-        title?: string,
-        callback?: NotificationReturn<boolean>
-    ): void {
-        // Setup
-        const n = new NotificationAntd(
-            NotificationType.Confirm,
-            message,
-            title
-        );
-
-        // Callback
-        n.onReturn = callback;
-
-        // Add to the collection
-        this.add(n);
-    }
-
-    /**
-     * Hide loading
-     */
-    hideLoading(): void {
-        if (this.lastLoading) {
-            this.lastLoading();
-            this.lastLoading = undefined;
-        }
-    }
-
-    /**
-     * Show a message
-     * @param type Message type
-     * @param message Message
-     * @param title Title
-     * @param parameters Parameters
-     */
-    message(
-        type: NotificationMessageType,
-        message: string,
-        title?: string,
-        parameters?: NotificationParameters
-    ) {
+    render(props: NotificationRenderProps, className: string, _classes: any) {
         // Destruct
-        const { align, timespan, callback } = parameters ?? {};
+        const { type, ref } = this;
 
-        // New item
-        const n = new NotificationAntd(type, message, title, align);
+        if (type == NotificationType.Loading) {
+            return this.createLoading(props, className);
+        }
 
-        // Additional parameters
-        n.onReturn = callback;
-        if (timespan) n.timespan = timespan;
+        // Ref is not means created
+        if (!this.open) {
+            // Closed
+            if (ref != null) {
+                if (isModalRef(ref)) {
+                    ref.destroy();
+                } else {
+                    ref();
+                }
+            }
+        } else {
+            // Type cases
+            switch (type) {
+                case NotificationType.Confirm:
+                    this.createConfirm(props, className);
+                    break;
+                case NotificationType.Error:
+                    this.createAlert(props, className);
+                    break;
+                case NotificationType.Prompt:
+                    this.createPrompt(props, className);
+                    break;
+                default:
+                    setTimeout(() => this.createMessage(props, className), 0);
+                    break;
+            }
+        }
 
-        // Add to the collection
-        this.add(n);
+        return undefined;
+    }
+}
 
-        // Return it
-        return n;
+/**
+ * Antd notifier
+ */
+export class NotifierAntd extends NotifierReact {
+    /**
+     * Create state and return provider
+     * @param className Style class name
+     * @returns Provider
+     */
+    static setup(className = 'notifier-antd') {
+        // Create an instance
+        NotifierReact.updateInstance(new NotifierAntd());
+
+        return NotifierReact.instance.createProvider(className);
     }
 
     /**
-     * Prompt action
-     * @param message Message
-     * @param callback Callback
-     * @param title Title
-     * @param props More properties
+     * Create align container
+     * @param align Align
+     * @param children Children
+     * @param options Other options
      */
-    prompt(
-        message: string,
-        callback: NotificationReturn<string>,
-        title?: string,
-        props?: any
-    ): void {
-        // Setup
-        const n = new NotificationAntd(NotificationType.Prompt, message, title);
+    protected createContainer = (
+        align: NotificationAlign,
+        children: React.ReactNode[],
+        _options: any
+    ) => {
+        // Each align group, class equal to something similar to 'align-topleft'
+        const alignText = NotificationAlign[align].toLowerCase();
+        let className = `align-${alignText}`;
 
-        // Additional parameters
-        n.inputProps = props;
-
-        // Callback
-        n.onReturn = callback;
-
-        // Add to the collection
-        this.add(n);
-    }
-
-    /**
-     * Show loading
-     * @param title Title
-     */
-    showLoading(title?: string): void {
-        // Setup
-        const n = new NotificationAntd(
-            NotificationType.Loading,
-            title ?? this.labels.loading ?? 'Loading...'
+        return (
+            <div key={`div-${alignText}`} className={className}>
+                {children}
+            </div>
         );
+    };
 
-        // Timespan to 0
-        n.timespan = 0;
+    /**
+     * Add raw definition
+     * @param data Notification data definition
+     */
+    protected addRaw(data: INotificaseBase): INotificationReact {
+        // Destruct
+        const { type, content, title, align, ...rest } = data;
+
+        // Setup
+        const n = new NotificationAntd(type, content, title, align);
+
+        // Assign other properties
+        Object.assign(n, rest);
 
         // Add to the collection
         this.add(n);
+
+        // Return
+        return n;
     }
 }
