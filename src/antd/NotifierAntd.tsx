@@ -68,18 +68,30 @@ export class NotificationAntd extends NotificationReact {
             <div className={className} key={this.id}>
                 <div
                     css={css`
-                        filter: blur(4px);
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
+                        position: fixed;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        left: 0;
+                        z-index: 1000;
+                        background-color: rgba(0, 0, 0, 0.45);
+                    `}
+                ></div>
+                <div
+                    css={css`
+                        position: fixed;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        left: 0;
+                        z-index: 1000;
                     `}
                 ></div>
                 <Space
                     direction="vertical"
                     align="center"
                     css={css`
-                        margin-left: auto;
-                        margin-right: auto;
+                        margin: 0 auto;
                     `}
                 >
                     <Spin {...setupProps} />
@@ -172,6 +184,10 @@ export class NotificationAntd extends NotificationReact {
     private createMessage(_props: NotificationRenderProps, className: string) {
         // Destruct
         const { type, content, timespan, id, title, renderSetup } = this;
+
+        // Onclose callback
+        const onClose = () => this.dismiss();
+
         if (title) {
             // Configuration
             const config: NArgsProps = {
@@ -180,7 +196,8 @@ export class NotificationAntd extends NotificationReact {
                 description: content,
                 duration: timespan,
                 key: id,
-                className
+                className,
+                onClose
             };
 
             // Renderer setup
@@ -198,7 +215,8 @@ export class NotificationAntd extends NotificationReact {
                 content,
                 duration: timespan,
                 key: id,
-                className
+                className,
+                onClose
             };
 
             // Renderer setup
