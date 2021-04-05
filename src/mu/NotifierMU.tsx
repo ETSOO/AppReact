@@ -335,11 +335,7 @@ export class NotificationMU extends NotificationReact {
                     className={classes.loadingBox}
                 >
                     <CircularProgress {...setupProps} />
-                    {content && (
-                        <Box width="75%" maxWidth={640}>
-                            {content}
-                        </Box>
-                    )}
+                    {content && <Box maxWidth={640}>{content}</Box>}
                 </Box>
             </Backdrop>
         );
@@ -395,8 +391,7 @@ export class NotifierMU extends NotifierReact {
             screenCenter: {
                 position: 'fixed',
                 top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)'
+                right: 'inherit!important'
             },
             listBox: {
                 '& >*:not(:first-child)': {
@@ -474,7 +469,10 @@ export class NotifierMU extends NotifierReact {
             };
         }
 
-        return undefined;
+        return {
+            horizontal: 'center',
+            vertical: 'top'
+        };
     }
 
     /**
