@@ -328,10 +328,15 @@ export class NotificationAntd extends NotificationReact {
 
         // Ref is not means created
         if (ref != null) {
-            if (isModalRef(ref)) {
-                ref.destroy();
+            if (this.open) {
+                // Created yet
+                return undefined;
             } else {
-                ref();
+                if (isModalRef(ref)) {
+                    ref.destroy();
+                } else {
+                    ref();
+                }
             }
         }
 
