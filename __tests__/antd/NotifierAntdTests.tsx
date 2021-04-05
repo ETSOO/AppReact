@@ -84,8 +84,9 @@ test('Prompt tests', () => {
     // Button
     var button = root.getElementsByTagName('button');
 
-    expect(button.length).toBe(2); // Switch will generate a button
-    expect(button[1].innerHTML).toContain('OK');
+    expect(button.length).toBe(3); // Switch generates a button
+    expect(button[0].innerHTML).toContain('Cancel');
+    expect(button[2].innerHTML).toContain('OK');
     button[1].click();
     expect(handleClick).toBeCalled();
 

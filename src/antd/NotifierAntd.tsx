@@ -39,7 +39,7 @@ interface IModalRef {
 
 // Is modal ref
 function isModalRef(target: any): target is IModalRef {
-    return 'destroy' in target;
+    return 'destroy' in target && 'update' in target;
 }
 
 /**
@@ -267,6 +267,7 @@ export class NotificationAntd extends NotificationReact {
             title,
             content: contentContainer,
             className,
+            closable: true,
             cancelText,
             okText,
             onOk: () => {
@@ -305,16 +306,15 @@ export class NotificationAntd extends NotificationReact {
         }
 
         // Ref is not means created
-        if (!this.open) {
-            // Closed
-            if (ref != null) {
-                if (isModalRef(ref)) {
-                    ref.destroy();
-                } else {
-                    ref();
-                }
+        if (ref != null) {
+            if (isModalRef(ref)) {
+                ref.destroy();
+            } else {
+                ref();
             }
-        } else {
+        }
+
+        if (this.open) {
             // Type cases
             switch (type) {
                 case NotificationType.Confirm:
