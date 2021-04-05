@@ -85,9 +85,9 @@ test('Prompt tests', () => {
     var button = root.getElementsByTagName('button');
 
     expect(button.length).toBe(3); // Switch generates a button
-    expect(button[0].innerHTML).toContain('Cancel');
+    expect(button[1].innerHTML).toContain('Cancel');
     expect(button[2].innerHTML).toContain('OK');
-    button[1].click();
+    button[2].click();
     expect(handleClick).toBeCalled();
 
     // Fast forward

@@ -1,3 +1,6 @@
+/** @jsx jsx */
+import { css, jsx } from '@emotion/react';
+
 import {
     INotificaseBase,
     NotificationAlign,
@@ -29,7 +32,6 @@ import {
     NotificationReact,
     NotifierReact
 } from '../notifier/Notifier';
-import { css, jsx } from '@emotion/react';
 
 // Modal ref
 interface IModalRef {
@@ -52,13 +54,6 @@ export class NotificationAntd extends NotificationReact {
             return <React.Fragment key={this.id}></React.Fragment>;
         }
 
-        const style = css({
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)'
-        });
-
         const setupProps: SpinProps = { size: 'large' };
 
         // Setup callback
@@ -70,15 +65,27 @@ export class NotificationAntd extends NotificationReact {
             content = props.labels[NotifierLabelKeys.loading] ?? 'Loading...';
 
         return (
-            <Space
-                key={this.id}
-                className={className + ' ' + style.name}
-                direction="vertical"
-                align="center"
-            >
-                <Spin {...setupProps} />
-                {content && <div>{content}</div>}
-            </Space>
+            <div className={className} key={this.id}>
+                <div
+                    css={css`
+                        filter: blur(4px);
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                    `}
+                ></div>
+                <Space
+                    direction="vertical"
+                    align="center"
+                    css={css`
+                        margin-left: auto;
+                        margin-right: auto;
+                    `}
+                >
+                    <Spin {...setupProps} />
+                    {content && <div>{content}</div>}
+                </Space>
+            </div>
         );
     }
 
@@ -267,7 +274,6 @@ export class NotificationAntd extends NotificationReact {
             title,
             content: contentContainer,
             className,
-            closable: true,
             cancelText,
             okText,
             onOk: () => {
@@ -288,7 +294,7 @@ export class NotificationAntd extends NotificationReact {
         if (renderSetup) renderSetup(setupProps);
 
         // Show up
-        this.ref = modal.info(setupProps);
+        this.ref = modal.confirm(setupProps);
     }
 
     /**
