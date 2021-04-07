@@ -4,7 +4,7 @@ import { FlexBox, FlexBoxProps } from './FlexBox';
 /**
  * HBox props
  */
-export interface HBoxProps extends Omit<FlexBoxProps, 'flexDirection'> {}
+export type HBoxProps = Exclude<FlexBoxProps, 'flexDirection'>;
 
 /**
  * HBox component

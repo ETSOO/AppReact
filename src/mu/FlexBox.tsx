@@ -5,7 +5,7 @@ import { SxProps } from '@material-ui/system';
 /**
  * Flex box properties
  */
-export type FlexBoxProps = SxProps<Theme> & {
+export type FlexBoxProps = Exclude<SxProps<Theme>, 'display'> & {
     children?: ReactNode;
     className?: string;
 };

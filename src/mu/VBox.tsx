@@ -4,7 +4,7 @@ import { FlexBox, FlexBoxProps } from './FlexBox';
 /**
  * VBox props
  */
-export interface VBoxProps extends Omit<FlexBoxProps, 'flexDirection'> {}
+export type VBoxProps = Exclude<FlexBoxProps, 'flexDirection'>;
 
 /**
  * VBox component
