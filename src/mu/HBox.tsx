@@ -12,5 +12,5 @@ export type HBoxProps = Exclude<FlexBoxProps, 'flexDirection'>;
  * @returns HBox
  */
 export function HBox(props: HBoxProps) {
-    return <FlexBox flexDirection="row" {...props} />;
+    return <FlexBox flexDirection="row" width="100%" {...props} />;
 }
