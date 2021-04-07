@@ -1,20 +1,14 @@
 import React, { ReactNode } from 'react';
-import { Box } from '@material-ui/core';
-import { Property } from 'csstype';
+import { Box, Theme } from '@material-ui/core';
+import { SxProps } from '@material-ui/system';
 
 /**
  * Flex box properties
  */
-export interface FlexBoxProps {
+export type FlexBoxProps = SxProps<Theme> & {
     children?: ReactNode;
-
-    alignItems?: Property.AlignItems;
-    borderRadius?: Property.BorderRadius;
-    boxShadow?: Property.BoxShadow | number;
-    flexDirection?: Property.FlexDirection;
-    justifyContent?: Property.JustifyContent;
-    padding?: Property.Padding;
-}
+    className?: string;
+};
 
 /**
  * Flex style box component
@@ -22,27 +16,14 @@ export interface FlexBoxProps {
  * @returns Box
  */
 export function FlexBox(props: FlexBoxProps) {
-    const {
-        children,
-        alignItems = 'center',
-        borderRadius,
-        boxShadow,
-        flexDirection,
-        justifyContent = 'space-between',
-        padding
-    } = props;
+    const { children, className, ...rest } = props;
 
     return (
         <Box
+            className={className}
             sx={{
                 display: 'flex',
-                overflow: 'hidden',
-                flexDirection,
-                alignItems,
-                justifyContent,
-                borderRadius,
-                boxShadow,
-                padding
+                ...rest
             }}
         >
             {children}
