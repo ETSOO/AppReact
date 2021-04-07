@@ -5,8 +5,11 @@ export * from './antd/NotifierAntd';
 export * from './app/ReactApp';
 
 // mu
+export * from './mu/FlexBox';
+export * from './mu/HBox';
 export * from './mu/LanguageChooser';
 export * from './mu/NotifierMU';
+export * from './mu/VBox';
 
 // notifier
 export * from './notifier/Notifier';

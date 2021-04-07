@@ -390,8 +390,7 @@ export class NotifierMU extends NotifierReact {
         const useStyles = makeStyles<Theme, { gap: number }>((theme) => ({
             screenCenter: {
                 position: 'fixed',
-                top: '50%',
-                right: 'inherit!important'
+                top: '50%'
             },
             listBox: {
                 '& >*:not(:first-child)': {
@@ -401,6 +400,10 @@ export class NotifierMU extends NotifierReact {
             backdrop: {
                 zIndex: `${theme.zIndex.modal + 1}!important` as any,
                 color: '#fff'
+            },
+            snackbarContainer: {
+                left: 'inherit!important',
+                right: 'inherit!important'
             },
             iconTitle: {
                 cursor: 'move',
@@ -510,7 +513,10 @@ export class NotifierMU extends NotifierReact {
         return (
             <Snackbar
                 anchorOrigin={NotifierMU.getOrigin(align)}
-                className={className}
+                className={DomUtils.mergeClasses(
+                    className,
+                    options.snackbarContainer
+                )}
                 key={`layout-${alignText}`}
                 open
             >
