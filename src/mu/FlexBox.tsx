@@ -42,7 +42,7 @@ export function FlexBox(props: FlexBoxProps) {
             className={className}
             sx={{
                 display: 'flex',
-                '& > div, button, input, a, img': itemStyle, // Only div elements supported
+                '& > *:not(:first-child)': itemStyle, // Only div elements supported
                 ...rest
             }}
         >
