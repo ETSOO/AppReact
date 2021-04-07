@@ -1,16 +1,19 @@
 import React from 'react';
-import { FlexBox, FlexBoxProps } from './FlexBox';
-
-/**
- * HBox props
- */
-export type HBoxProps = Exclude<FlexBoxProps, 'flexDirection'>;
+import { FlexBox, HVBoxProps } from './FlexBox';
 
 /**
  * HBox component
  * @param props Props
  * @returns HBox
  */
-export function HBox(props: HBoxProps) {
-    return <FlexBox flexDirection="row" width="100%" {...props} />;
+export function HBox(props: HVBoxProps) {
+    const { itemPadding, ...rest } = props;
+    return (
+        <FlexBox
+            flexDirection="row"
+            width="100%"
+            itemStyle={{ marginLeft: itemPadding }}
+            {...rest}
+        />
+    );
 }
