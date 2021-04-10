@@ -6,7 +6,8 @@ import {
     ListItem,
     ListItemText,
     IconButton,
-    Tooltip
+    Tooltip,
+    DialogContent
 } from '@material-ui/core';
 import { Language } from '@material-ui/icons';
 import { DataTypes } from '@etsoo/shared';
@@ -112,21 +113,24 @@ export function LanguageChooser(props: LanguageChooserProps) {
                 aria-labelledby="dialog-title"
                 open={open}
                 onClose={closeHandler}
-                style={{ minWidth: '190px' }}
             >
-                <DialogTitle id="dialog-title">{title || ''}</DialogTitle>
-                <List>
-                    {items.map((item) => (
-                        <ListItem
-                            button
-                            key={item.name}
-                            disabled={item.name === languageItem.name}
-                            onClick={() => closeItemHandler(item)}
-                        >
-                            <ListItemText>{item.label}</ListItemText>
-                        </ListItem>
-                    ))}
-                </List>
+                <DialogTitle sx={{ minWidth: '200px' }} id="dialog-title">
+                    {title || ''}
+                </DialogTitle>
+                <DialogContent>
+                    <List>
+                        {items.map((item) => (
+                            <ListItem
+                                button
+                                key={item.name}
+                                disabled={item.name === languageItem.name}
+                                onClick={() => closeItemHandler(item)}
+                            >
+                                <ListItemText>{item.label}</ListItemText>
+                            </ListItem>
+                        ))}
+                    </List>
+                </DialogContent>
             </Dialog>
         </>
     );
