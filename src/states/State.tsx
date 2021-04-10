@@ -35,12 +35,11 @@ export class State {
                 // Custom renderer
                 return uiCreator(state, dispatch, props);
             } else {
-                // Context default value
-                calls.dispatch = dispatch;
-                calls.state = state;
+                // Context new value
+                const value = { ...calls, state, dispatch };
 
                 return (
-                    <context.Provider value={calls}>
+                    <context.Provider value={value}>
                         {props.children}
                     </context.Provider>
                 );
