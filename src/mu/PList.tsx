@@ -1,10 +1,21 @@
 import React from 'react';
 
 /**
+ * Paragraph items list props
+ */
+export interface PListProps {
+    /**
+     * List items
+     */
+    items?: string[];
+}
+
+/**
  * Paragraph items list
  * @param items Items
  */
-export function PList(items?: string[]) {
+export function PList(props: PListProps) {
+    const { items } = props;
     return (
         <React.Fragment>
             {items != null &&
