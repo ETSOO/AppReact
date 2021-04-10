@@ -28,13 +28,17 @@ export class State {
 
         // State context provider
         const provider: React.FunctionComponent<P> = (props) => {
-            if (uiCreator) {
-                // Update reducer
-                const [state, dispatch] = React.useReducer(reducer, initState);
+            // Update reducer
+            const [state, dispatch] = React.useReducer(reducer, initState);
 
+            if (uiCreator) {
                 // Custom renderer
                 return uiCreator(state, dispatch, props);
             } else {
+                // Context default value
+                calls.dispatch = dispatch;
+                calls.state = state;
+
                 return (
                     <context.Provider value={calls}>
                         {props.children}
