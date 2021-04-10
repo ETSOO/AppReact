@@ -62,7 +62,9 @@ export class NotificationAntd extends NotificationReact {
         // Content
         let content = this.content;
         if (content === '@')
-            content = props.labels[NotifierLabelKeys.loading] ?? 'Loading...';
+            content = (
+                props.labels[NotifierLabelKeys.loading] ?? 'Loading...'
+            ).toString();
 
         return (
             <div className={className} key={this.id}>

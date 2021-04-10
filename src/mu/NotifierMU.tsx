@@ -316,7 +316,9 @@ export class NotificationMU extends NotificationReact {
         // Content
         let content = this.content;
         if (content === '@')
-            content = props.labels[NotifierLabelKeys.loading] ?? 'Loading...';
+            content = (
+                props.labels[NotifierLabelKeys.loading] ?? 'Loading...'
+            ).toString();
 
         // Setup callback
         if (this.renderSetup) this.renderSetup(setupProps);
