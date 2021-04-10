@@ -16,7 +16,7 @@ export interface LanguageCalls extends IUpdate<ILanguage, LanguageAction> {
      * Key value
      * @param key Item key
      */
-    get(key: string): DataTypes.SimpleType;
+    get<T extends DataTypes.SimpleType = string>(key: string): T | undefined;
 }
 
 // Calls
@@ -25,8 +25,10 @@ const calls = {
      * Key value
      * @param key Item key
      */
-    get(key: string) {
-        return this.state.labels[key];
+    get<T extends DataTypes.SimpleType = string>(key: string) {
+        const value = this.state.labels[key];
+        if (value == null) return undefined;
+        return value as T;
     }
 } as LanguageCalls;
 
