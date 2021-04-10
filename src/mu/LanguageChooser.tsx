@@ -112,6 +112,7 @@ export function LanguageChooser(props: LanguageChooserProps) {
                 aria-labelledby="dialog-title"
                 open={open}
                 onClose={closeHandler}
+                style={{ minWidth: '190px' }}
             >
                 <DialogTitle id="dialog-title">{title || ''}</DialogTitle>
                 <List>
