@@ -48,6 +48,11 @@ export interface UserAction extends IAction {
 }
 
 /**
+ * Users calls with the state
+ */
+export interface UserCalls<D extends IUser> extends IUpdate<D, UserAction> {}
+
+/**
  * User state
  */
 export class UserState<D extends IUser> {
@@ -84,7 +89,8 @@ export class UserState<D extends IUser> {
                         return state;
                 }
             },
-            {} as D
+            {} as D,
+            {} as UserCalls<D>
         );
 
         this.context = context;

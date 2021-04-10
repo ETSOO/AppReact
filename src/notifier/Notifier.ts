@@ -10,6 +10,7 @@ import {
 } from '@etsoo/notificationbase';
 import { IAction } from '@etsoo/appscript';
 import { State } from '../states/State';
+import { IUpdate } from '../states/IState';
 
 /**
  * React notification interface
@@ -160,6 +161,10 @@ export abstract class NotifierReact
                 return { ...state };
             },
             this.notifications,
+            {} as IUpdate<
+                NotificationDictionary<React.ReactNode>,
+                INotifierAction
+            >,
             creator
         );
 

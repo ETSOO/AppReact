@@ -12,28 +12,31 @@ export class State {
      * @param initState Init state
      * @param uiCreator Additional UI creator
      */
-    public static create<S extends IState, A extends IAction, P = {}>(
+    public static create<
+        S extends IState,
+        A extends IAction,
+        U extends IUpdate<S, A> = IUpdate<S, A>,
+        P = {}
+    >(
         reducer: React.Reducer<S, A>,
         initState: S,
+        calls: U,
         uiCreator?: IUICreator<S, A, P>
     ) {
         // State context
-        const context = React.createContext({} as IUpdate<S, A>);
+        const context = React.createContext(calls);
 
         // State context provider
         const provider: React.FunctionComponent<P> = (props) => {
-            // Update reducer
-            const [state, dispatch] = React.useReducer(reducer, initState);
-
             if (uiCreator) {
+                // Update reducer
+                const [state, dispatch] = React.useReducer(reducer, initState);
+
                 // Custom renderer
                 return uiCreator(state, dispatch, props);
             } else {
-                // Context default value
-                const contextValue = { state, dispatch };
-
                 return (
-                    <context.Provider value={contextValue}>
+                    <context.Provider value={calls}>
                         {props.children}
                     </context.Provider>
                 );
