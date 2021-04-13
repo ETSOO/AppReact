@@ -1,7 +1,7 @@
 import { CoreApp, IAppSettings } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import React from 'react';
-import { LanguageAction } from '../states/LanguageState';
+import { CultureAction } from '../states/CultureState';
 
 /**
  * React application
@@ -11,19 +11,18 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
     React.ReactNode
 > {
     /**
-     * Change language extended
+     * Change culture extended
      * @param dispatch Dispatch method
-     * @param language New lnguage definition
+     * @param culture New culture definition
      */
     changeLanguageEx(
-        dispatch: React.Dispatch<LanguageAction>,
-        language: DataTypes.LanguageDefinition
+        dispatch: React.Dispatch<CultureAction>,
+        culture: DataTypes.CultureDefinition
     ): void {
         // Dispatch action
-        const action: LanguageAction = language;
-        dispatch(action);
+        dispatch(culture);
 
         // Super call
-        super.changeLanguage(language);
+        super.changeCulture(culture);
     }
 }

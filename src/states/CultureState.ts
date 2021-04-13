@@ -1,17 +1,17 @@
-import { IAction, ILanguage } from '@etsoo/appscript';
+import { IAction, ICulture } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import { IUpdate } from './IState';
 import { State } from './State';
 
 /**
- * Language action to manage language and labels
+ * Culture action to manage resources
  */
-export interface LanguageAction extends ILanguage, IAction {}
+export interface CultureAction extends ICulture, IAction {}
 
 /**
- * Language calls with the state
+ * Culture calls with the state
  */
-export interface LanguageCalls extends IUpdate<ILanguage, LanguageAction> {
+export interface CultureCalls extends IUpdate<ICulture, CultureAction> {
     /**
      * Key value
      * @param key Item key
@@ -26,22 +26,22 @@ const calls = {
      * @param key Item key
      */
     get<T extends DataTypes.SimpleType = string>(key: string) {
-        const value = this.state.labels[key];
+        const value = this.state.resources[key];
         if (value == null) return undefined;
         return value as T;
     }
-} as LanguageCalls;
+} as CultureCalls;
 
 /**
- * Language state
- * Creator for language context and provider globally, not inside a component to avoid problem:
- * Cannot update a component (`provider`) while rendering a different component (`Login`)
+ * Culture state
+ * Creator for culture context and provider globally, not inside a component to avoid problem:
+ * Cannot update a component (`provider`) while rendering a different component
  */
-export class LanguageState {
+export class CultureState {
     /**
      * Context
      */
-    readonly context: React.Context<LanguageCalls>;
+    readonly context: React.Context<CultureCalls>;
 
     /**
      * Provider
@@ -51,14 +51,13 @@ export class LanguageState {
     /**
      * Constructor
      */
-    constructor(languageItem?: DataTypes.LanguageDefinition) {
+    constructor(item?: DataTypes.CultureDefinition) {
         // Default
-        const defaultLanguageItem: ILanguage =
-            languageItem == null ? ({} as ILanguage) : languageItem;
+        const defaultItem: ICulture =item ?? ({} as ICulture);
 
         // Act
         const { context, provider } = State.create(
-            (state: ILanguage, action: LanguageAction) => {
+            (state: ICulture, action: CultureAction) => {
                 // Language reducer
                 if (state.name !== action.name) {
                     return { ...action };
@@ -66,7 +65,7 @@ export class LanguageState {
 
                 return state;
             },
-            defaultLanguageItem,
+            defaultItem,
             calls
         );
 

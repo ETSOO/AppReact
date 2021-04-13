@@ -24,7 +24,7 @@ export interface LanguageChooserProps {
     /**
      * Close event
      */
-    onClose?(item?: DataTypes.LanguageDefinition): void;
+    onClose?(item?: DataTypes.CultureDefinition): void;
 
     /**
      * Current selected language
@@ -39,7 +39,7 @@ export interface LanguageChooserProps {
     /**
      * Items
      */
-    items: DataTypes.LanguageDefinition[];
+    items: DataTypes.CultureDefinition[];
 }
 
 /**
@@ -53,13 +53,11 @@ export function LanguageChooser(props: LanguageChooserProps) {
     // Dialog open or not state
     const [open, setOpen] = React.useState(false);
 
-    // Current language state
-    let defaultLanguageItem = items.find((item) => item.name === selectedValue);
-    if (defaultLanguageItem == null) {
-        defaultLanguageItem = items[0];
-    }
+    // Default culture state
+    const defaultItem = items.find((item) => item.name === selectedValue) ?? items[0];
 
-    const [languageItem, setLanguageItem] = React.useState(defaultLanguageItem);
+    // Culture item
+    const [cultureItem, setCultureItem] = React.useState(defaultItem);
 
     // Click handler
     const clickHandler = () => {
@@ -79,14 +77,14 @@ export function LanguageChooser(props: LanguageChooserProps) {
 
         // Emit close event
         if (onClose) {
-            onClose(languageItem);
+            onClose(cultureItem);
         }
     };
 
     // Close item handler
-    const closeItemHandler = (item: DataTypes.LanguageDefinition) => {
+    const closeItemHandler = (item: DataTypes.CultureDefinition) => {
         // Update the current item
-        setLanguageItem(item);
+        setCultureItem(item);
 
         // Close the dialog
         setOpen(false);
@@ -99,7 +97,7 @@ export function LanguageChooser(props: LanguageChooserProps) {
 
     return (
         <>
-            <Tooltip title={languageItem.label} aria-label="Current language">
+            <Tooltip title={cultureItem.label} aria-label="Current language">
                 <IconButton
                     color="primary"
                     className={className}
@@ -123,7 +121,7 @@ export function LanguageChooser(props: LanguageChooserProps) {
                             <ListItem
                                 button
                                 key={item.name}
-                                disabled={item.name === languageItem.name}
+                                disabled={item.name === cultureItem.name}
                                 onClick={() => closeItemHandler(item)}
                             >
                                 <ListItemText>{item.label}</ListItemText>
