@@ -15,7 +15,7 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
      * @param dispatch Dispatch method
      * @param culture New culture definition
      */
-    changeLanguageEx(
+    changeCultureEx(
         dispatch: React.Dispatch<CultureAction>,
         culture: DataTypes.CultureDefinition
     ): void {
