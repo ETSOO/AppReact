@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.0.41",
+    "version": "1.0.42",
     "description": "TypeScript ReactJs framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -43,7 +43,7 @@
         "@ant-design/icons": "^4.6.2",
         "@emotion/react": "^11.1.5",
         "@emotion/styled": "^11.1.5",
-        "@etsoo/appscript": "^1.0.21",
+        "@etsoo/appscript": "^1.0.23",
         "@etsoo/notificationbase": "^1.0.59",
         "@etsoo/shared": "^1.0.11",
         "@material-ui/core": "^5.0.0-alpha.28",
@@ -54,24 +54,22 @@
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
         "react-draggable": "^4.4.3",
-        "typescript": "^4.2.3"
+        "typescript": "^4.2.4"
     },
     "devDependencies": {
-        "@babel/core": "^7.13.10",
-        "@babel/preset-env": "^7.13.10",
+        "@babel/cli": "^7.13.14",
+        "@babel/core": "^7.13.15",
+        "@babel/preset-env": "^7.13.15",
         "@types/jest": "^26.0.21",
         "@types/react-test-renderer": "^17.0.1",
         "@typescript-eslint/eslint-plugin": "^4.18.0",
         "@typescript-eslint/parser": "^4.18.0",
-        "babel-core": "^7.0.0-bridge.0",
-        "babel-jest": "^26.6.3",
         "eslint": "^7.22.0",
         "eslint-config-airbnb-base": "^14.2.1",
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-react": "^7.22.0",
         "jest": "^26.6.3",
         "react-test-renderer": "^17.0.1",
-        "regenerator-runtime": "^0.13.7",
         "ts-jest": "^26.5.4"
     }
 }
