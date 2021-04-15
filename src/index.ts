@@ -7,6 +7,7 @@ export * from './mu/HBox';
 export * from './mu/LanguageChooser';
 export * from './mu/NotifierMU';
 export * from './mu/PList';
+export * from './mu/TextFieldEx';
 export * from './mu/VBox';
 
 // notifier
