@@ -44,7 +44,7 @@ export function TextFieldEx(props: TextFieldExProps) {
     // React.useState keep the reference for one time, even with property change and rerender
     React.useEffect(() => {
         updateErrorText(errorText);
-    }, [errorText, errorTextEx == errorText]);
+    }, [errorText, errorTextEx?.toString() == errorText?.toString()]);
 
     console.log(errorText, errorTextEx);
 
@@ -61,8 +61,10 @@ export function TextFieldEx(props: TextFieldExProps) {
 
     // Extend change
     const onChangeEx = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Reset
-        updateErrorText(undefined);
+        if (errorTextEx != null) {
+            // Reset
+            updateErrorText(undefined);
+        }
 
         if (onChange != null) {
             onChange(e);
