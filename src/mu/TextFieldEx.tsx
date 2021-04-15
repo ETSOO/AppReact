@@ -40,14 +40,17 @@ export function TextFieldEx(props: TextFieldExProps) {
         errorText
     );
 
-    // Error text
-    const [errorEx, helperTextEx] = React.useMemo(() => {
-        if (errorTextEx == null) {
-            return [error, helperText];
-        } else {
-            return [true, errorTextEx];
-        }
-    }, [error, helperText, errorTextEx]);
+    let errorEx: boolean | undefined;
+    let helperTextEx: React.ReactNode;
+    if (errorTextEx != null) {
+        errorEx = true;
+        helperTextEx = errorTextEx;
+    } else {
+        errorEx = error;
+        helperTextEx = helperText;
+    }
+
+    console.log(error, errorEx, helperText, helperTextEx, errorText);
 
     // Extend change
     const onChangeEx = (e: React.ChangeEvent<HTMLInputElement>) => {
