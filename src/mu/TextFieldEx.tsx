@@ -36,20 +36,23 @@ export function TextFieldEx(props: TextFieldExProps) {
     } = props;
 
     // States
-    const [errorEx, updateError] = React.useState(error);
-    const [helperTextEx, updateHelperText] = React.useState<React.ReactNode>(
-        helperText
+    const [errorTextEx, updateErrorText] = React.useState<React.ReactNode>(
+        errorText
     );
 
     // Error text
-    updateError(errorText != null);
-    updateHelperText(errorText ?? helperText);
+    const [errorEx, helperTextEx] = React.useMemo(() => {
+        if (errorTextEx == null) {
+            return [error, helperText];
+        } else {
+            return [true, errorTextEx];
+        }
+    }, [error, helperText, errorTextEx]);
 
     // Extend change
     const onChangeEx = (e: React.ChangeEvent<HTMLInputElement>) => {
         // Reset
-        updateError(false);
-        updateHelperText(helperText);
+        updateErrorText(undefined);
 
         if (onChange != null) {
             onChange(e);
