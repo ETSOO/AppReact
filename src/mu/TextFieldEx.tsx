@@ -44,7 +44,9 @@ export function TextFieldEx(props: TextFieldExProps) {
     // React.useState keep the reference for one time, even with property change and rerender
     React.useEffect(() => {
         updateErrorText(errorText);
-    }, [errorText]);
+    }, [errorText, errorTextEx == errorText]);
+
+    console.log(errorText, errorTextEx);
 
     // Calculate
     let errorEx: boolean | undefined;
