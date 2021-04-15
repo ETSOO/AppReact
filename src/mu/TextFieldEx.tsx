@@ -40,6 +40,13 @@ export function TextFieldEx(props: TextFieldExProps) {
         errorText
     );
 
+    // Detect error text change
+    // React.useState keep the reference for one time, even with property change and rerender
+    React.useEffect(() => {
+        updateErrorText(errorText);
+    }, [errorText]);
+
+    // Calculate
     let errorEx: boolean | undefined;
     let helperTextEx: React.ReactNode;
     if (errorTextEx != null) {
@@ -49,8 +56,6 @@ export function TextFieldEx(props: TextFieldExProps) {
         errorEx = error;
         helperTextEx = helperText;
     }
-
-    console.log(error, errorEx, helperText, helperTextEx, errorText);
 
     // Extend change
     const onChangeEx = (e: React.ChangeEvent<HTMLInputElement>) => {
