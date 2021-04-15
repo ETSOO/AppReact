@@ -1,6 +1,3 @@
-// antd
-export * from './antd/NotifierAntd';
-
 // app
 export * from './app/ReactApp';
 
