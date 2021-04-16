@@ -6,26 +6,29 @@ import { TextField, TextFieldProps } from '@material-ui/core';
  */
 export type TextFieldExProps = TextFieldProps & {
     /**
-     * Error text
-     */
-    errorText?: React.ReactNode;
-
-    /**
      * On enter click
      */
     onEnter?: React.KeyboardEventHandler<HTMLDivElement>;
 };
 
 /**
- * Extended text field
- * @param props Props
- * @returns component
+ * Extended text field methods
  */
-export function TextFieldEx(props: TextFieldExProps) {
+export interface TextFieldExMethods {
+    /**
+     * Set error
+     * @param error Error
+     */
+    setError(error: React.ReactNode): void;
+}
+
+export const TextFieldEx = React.forwardRef<
+    TextFieldExMethods,
+    TextFieldExProps
+>((props, ref) => {
     // Destructure
     const {
         error,
-        errorText,
         fullWidth = true,
         helperText,
         onChange,
@@ -35,33 +38,20 @@ export function TextFieldEx(props: TextFieldExProps) {
         ...rest
     } = props;
 
-    // States
-    const [errorTextEx, updateErrorText] = React.useState<React.ReactNode>(
-        errorText
-    );
-
-    // Detect error text change
-    // React.useState keep the reference for one time, even with property change and rerender
-    React.useEffect(() => {
-        updateErrorText(errorText);
-    }, [errorText, errorTextEx?.toString() == errorText?.toString()]);
-
-    console.log(errorText, errorTextEx);
+    // State
+    const [errorText, updateErrorText] = React.useState<React.ReactNode>();
 
     // Calculate
-    let errorEx: boolean | undefined;
-    let helperTextEx: React.ReactNode;
-    if (errorTextEx != null) {
+    let errorEx = error;
+    let helperTextEx = helperText;
+    if (errorText != null) {
         errorEx = true;
-        helperTextEx = errorTextEx;
-    } else {
-        errorEx = error;
-        helperTextEx = helperText;
+        helperTextEx = errorText;
     }
 
     // Extend change
     const onChangeEx = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (errorTextEx != null) {
+        if (errorText != null) {
             // Reset
             updateErrorText(undefined);
         }
@@ -87,6 +77,16 @@ export function TextFieldEx(props: TextFieldExProps) {
                   }
               };
 
+    React.useImperativeHandle(ref, () => ({
+        /**
+         * Set error
+         * @param error Error
+         */
+        setError(error: React.ReactNode): void {
+            updateErrorText(error);
+        }
+    }));
+
     // Textfield
     return (
         <TextField
@@ -99,4 +99,4 @@ export function TextFieldEx(props: TextFieldExProps) {
             {...rest}
         />
     );
-}
+});
