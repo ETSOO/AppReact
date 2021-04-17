@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextField, TextFieldProps } from '@material-ui/core';
+import { MUGlobal } from './MUGlobal';
 
 /**
  * Extended text field props
@@ -34,7 +35,7 @@ export const TextFieldEx = React.forwardRef<
         onChange,
         onKeyPress,
         onEnter,
-        variant = 'standard',
+        variant = MUGlobal.textFieldVariant,
         ...rest
     } = props;
 
