@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import { NotificationMessageType, NotifierMU } from '../../src';
+import { INotification, NotificationMessageType, NotifierMU } from '../../src';
 
 // Root
 const root = document.body;
@@ -85,14 +85,20 @@ test('Prompt tests', () => {
 });
 
 test('Message tests', () => {
+    let n: INotification<React.ReactNode> | undefined;
     act(() => {
         // Add the notification
-        notifier.message(NotificationMessageType.Danger, 'Error Message');
+        n = notifier.message(NotificationMessageType.Danger, 'Error Message');
     });
+
+    expect(n?.timespan).toBe(5);
 
     expect(root.innerHTML).toContain('Error Message');
 
     act(() => {
+        // Here is the bug need further study...
+        n?.dismiss();
+
         // Fast forward
         jest.runOnlyPendingTimers();
     });
