@@ -7,9 +7,12 @@ import {
     ListItemText,
     IconButton,
     Tooltip,
-    DialogContent
+    DialogContent,
+    Theme
 } from '@material-ui/core';
 import { Language } from '@material-ui/icons';
+import { SystemStyleObject, ResponsiveStyleValue } from '@material-ui/system';
+import { Property } from 'csstype';
 import { DataTypes } from '@etsoo/shared';
 
 /**
@@ -25,6 +28,17 @@ export interface LanguageChooserProps {
      * Close event
      */
     onClose?(item?: DataTypes.CultureDefinition): void;
+
+    /**
+     * Icon around padding
+     */
+    padding?:
+        | SystemStyleObject<Theme>
+        | ResponsiveStyleValue<
+              | Property.Padding<string | number>
+              | (Property.Padding<string | number> | undefined)[]
+              | undefined
+          >;
 
     /**
      * Current selected language
@@ -48,13 +62,21 @@ export interface LanguageChooserProps {
  */
 export function LanguageChooser(props: LanguageChooserProps) {
     //  properties destructure
-    const { className, items, onClose, selectedValue, title } = props;
+    const {
+        className,
+        items,
+        onClose,
+        padding = 0,
+        selectedValue,
+        title
+    } = props;
 
     // Dialog open or not state
     const [open, setOpen] = React.useState(false);
 
     // Default culture state
-    const defaultItem = items.find((item) => item.name === selectedValue) ?? items[0];
+    const defaultItem =
+        items.find((item) => item.name === selectedValue) ?? items[0];
 
     // Culture item
     const [cultureItem, setCultureItem] = React.useState(defaultItem);
@@ -102,6 +124,7 @@ export function LanguageChooser(props: LanguageChooserProps) {
                     color="primary"
                     className={className}
                     aria-label="Language"
+                    sx={{ padding }}
                     onClick={clickHandler}
                 >
                     <Language />
