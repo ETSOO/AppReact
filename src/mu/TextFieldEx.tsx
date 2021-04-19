@@ -59,26 +59,10 @@ export const TextFieldEx = React.forwardRef<
         ...rest
     } = props;
 
-    // Show password and/or clear button
-    if (showPassword || showClear) {
-        InputProps.endAdornment = (
-            <InputAdornment position="end">
-                {showPassword && (
-                    <IconButton>
-                        <Visibility />
-                    </IconButton>
-                )}
-                {showClear && (
-                    <IconButton>
-                        <Clear />
-                    </IconButton>
-                )}
-            </InputAdornment>
-        );
-    }
-
     // State
     const [errorText, updateErrorText] = React.useState<React.ReactNode>();
+    const [passwordVisible, updatePasswordVisible] = React.useState<boolean>();
+    const [empty, updateEmpty] = React.useState<boolean>();
 
     // Calculate
     let errorEx = error;
@@ -88,11 +72,47 @@ export const TextFieldEx = React.forwardRef<
         helperTextEx = errorText;
     }
 
+    let typeEx = type;
+    if (showPassword) {
+        typeEx = passwordVisible ? 'text' : 'password';
+    }
+
+    const clearClick = () => {
+        updateEmpty(true);
+    };
+
+    // Show password and/or clear button
+    if (!empty && (showPassword || showClear)) {
+        InputProps.endAdornment = (
+            <InputAdornment position="end">
+                {showPassword && (
+                    <IconButton
+                        onMouseDown={() => updatePasswordVisible(true)}
+                        onMouseUp={() => updatePasswordVisible(false)}
+                    >
+                        <Visibility />
+                    </IconButton>
+                )}
+                {showClear && (
+                    <IconButton onClick={clearClick}>
+                        <Clear />
+                    </IconButton>
+                )}
+            </InputAdornment>
+        );
+    }
+
     // Extend change
     const onChangeEx = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (errorText != null) {
             // Reset
             updateErrorText(undefined);
+        }
+
+        if (e.target.value === '') {
+            updateEmpty(true);
+        } else if (!empty) {
+            updateEmpty(false);
         }
 
         if (onChange != null) {
@@ -135,6 +155,7 @@ export const TextFieldEx = React.forwardRef<
             InputProps={InputProps}
             onChange={onChangeEx}
             onKeyPress={onKeyPressEx}
+            type={typeEx}
             variant={variant}
             {...rest}
         />

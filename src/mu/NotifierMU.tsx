@@ -6,7 +6,7 @@ import {
     NotificationType,
     NotifierLabelKeys
 } from '@etsoo/notificationbase';
-import { DataTypes, DomUtils } from '@etsoo/shared';
+import { DataTypes } from '@etsoo/shared';
 import {
     Alert,
     AlertTitle,
@@ -326,7 +326,11 @@ export class NotificationMU extends NotificationReact {
         return (
             <Backdrop
                 key={this.id}
-                className={DomUtils.mergeClasses(className, classes.backdrop)}
+                className={className}
+                sx={{
+                    color: '#fff',
+                    zIndex: (theme) => theme.zIndex.modal + 1
+                }}
                 open={this.open}
             >
                 <Box
@@ -398,14 +402,6 @@ export class NotifierMU extends NotifierReact {
                 '& >*:not(:first-child)': {
                     marginTop: ({ gap }) => theme.spacing(gap)
                 }
-            },
-            backdrop: {
-                zIndex: `${theme.zIndex.modal + 1}!important` as any,
-                color: '#fff'
-            },
-            snackbarContainer: {
-                left: 'inherit!important',
-                right: 'inherit!important'
             },
             iconTitle: {
                 cursor: 'move',
@@ -515,10 +511,7 @@ export class NotifierMU extends NotifierReact {
         return (
             <Snackbar
                 anchorOrigin={NotifierMU.getOrigin(align)}
-                className={DomUtils.mergeClasses(
-                    className,
-                    options.snackbarContainer
-                )}
+                className={className}
                 key={`layout-${alignText}`}
                 open
             >
