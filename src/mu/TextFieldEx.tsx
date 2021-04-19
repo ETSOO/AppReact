@@ -80,10 +80,10 @@ export const TextFieldEx = React.forwardRef<
     }
 
     let input: HTMLInputElement | undefined;
-    const localRef = (ref?: HTMLInputElement) => {
+    const localRef = (ref: HTMLInputElement) => {
         input = ref;
 
-        if (input?.value !== '') {
+        if (input.value !== '') {
             updateEmpty(false);
         }
     };
@@ -126,19 +126,11 @@ export const TextFieldEx = React.forwardRef<
             updateErrorText(undefined);
         }
 
-        if (showClear) {
+        if (showClear || showPassword) {
             if (e.target.value === '') {
                 updateEmpty(true);
             } else if (empty) {
                 updateEmpty(false);
-            }
-        }
-
-        if (showPassword) {
-            if (e.target.value === '') {
-                updatePasswordVisible(false);
-            } else if (!passwordVisible) {
-                updatePasswordVisible(true);
             }
         }
 
