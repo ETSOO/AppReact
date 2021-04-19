@@ -64,7 +64,7 @@ export const TextFieldEx = React.forwardRef<
     // State
     const [errorText, updateErrorText] = React.useState<React.ReactNode>();
     const [passwordVisible, updatePasswordVisible] = React.useState<boolean>();
-    const [empty, updateEmpty] = React.useState<boolean>(false);
+    const [empty, updateEmpty] = React.useState<boolean>(true);
 
     // Calculate
     let errorEx = error;
@@ -79,10 +79,16 @@ export const TextFieldEx = React.forwardRef<
         typeEx = passwordVisible ? 'text' : 'password';
     }
 
-    const localRef = React.useRef<HTMLInputElement>();
+    let input: HTMLInputElement | undefined;
+    const localRef = (ref?: HTMLInputElement) => {
+        input = ref;
+
+        if (input?.value !== '') {
+            updateEmpty(false);
+        }
+    };
 
     const clearClick = () => {
-        const input = localRef.current;
         if (input != null) {
             input.value = '';
             input.focus();
@@ -125,6 +131,14 @@ export const TextFieldEx = React.forwardRef<
                 updateEmpty(true);
             } else if (empty) {
                 updateEmpty(false);
+            }
+        }
+
+        if (showPassword) {
+            if (e.target.value === '') {
+                updatePasswordVisible(false);
+            } else if (!passwordVisible) {
+                updatePasswordVisible(true);
             }
         }
 
