@@ -112,6 +112,7 @@ export const TextFieldEx = React.forwardRef<
                         onMouseDown={() => updatePasswordVisible(true)}
                         onMouseUp={() => updatePasswordVisible(false)}
                         onTouchStart={touchStart}
+                        onTouchCancel={() => updatePasswordVisible(false)}
                         onTouchEnd={() => updatePasswordVisible(false)}
                     >
                         <Visibility />
