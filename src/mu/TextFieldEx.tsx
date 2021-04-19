@@ -106,7 +106,7 @@ export const TextFieldEx = React.forwardRef<
     // Show password and/or clear button
     if (!empty && (showPassword || showClear)) {
         InputProps.endAdornment = (
-            <InputAdornment position="end">
+            <InputAdornment position="end" sx={{ userSelect: 'none' }}>
                 {showPassword && (
                     <IconButton
                         onMouseDown={() => updatePasswordVisible(true)}
