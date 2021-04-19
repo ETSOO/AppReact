@@ -96,17 +96,22 @@ export const TextFieldEx = React.forwardRef<
         updateEmpty(true);
     };
 
-    const touchStart = () => {
+    const touchStart = (e: React.TouchEvent) => {
         // Avoid focus case selecting all text
         input?.blur();
 
+        // Show the password
         updatePasswordVisible(true);
+
+        // Prevent
+        e.stopPropagation();
+        e.preventDefault();
     };
 
     // Show password and/or clear button
     if (!empty && (showPassword || showClear)) {
         InputProps.endAdornment = (
-            <InputAdornment position="end" sx={{ userSelect: 'none' }}>
+            <InputAdornment position="end">
                 {showPassword && (
                     <IconButton
                         onMouseDown={() => updatePasswordVisible(true)}
