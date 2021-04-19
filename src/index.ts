@@ -22,4 +22,5 @@ export * from './states/State';
 export * from './states/UserState';
 
 // uses
+export * from './uses/useCombinedRefs';
 export * from './uses/useTimeout';

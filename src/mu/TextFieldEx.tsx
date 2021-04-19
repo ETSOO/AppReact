@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import { MUGlobal } from './MUGlobal';
 import { Clear, Visibility } from '@material-ui/icons';
+import useCombinedRefs from '../uses/useCombinedRefs';
 
 /**
  * Extended text field props
@@ -52,6 +53,7 @@ export const TextFieldEx = React.forwardRef<
         onChange,
         onKeyPress,
         onEnter,
+        inputRef,
         showClear,
         showPassword,
         type,
@@ -62,7 +64,7 @@ export const TextFieldEx = React.forwardRef<
     // State
     const [errorText, updateErrorText] = React.useState<React.ReactNode>();
     const [passwordVisible, updatePasswordVisible] = React.useState<boolean>();
-    const [empty, updateEmpty] = React.useState<boolean>();
+    const [empty, updateEmpty] = React.useState<boolean>(false);
 
     // Calculate
     let errorEx = error;
@@ -77,7 +79,14 @@ export const TextFieldEx = React.forwardRef<
         typeEx = passwordVisible ? 'text' : 'password';
     }
 
+    const localRef = React.useRef<HTMLInputElement>();
+
     const clearClick = () => {
+        const input = localRef.current;
+        if (input != null) {
+            input.value = '';
+            input.focus();
+        }
         updateEmpty(true);
     };
 
@@ -89,6 +98,8 @@ export const TextFieldEx = React.forwardRef<
                     <IconButton
                         onMouseDown={() => updatePasswordVisible(true)}
                         onMouseUp={() => updatePasswordVisible(false)}
+                        onTouchStart={() => updatePasswordVisible(true)}
+                        onTouchEnd={() => updatePasswordVisible(false)}
                     >
                         <Visibility />
                     </IconButton>
@@ -109,10 +120,12 @@ export const TextFieldEx = React.forwardRef<
             updateErrorText(undefined);
         }
 
-        if (e.target.value === '') {
-            updateEmpty(true);
-        } else if (!empty) {
-            updateEmpty(false);
+        if (showClear) {
+            if (e.target.value === '') {
+                updateEmpty(true);
+            } else if (empty) {
+                updateEmpty(false);
+            }
         }
 
         if (onChange != null) {
@@ -152,6 +165,7 @@ export const TextFieldEx = React.forwardRef<
             error={errorEx}
             fullWidth={fullWidth}
             helperText={helperTextEx}
+            inputRef={useCombinedRefs(inputRef, localRef)}
             InputProps={InputProps}
             onChange={onChangeEx}
             onKeyPress={onKeyPressEx}
