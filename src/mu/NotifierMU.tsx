@@ -541,10 +541,10 @@ export class NotifierMU extends NotifierReact {
      */
     protected addRaw(data: INotificaseBase): INotificationReact {
         // Destruct
-        const { type, content, title, align, ...rest } = data;
+        const { type, content, title, align, timespan, ...rest } = data;
 
         // Setup
-        const n = new NotificationMU(type, content, title, align);
+        const n = new NotificationMU(type, content, title, align, timespan);
 
         // Assign other properties
         Object.assign(n, rest);

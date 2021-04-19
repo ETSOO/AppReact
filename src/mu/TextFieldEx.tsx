@@ -1,6 +1,12 @@
 import React from 'react';
-import { TextField, TextFieldProps } from '@material-ui/core';
+import {
+    IconButton,
+    InputAdornment,
+    TextField,
+    TextFieldProps
+} from '@material-ui/core';
 import { MUGlobal } from './MUGlobal';
+import { Clear, Visibility } from '@material-ui/icons';
 
 /**
  * Extended text field props
@@ -10,6 +16,16 @@ export type TextFieldExProps = TextFieldProps & {
      * On enter click
      */
     onEnter?: React.KeyboardEventHandler<HTMLDivElement>;
+
+    /**
+     * Show clear button
+     */
+    showClear?: boolean;
+
+    /**
+     * Show password button
+     */
+    showPassword?: boolean;
 };
 
 /**
@@ -32,12 +48,34 @@ export const TextFieldEx = React.forwardRef<
         error,
         fullWidth = true,
         helperText,
+        InputProps = {},
         onChange,
         onKeyPress,
         onEnter,
+        showClear,
+        showPassword,
+        type,
         variant = MUGlobal.textFieldVariant,
         ...rest
     } = props;
+
+    // Show password and/or clear button
+    if (showPassword || showClear) {
+        InputProps.endAdornment = (
+            <InputAdornment position="end">
+                {showPassword && (
+                    <IconButton>
+                        <Visibility />
+                    </IconButton>
+                )}
+                {showClear && (
+                    <IconButton>
+                        <Clear />
+                    </IconButton>
+                )}
+            </InputAdornment>
+        );
+    }
 
     // State
     const [errorText, updateErrorText] = React.useState<React.ReactNode>();
@@ -94,6 +132,7 @@ export const TextFieldEx = React.forwardRef<
             error={errorEx}
             fullWidth={fullWidth}
             helperText={helperTextEx}
+            InputProps={InputProps}
             onChange={onChangeEx}
             onKeyPress={onKeyPressEx}
             variant={variant}
