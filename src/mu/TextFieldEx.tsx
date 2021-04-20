@@ -93,6 +93,12 @@ export const TextFieldEx = React.forwardRef<
             input.value = '';
             input.focus();
         }
+
+        if (errorText != null) {
+            // Reset
+            updateErrorText(undefined);
+        }
+
         updateEmpty(true);
     };
 
@@ -102,10 +108,6 @@ export const TextFieldEx = React.forwardRef<
 
         // Show the password
         updatePasswordVisible(true);
-
-        // Prevent
-        e.stopPropagation();
-        e.preventDefault();
     };
 
     // Show password and/or clear button
