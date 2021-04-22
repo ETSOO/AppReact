@@ -116,6 +116,7 @@ export const TextFieldEx = React.forwardRef<
             <InputAdornment position="end">
                 {showPassword && (
                     <IconButton
+                        tabIndex={-1}
                         onMouseDown={() => updatePasswordVisible(true)}
                         onMouseUp={() => updatePasswordVisible(false)}
                         onTouchStart={touchStart}
@@ -126,7 +127,7 @@ export const TextFieldEx = React.forwardRef<
                     </IconButton>
                 )}
                 {showClear && (
-                    <IconButton onClick={clearClick}>
+                    <IconButton onClick={clearClick} tabIndex={-1}>
                         <Clear />
                     </IconButton>
                 )}
