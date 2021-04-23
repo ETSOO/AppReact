@@ -10,7 +10,7 @@ import {
  * Countdown button action
  */
 export interface CountdownButtonAction {
-    (): number;
+    (): Promise<number>;
 }
 
 /**
@@ -64,21 +64,22 @@ export function CountdownButton(props: CountdownButtonProps) {
         if (onClick != null) onClick(event);
 
         // Return any countdown
-        const result = onAction();
-        if (result > seconds) {
-            updateState(result + seconds);
+        onAction().then((result) => {
+            if (result > seconds) {
+                updateState(result + seconds);
 
-            const seed = setInterval(() => {
-                if (state > seconds) {
-                    updateState(state - 1);
-                } else {
-                    clearInterval(seed);
-                    updateState(0);
-                }
-            }, 1000);
-        } else {
-            updateState(0);
-        }
+                const seed = setInterval(() => {
+                    if (state > seconds) {
+                        updateState(state - 1);
+                    } else {
+                        clearInterval(seed);
+                        updateState(0);
+                    }
+                }, 1000);
+            } else {
+                updateState(0);
+            }
+        });
     };
 
     return (
