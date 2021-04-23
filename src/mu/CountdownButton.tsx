@@ -52,11 +52,15 @@ export function CountdownButton(props: CountdownButtonProps) {
 
     // Action
     const doAction = (result: number) => {
+        // Seconds to wait, 120
         if (result > seconds) {
-            updateState(result + seconds);
+            // Here 122
+            result += seconds;
+            updateState(result);
 
             const seed = setInterval(() => {
-                if (result > seconds) {
+                // Last 1 second and then complete
+                if (result > seconds + 1) {
                     result--;
                     updateState(result);
                 } else {
