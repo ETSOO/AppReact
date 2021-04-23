@@ -49,11 +49,35 @@ export function CountdownButton(props: CountdownButtonProps) {
         endIcon = <CircularProgress size={12} />;
     } else {
         const countdown = (state - seconds).toString().padStart(3, '0');
-        endIcon = <small>{countdown}</small>;
+        endIcon = <span style={{ fontSize: 'smaller' }}>{countdown}</span>;
     }
 
     // Disabled?
     const disabled = state > 0;
+
+    // Action
+    const doAction = (result: number) => {
+        if (result > seconds) {
+            updateState(result + seconds);
+
+            const seed = setInterval(
+                (localState: number) => {
+                    console.log(localState, state);
+
+                    if (localState > seconds) {
+                        updateState(localState - 1);
+                    } else {
+                        clearInterval(seed);
+                        updateState(0);
+                    }
+                },
+                1000,
+                state
+            );
+        } else {
+            updateState(0);
+        }
+    };
 
     // Local click
     const localClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -64,26 +88,7 @@ export function CountdownButton(props: CountdownButtonProps) {
         if (onClick != null) onClick(event);
 
         // Return any countdown
-        onAction().then((result) => {
-            if (result > seconds) {
-                updateState(result + seconds);
-
-                const seed = setInterval(
-                    (localState: number) => {
-                        if (localState > seconds) {
-                            updateState(localState - 1);
-                        } else {
-                            clearInterval(seed);
-                            updateState(0);
-                        }
-                    },
-                    1000,
-                    state
-                );
-            } else {
-                updateState(0);
-            }
-        });
+        onAction().then(doAction);
     };
 
     return (
