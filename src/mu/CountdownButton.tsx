@@ -46,16 +46,14 @@ export function CountdownButton(props: CountdownButtonProps) {
     if (state === 0) {
         endIcon = undefined;
     } else if (state === 1) {
-        endIcon = <CircularProgress size={20} />;
+        endIcon = <CircularProgress size={12} />;
     } else {
         const countdown = (state - seconds).toString().padStart(3, '0');
-        endIcon = <Typography>{countdown}</Typography>;
+        endIcon = <small>{countdown}</small>;
     }
 
     // Disabled?
     const disabled = state > 0;
-
-    console.log('state', state);
 
     // Local click
     const localClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -70,15 +68,18 @@ export function CountdownButton(props: CountdownButtonProps) {
             if (result > seconds) {
                 updateState(result + seconds);
 
-                const seed = setInterval(() => {
-                    console.log('state', state, seconds);
-                    if (state > seconds) {
-                        updateState(state - 1);
-                    } else {
-                        clearInterval(seed);
-                        updateState(0);
-                    }
-                }, 1000);
+                const seed = setInterval(
+                    (localState: number) => {
+                        if (localState > seconds) {
+                            updateState(localState - 1);
+                        } else {
+                            clearInterval(seed);
+                            updateState(0);
+                        }
+                    },
+                    1000,
+                    state
+                );
             } else {
                 updateState(0);
             }
