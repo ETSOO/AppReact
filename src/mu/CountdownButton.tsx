@@ -36,6 +36,9 @@ export function CountdownButton(props: CountdownButtonProps) {
     // Ignore seconds
     const seconds = 2;
 
+    // Countdown length
+    const [shared] = React.useState({ maxLength: 0 });
+
     // endIcon
     let endIcon: React.ReactNode;
     if (state === 0) {
@@ -43,7 +46,9 @@ export function CountdownButton(props: CountdownButtonProps) {
     } else if (state === 1) {
         endIcon = <CircularProgress size={12} />;
     } else {
-        const countdown = (state - seconds).toString().padStart(3, '0');
+        const countdown = (state - seconds)
+            .toString()
+            .padStart(shared.maxLength, '0');
         endIcon = <span style={{ fontSize: 'smaller' }}>{countdown}</span>;
     }
 
@@ -57,6 +62,9 @@ export function CountdownButton(props: CountdownButtonProps) {
             // Here 122
             result += seconds;
             updateState(result);
+
+            // Update max length
+            shared.maxLength = result.toString().length;
 
             const seed = setInterval(() => {
                 // Last 1 second and then complete
