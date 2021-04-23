@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-    Button,
-    ButtonProps,
-    CircularProgress,
-    Typography
-} from '@material-ui/core';
+import { Button, ButtonProps, CircularProgress } from '@material-ui/core';
 
 /**
  * Countdown button action
@@ -60,20 +55,15 @@ export function CountdownButton(props: CountdownButtonProps) {
         if (result > seconds) {
             updateState(result + seconds);
 
-            const seed = setInterval(
-                (localState: number) => {
-                    console.log(localState, state);
-
-                    if (localState > seconds) {
-                        updateState(localState - 1);
-                    } else {
-                        clearInterval(seed);
-                        updateState(0);
-                    }
-                },
-                1000,
-                state
-            );
+            const seed = setInterval(() => {
+                if (result > seconds) {
+                    result--;
+                    updateState(result);
+                } else {
+                    clearInterval(seed);
+                    updateState(0);
+                }
+            }, 1000);
         } else {
             updateState(0);
         }
