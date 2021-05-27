@@ -5,7 +5,7 @@ export * from './app/ReactApp';
 export * from './mu/CountdownButton';
 export * from './mu/FlexBox';
 export * from './mu/HBox';
-export * from './mu/LanguageChooser';
+export * from './mu/ItemList';
 export * from './mu/MUGlobal';
 export * from './mu/NotifierMU';
 export * from './mu/PList';
