@@ -23,7 +23,10 @@ export type CountdownButtonProps = Omit<ButtonProps, 'endIcon' | 'disabled'> & {
  * @param props Props
  * @returns Button
  */
-export function CountdownButton(props: CountdownButtonProps) {
+export const CountdownButton = React.forwardRef<
+    HTMLButtonElement,
+    CountdownButtonProps
+>((props, ref) => {
     // Destructure
     const { onAction, onClick, ...rest } = props;
 
@@ -98,7 +101,8 @@ export function CountdownButton(props: CountdownButtonProps) {
             disabled={disabled}
             endIcon={endIcon}
             onClick={localClick}
+            ref={ref}
             {...rest}
         />
     );
-}
+});
