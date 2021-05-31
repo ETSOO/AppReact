@@ -77,7 +77,11 @@ export class UserState<D extends IUser> {
                     case UserActionType.Login:
                         return { ...action.user!, authorized: true } as D;
                     case UserActionType.Logout:
-                        return { ...state, authorized: false };
+                        return {
+                            ...state, // Keep other user data
+                            token: undefined, // Remove token
+                            authorized: false // Flag as authorized
+                        };
                     case UserActionType.Update:
                         if (action.update) {
                             var newState = { ...state };
