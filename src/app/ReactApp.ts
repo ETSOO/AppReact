@@ -31,8 +31,15 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
      * User login extended
      * @param dispatch Dispatch method
      * @param user New user
+     * @param refreshToken Refresh token
+     * @param keep Keep in local storage or not
      */
-    userLoginEx(dispatch: React.Dispatch<UserAction>, user: IUserData): void {
+    userLoginEx(
+        dispatch: React.Dispatch<UserAction>,
+        user: IUserData,
+        refreshToken?: string,
+        keep?: boolean
+    ): void {
         // Dispatch action
         dispatch({
             type: UserActionType.Login,
@@ -40,7 +47,7 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
         });
 
         // Super call
-        super.userLogin(user);
+        super.userLogin(user, refreshToken, keep);
     }
 
     /**
