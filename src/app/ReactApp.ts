@@ -82,6 +82,7 @@ export abstract class ReactApp<
         // Create element
         return React.createElement(consumer, {
             children: (value) => {
+                if (value == null) return;
                 props.update(value.state);
                 return undefined;
             }
