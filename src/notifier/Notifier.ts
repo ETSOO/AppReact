@@ -10,7 +10,7 @@ import {
 } from '@etsoo/notificationbase';
 import { IAction } from '@etsoo/appscript';
 import { State } from '../states/State';
-import { IUpdate } from '../states/IState';
+import { IProviderProps, IUpdate } from '../states/IState';
 
 /**
  * React notification interface
@@ -40,6 +40,13 @@ interface INotifierAction extends IAction {
 export abstract class NotificationReact extends Notification<React.ReactNode> {}
 
 /**
+ * React notification render props
+ */
+export interface NotificationReactRenderProps
+    extends NotificationRenderProps,
+        IProviderProps<ReactNotifications, INotifierAction> {}
+
+/**
  * Notifier interface
  */
 export interface INotifierReact extends INotifier<React.ReactNode> {
@@ -52,7 +59,7 @@ export interface INotifierReact extends INotifier<React.ReactNode> {
     createProvider(
         className?: string,
         optionGenerator?: INotifierOptions
-    ): React.FunctionComponent<NotificationRenderProps>;
+    ): React.FunctionComponent<NotificationReactRenderProps>;
 }
 
 /**
@@ -67,7 +74,8 @@ export interface INotifierOptions {
  */
 export abstract class NotifierReact
     extends NotificationContainer<React.ReactNode>
-    implements INotifierReact {
+    implements INotifierReact
+{
     // Instance
     private static _instance: INotifierReact;
 
@@ -124,7 +132,7 @@ export abstract class NotifierReact
         const creator = (
             state: ReactNotifications,
             update: React.Dispatch<INotifierAction>,
-            props: NotificationRenderProps
+            props: NotificationReactRenderProps
         ) => {
             // Hold the current state update
             this.stateUpdate = update;

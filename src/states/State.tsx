@@ -1,6 +1,6 @@
 import { IAction, IState } from '@etsoo/appscript';
 import React from 'react';
-import { IUICreator, IUpdate } from './IState';
+import { IProviderProps, IUICreator, IUpdate } from './IState';
 
 /**
  * State
@@ -15,8 +15,8 @@ export class State {
     public static create<
         S extends IState,
         A extends IAction,
-        U extends IUpdate<S, A> = IUpdate<S, A>,
-        P = {}
+        U extends IUpdate<S, A>,
+        P extends IProviderProps<S, A>
     >(
         reducer: React.Reducer<S, A>,
         initState: S,
@@ -28,8 +28,14 @@ export class State {
 
         // State context provider
         const provider: React.FunctionComponent<P> = (props) => {
+            // Destruct
+            const { children, Update } = props;
+
             // Update reducer
             const [state, dispatch] = React.useReducer(reducer, initState);
+
+            // Callback
+            if (Update != null) Update({ state, dispatch });
 
             if (uiCreator) {
                 // Custom renderer
@@ -40,7 +46,7 @@ export class State {
 
                 return (
                     <context.Provider value={value}>
-                        {props.children}
+                        {children}
                     </context.Provider>
                 );
             }

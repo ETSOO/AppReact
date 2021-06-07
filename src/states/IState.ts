@@ -15,3 +15,17 @@ export interface IUpdate<S extends IState, A extends IAction> {
     state: S;
     dispatch: React.Dispatch<A>;
 }
+
+/**
+ * State provider update callback
+ */
+export interface IProviderUpdate<S extends IState, A extends IAction> {
+    (update: IUpdate<S, A>): void;
+}
+
+/**
+ * State provider props
+ */
+export interface IProviderProps<S extends IState, A extends IAction> {
+    Update?: IProviderUpdate<S, A>;
+}
