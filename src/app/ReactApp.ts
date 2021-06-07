@@ -12,6 +12,11 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
     React.ReactNode
 > {
     /**
+     * User state dispatch
+     */
+    userStateDispatch?: React.Dispatch<UserAction>;
+
+    /**
      * Change culture extended
      * @param dispatch Dispatch method
      * @param culture New culture definition
@@ -29,22 +34,17 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
 
     /**
      * User login extended
-     * @param dispatch Dispatch method
      * @param user New user
      * @param refreshToken Refresh token
      * @param keep Keep in local storage or not
      */
-    userLoginEx(
-        dispatch: React.Dispatch<UserAction>,
-        user: IUserData,
-        refreshToken?: string,
-        keep?: boolean
-    ): void {
+    userLogin(user: IUserData, refreshToken?: string, keep?: boolean): void {
         // Dispatch action
-        dispatch({
-            type: UserActionType.Login,
-            user
-        });
+        if (this.userStateDispatch != null)
+            this.userStateDispatch({
+                type: UserActionType.Login,
+                user
+            });
 
         // Super call
         super.userLogin(user, refreshToken, keep);
@@ -52,13 +52,13 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
 
     /**
      * User logout extended
-     * @param dispatch Dispatch method
      */
-    userLogoutEx(dispatch: React.Dispatch<UserAction>): void {
+    userLogout(): void {
         // Dispatch action
-        dispatch({
-            type: UserActionType.Logout
-        });
+        if (this.userStateDispatch != null)
+            this.userStateDispatch({
+                type: UserActionType.Logout
+            });
 
         // Super call
         super.userLogout();
