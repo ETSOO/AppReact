@@ -27,5 +27,5 @@ export interface IProviderUpdate<S extends IState, A extends IAction> {
  * State provider props
  */
 export interface IProviderProps<S extends IState, A extends IAction> {
-    Update?: IProviderUpdate<S, A>;
+    update?: IProviderUpdate<S, A>;
 }
