@@ -1,5 +1,7 @@
 import { CoreApp, IAppSettings, IUser, IUserData } from '@etsoo/appscript';
+import { INotifier } from '@etsoo/notificationbase';
 import { DataTypes } from '@etsoo/shared';
+import { IApi } from '@etsoo/restclient';
 import React from 'react';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
@@ -15,12 +17,28 @@ export abstract class ReactApp<
     /**
      * User state
      */
-    readonly userState = new UserState<D>();
+    readonly userState;
 
     /**
      * User state dispatch
      */
     userStateDispatch?: React.Dispatch<UserAction>;
+
+    /**
+     * Protected constructor
+     * @param settings Settings
+     * @param api API
+     * @param notifier Notifier
+     */
+    protected constructor(
+        settings: S,
+        api: IApi,
+        notifier: INotifier<React.ReactNode>
+    ) {
+        super(settings, api, notifier);
+
+        this.userState = new UserState<D>();
+    }
 
     /**
      * Change culture extended
@@ -82,7 +100,6 @@ export abstract class ReactApp<
         // Create element
         return React.createElement(consumer, {
             children: (value) => {
-                if (value == null) return;
                 props.update(value.state);
                 return undefined;
             }
