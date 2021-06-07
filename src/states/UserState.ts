@@ -1,5 +1,5 @@
 import { IAction, IUser, IUserData } from '@etsoo/appscript';
-import { IUpdate } from './IState';
+import { IProviderProps, IUpdate } from './IState';
 import { State } from './State';
 
 /**
@@ -48,6 +48,11 @@ export interface UserAction extends IAction {
 }
 
 /**
+ * User provider props
+ */
+export type UserProviderProps<D extends IUser> = IProviderProps<D, UserAction>;
+
+/**
  * Users calls with the state
  */
 export interface UserCalls<D extends IUser> extends IUpdate<D, UserAction> {}
@@ -64,7 +69,7 @@ export class UserState<D extends IUser> {
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent;
+    readonly provider: React.FunctionComponent<UserProviderProps<D>>;
 
     /**
      * Constructor

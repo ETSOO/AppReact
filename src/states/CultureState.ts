@@ -1,6 +1,6 @@
 import { IAction, ICulture } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
-import { IUpdate } from './IState';
+import { IProviderProps, IUpdate } from './IState';
 import { State } from './State';
 
 /**
@@ -18,6 +18,11 @@ export interface CultureCalls extends IUpdate<ICulture, CultureAction> {
      */
     get<T extends DataTypes.SimpleType = string>(key: string): T | undefined;
 }
+
+/**
+ * Culture provider props
+ */
+export type CultureProviderProps = IProviderProps<ICulture, CultureAction>;
 
 // Calls
 const calls = {
@@ -46,14 +51,14 @@ export class CultureState {
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent;
+    readonly provider: React.FunctionComponent<CultureProviderProps>;
 
     /**
      * Constructor
      */
     constructor(item?: DataTypes.CultureDefinition) {
         // Default
-        const defaultItem: ICulture =item ?? ({} as ICulture);
+        const defaultItem: ICulture = item ?? ({} as ICulture);
 
         // Act
         const { context, provider } = State.create(
