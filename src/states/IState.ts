@@ -17,6 +17,20 @@ export interface IUpdate<S extends IState, A extends IAction> {
 }
 
 /**
+ * State update interface
+ */
+export interface IStateUpdate<S extends IState> {
+    (state: S): void;
+}
+
+/**
+ * State update props
+ */
+export interface IStateProps<S extends IState> {
+    update: IStateUpdate<S>;
+}
+
+/**
  * State provider update callback
  */
 export interface IProviderUpdate<S extends IState, A extends IAction> {

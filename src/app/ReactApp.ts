@@ -1,16 +1,22 @@
-import { CoreApp, IAppSettings, IUserData } from '@etsoo/appscript';
+import { CoreApp, IAppSettings, IUser, IUserData } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { CultureAction } from '../states/CultureState';
-import { UserAction, UserActionType } from '../states/UserState';
+import { IStateProps } from '../states/IState';
+import { UserAction, UserActionType, UserState } from '../states/UserState';
 
 /**
  * React application
  */
-export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
-    S,
-    React.ReactNode
-> {
+export abstract class ReactApp<
+    S extends IAppSettings,
+    D extends IUser
+> extends CoreApp<S, React.ReactNode> {
+    /**
+     * User state
+     */
+    readonly userState = new UserState<D>();
+
     /**
      * User state dispatch
      */
@@ -62,5 +68,23 @@ export abstract class ReactApp<S extends IAppSettings> extends CoreApp<
 
         // Super call
         super.userLogout();
+    }
+
+    /**
+     * User update component
+     * @param props Props
+     * @returns Component
+     */
+    userUpdate(props: IStateProps<D>) {
+        // Component
+        const consumer = this.userState.context.Consumer;
+
+        // Create element
+        return React.createElement(consumer, {
+            children: (value) => {
+                props.update(value.state);
+                return undefined;
+            }
+        });
     }
 }
