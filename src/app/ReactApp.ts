@@ -1,7 +1,5 @@
 import { CoreApp, IAppSettings, IUser, IUserData } from '@etsoo/appscript';
-import { INotifier } from '@etsoo/notificationbase';
 import { DataTypes } from '@etsoo/shared';
-import { IApi } from '@etsoo/restclient';
 import React from 'react';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
@@ -17,28 +15,35 @@ export abstract class ReactApp<
     /**
      * User state
      */
-    readonly userState;
+    readonly userState = new UserState<D>();
+
+    /**
+     * User state update component
+     * @returns Component
+     */
+    readonly userStateUpdate = () => {
+        // Consumer
+        const consumer = this.userState.context.Consumer;
+
+        // Component
+        const f = (props: IStateProps<D>) => {
+            // Create element
+            return React.createElement(consumer, {
+                children: (value) => {
+                    props.update(value.state);
+                    return undefined;
+                }
+            });
+        };
+
+        // Return
+        return f;
+    };
 
     /**
      * User state dispatch
      */
     userStateDispatch?: React.Dispatch<UserAction>;
-
-    /**
-     * Protected constructor
-     * @param settings Settings
-     * @param api API
-     * @param notifier Notifier
-     */
-    protected constructor(
-        settings: S,
-        api: IApi,
-        notifier: INotifier<React.ReactNode>
-    ) {
-        super(settings, api, notifier);
-
-        this.userState = new UserState<D>();
-    }
 
     /**
      * Change culture extended
@@ -86,23 +91,5 @@ export abstract class ReactApp<
 
         // Super call
         super.userLogout();
-    }
-
-    /**
-     * User update component
-     * @param props Props
-     * @returns Component
-     */
-    userUpdate(props: IStateProps<D>) {
-        // Component
-        const consumer = this.userState.context.Consumer;
-
-        // Create element
-        return React.createElement(consumer, {
-            children: (value) => {
-                props.update(value.state);
-                return undefined;
-            }
-        });
     }
 }
