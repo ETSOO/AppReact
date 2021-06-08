@@ -26,10 +26,13 @@ export abstract class ReactApp<
         const { update } = props;
 
         // Context
-        const context = React.useContext(this.userState.context);
+        const { state } = React.useContext(this.userState.context);
 
-        // Callback
-        update(context.state);
+        // Ready
+        React.useEffect(() => {
+            // Callback
+            update(state);
+        }, [update, state]);
 
         /*
         // Create element
