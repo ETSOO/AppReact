@@ -25,13 +25,25 @@ export abstract class ReactApp<
         // Consumer
         const consumer = this.userState.context.Consumer;
 
-        // Create element
-        return React.createElement(consumer, {
-            children: (value) => {
-                props.update(value.state);
-                return undefined;
-            }
-        });
+        // Destruct
+        const { update } = props;
+
+        // Memo
+        const result = React.useMemo(() => {
+            // Create element
+            return React.createElement(consumer, {
+                children: (value) => {
+                    const { state } = value;
+                    React.useEffect(() => {
+                        update(state);
+                    }, [state]);
+
+                    return undefined;
+                }
+            });
+        }, [consumer, update]);
+
+        return result;
     };
 
     /**
