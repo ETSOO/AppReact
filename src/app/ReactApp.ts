@@ -46,7 +46,7 @@ export abstract class ReactApp<
         */
 
         // return
-        return undefined;
+        return React.createElement(React.Fragment);
     };
 
     /**
