@@ -21,23 +21,17 @@ export abstract class ReactApp<
      * User state update component
      * @returns Component
      */
-    readonly userStateUpdate = () => {
+    readonly userStateUpdate = (props: IStateProps<D>) => {
         // Consumer
         const consumer = this.userState.context.Consumer;
 
-        // Component
-        const f = (props: IStateProps<D>) => {
-            // Create element
-            return React.createElement(consumer, {
-                children: (value) => {
-                    props.update(value.state);
-                    return undefined;
-                }
-            });
-        };
-
-        // Return
-        return f;
+        // Create element
+        return React.createElement(consumer, {
+            children: (value) => {
+                props.update(value.state);
+                return undefined;
+            }
+        });
     };
 
     /**
