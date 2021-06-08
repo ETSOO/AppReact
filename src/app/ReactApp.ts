@@ -22,28 +22,31 @@ export abstract class ReactApp<
      * @returns Component
      */
     readonly userStateUpdate = (props: IStateProps<D>) => {
-        // Consumer
-        const consumer = this.userState.context.Consumer;
-
         // Destruct
         const { update } = props;
 
-        // Memo
-        const result = React.useMemo(() => {
-            // Create element
-            return React.createElement(consumer, {
-                children: (value) => {
-                    const { state } = value;
-                    React.useEffect(() => {
-                        update(state);
-                    }, [state]);
+        // Context
+        const context = React.useContext(this.userState.context);
 
-                    return undefined;
-                }
-            });
-        }, [consumer, update]);
+        // Callback
+        update(context.state);
 
-        return result;
+        /*
+        // Create element
+        return React.createElement(consumer, {
+            children: (value) => {
+                const { state } = value;
+                React.useEffect(() => {
+                    update(state);
+                }, [state]);
+
+                return undefined;
+            }
+        });
+        */
+
+        // return
+        return undefined;
     };
 
     /**
