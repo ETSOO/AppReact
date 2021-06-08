@@ -33,13 +33,13 @@ export interface IStateProps<S extends IState> {
 /**
  * State provider update callback
  */
-export interface IProviderUpdate<S extends IState, A extends IAction> {
-    (update: IUpdate<S, A>): void;
+export interface IProviderUpdate<A extends IAction> {
+    (dispatch: React.Dispatch<A>): void;
 }
 
 /**
  * State provider props
  */
-export interface IProviderProps<S extends IState, A extends IAction> {
-    update?: IProviderUpdate<S, A>;
+export interface IProviderProps<A extends IAction> {
+    update?: IProviderUpdate<A>;
 }

@@ -50,7 +50,7 @@ export interface UserAction extends IAction {
 /**
  * User provider props
  */
-export type UserProviderProps<D extends IUser> = IProviderProps<D, UserAction>;
+export type UserProviderProps = IProviderProps<UserAction>;
 
 /**
  * Users calls with the state
@@ -69,7 +69,7 @@ export class UserState<D extends IUser> {
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent<UserProviderProps<D>>;
+    readonly provider: React.FunctionComponent<UserProviderProps>;
 
     /**
      * Constructor

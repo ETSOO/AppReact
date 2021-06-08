@@ -22,7 +22,7 @@ export interface CultureCalls extends IUpdate<ICulture, CultureAction> {
 /**
  * Culture provider props
  */
-export type CultureProviderProps = IProviderProps<ICulture, CultureAction>;
+export type CultureProviderProps = IProviderProps<CultureAction>;
 
 // Calls
 const calls = {

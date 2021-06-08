@@ -16,7 +16,7 @@ export class State {
         S extends IState,
         A extends IAction,
         U extends IUpdate<S, A>,
-        P extends IProviderProps<S, A>
+        P extends IProviderProps<A>
     >(
         reducer: React.Reducer<S, A>,
         initState: S,
@@ -34,8 +34,11 @@ export class State {
             // Update reducer
             const [state, dispatch] = React.useReducer(reducer, initState);
 
-            // Callback
-            if (update != null) update({ state, dispatch });
+            // When layout ready
+            React.useEffect(() => {
+                // Callback
+                if (update != null) update(dispatch);
+            }, [update, dispatch]);
 
             if (uiCreator) {
                 // Custom renderer

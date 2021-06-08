@@ -44,7 +44,7 @@ export abstract class NotificationReact extends Notification<React.ReactNode> {}
  */
 export interface NotificationReactRenderProps
     extends NotificationRenderProps,
-        IProviderProps<ReactNotifications, INotifierAction> {}
+        IProviderProps<INotifierAction> {}
 
 /**
  * Notifier interface
