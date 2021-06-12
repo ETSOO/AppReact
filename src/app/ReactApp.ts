@@ -32,7 +32,7 @@ export abstract class ReactApp<
         React.useEffect(() => {
             // Callback
             update(state.authorized);
-        }, [update, state.authorized]);
+        }, [state.authorized]);
 
         /*
         // Create element
