@@ -25,31 +25,18 @@ export abstract class ReactApp<
         // Destruct
         const { update } = props;
 
-        // Context
-        const { state } = React.useContext(this.userState.context);
+        // Consumer
+        const consumer = this.userState.context.Consumer;
 
-        // Ready
-        React.useEffect(() => {
-            // Callback
-            update(state);
-        }, [update, state]);
-
-        /*
         // Create element
         return React.createElement(consumer, {
             children: (value) => {
                 const { state } = value;
-                React.useEffect(() => {
-                    update(state);
-                }, [state]);
+                update(state);
 
                 return undefined;
             }
         });
-        */
-
-        // return
-        return React.createElement(React.Fragment);
     };
 
     /**
