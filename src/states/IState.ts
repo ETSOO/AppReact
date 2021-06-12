@@ -19,15 +19,15 @@ export interface IUpdate<S extends IState, A extends IAction> {
 /**
  * State update interface
  */
-export interface IStateUpdate<S extends IState> {
-    (state: S): void;
+export interface IStateUpdate {
+    (authorized: boolean): void;
 }
 
 /**
  * State update props
  */
-export interface IStateProps<S extends IState> {
-    update: IStateUpdate<S>;
+export interface IStateProps {
+    update: IStateUpdate;
 }
 
 /**

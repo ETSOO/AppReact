@@ -18,25 +18,38 @@ export abstract class ReactApp<
     readonly userState = new UserState<D>();
 
     /**
-     * User state update component
+     * User authentification state update component
      * @returns Component
      */
-    readonly userStateUpdate = (props: IStateProps<D>) => {
+    readonly userStateUpdate = (props: IStateProps) => {
         // Destruct
         const { update } = props;
 
-        // Consumer
-        const consumer = this.userState.context.Consumer;
+        // Context
+        const { state } = React.useContext(this.userState.context);
 
+        // Ready
+        React.useEffect(() => {
+            // Callback
+            update(state.authorized);
+        }, [update, state.authorized]);
+
+        /*
         // Create element
         return React.createElement(consumer, {
             children: (value) => {
                 const { state } = value;
-                update(state);
+                React.useEffect(() => {
+                    update(state);
+                }, [state]);
 
                 return undefined;
             }
         });
+        */
+
+        // return
+        return React.createElement(React.Fragment);
     };
 
     /**
