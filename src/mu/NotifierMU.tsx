@@ -9,29 +9,31 @@ import {
 import { DataTypes } from '@etsoo/shared';
 import {
     Alert,
+    AlertProps,
     AlertTitle,
     Backdrop,
     Box,
     Button,
     CircularProgress,
     CircularProgressProps,
+    ClassNameMap,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
     Fade,
-    makeStyles,
     Paper,
     PaperProps,
     Slider,
     Snackbar,
+    styled,
     Switch,
     TextField,
     Theme
 } from '@material-ui/core';
+import { Color } from '@material-ui/core/Alert';
 import { Error, Info, Help } from '@material-ui/icons';
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import Draggable from 'react-draggable';
 import {
@@ -39,7 +41,6 @@ import {
     NotificationReact,
     NotifierReact
 } from '../notifier/Notifier';
-import { AlertProps, Color } from '@material-ui/core/Alert';
 
 // Draggable Paper component for Dialog
 function PaperComponent(props: PaperProps) {
@@ -52,6 +53,19 @@ function PaperComponent(props: PaperProps) {
         </Draggable>
     );
 }
+
+// Custom icon dialog title bar
+const IconDialogTitle = styled(DialogTitle)`
+    ${({ theme }) => `
+        display: flex;
+        align-items: center;
+        & .dialogTitle {
+            font-weight: bold;
+            font-size: 1.17em;
+            padding-left: ${theme.spacing(1)};
+        }
+    `}
+`;
 
 /**
  * MU notification
@@ -83,14 +97,13 @@ export class NotificationMU extends NotificationReact {
                 PaperComponent={PaperComponent}
                 className={className}
             >
-                <DialogTitle
-                    disableTypography
+                <IconDialogTitle
                     className={classes.iconTitle}
                     id="draggable-dialog-title"
                 >
                     <Error color="error" />
-                    <h2>{title}</h2>
-                </DialogTitle>
+                    <span className="dialogTitle">{title}</span>
+                </IconDialogTitle>
                 <DialogContent>
                     <DialogContentText>{this.content}</DialogContentText>
                 </DialogContent>
@@ -127,14 +140,13 @@ export class NotificationMU extends NotificationReact {
                 PaperComponent={PaperComponent}
                 className={className}
             >
-                <DialogTitle
-                    disableTypography
+                <IconDialogTitle
                     className={classes.iconTitle}
                     id="draggable-dialog-title"
                 >
                     <Help color="action" />
-                    <h2>{title}</h2>
-                </DialogTitle>
+                    <span className="dialogTitle">{title}</span>
+                </IconDialogTitle>
                 <DialogContent>
                     <DialogContentText>{this.content}</DialogContentText>
                 </DialogContent>
@@ -276,14 +288,13 @@ export class NotificationMU extends NotificationReact {
                 PaperComponent={PaperComponent}
                 className={className}
             >
-                <DialogTitle
-                    disableTypography
+                <IconDialogTitle
                     className={classes.iconTitle}
                     id="draggable-dialog-title"
                 >
                     <Info color="primary" />
-                    <h2>{title}</h2>
-                </DialogTitle>
+                    <span className="dialogTitle">{title}</span>
+                </IconDialogTitle>
                 <DialogContent>
                     <DialogContentText>{this.content}</DialogContentText>
                     {input}
@@ -338,7 +349,11 @@ export class NotificationMU extends NotificationReact {
                     flexDirection="column"
                     flexWrap="nowrap"
                     alignItems="center"
-                    className={classes.loadingBox}
+                    sx={{
+                        '& >*:not(:first-child)': {
+                            marginTop: (theme) => theme.spacing(1)
+                        }
+                    }}
                 >
                     <CircularProgress {...setupProps} />
                     {content && <Box maxWidth={640}>{content}</Box>}
@@ -391,39 +406,7 @@ export class NotifierMU extends NotifierReact {
     static setup(className = 'notifier-mu') {
         // Create an instance
         NotifierReact.updateInstance(new NotifierMU());
-
-        // Style
-        const useStyles = makeStyles<Theme, { gap: number }>((theme) => ({
-            screenCenter: {
-                position: 'fixed',
-                top: '50%'
-            },
-            listBox: {
-                '& >*:not(:first-child)': {
-                    marginTop: ({ gap }) => theme.spacing(gap)
-                }
-            },
-            iconTitle: {
-                cursor: 'move',
-                minWidth: '360px',
-                display: 'flex',
-                flexWrap: 'nowrap',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                '& h2': {
-                    paddingLeft: theme.spacing(1)
-                }
-            },
-            loadingBox: {
-                '& >*:not(:first-child)': {
-                    marginTop: theme.spacing(1)
-                }
-            }
-        }));
-
-        return NotifierReact.instance.createProvider(className, () =>
-            useStyles({ gap: 1 })
-        );
+        return NotifierReact.instance.createProvider(className);
     }
 
     // Calculate origin from align property
@@ -504,15 +487,17 @@ export class NotifierMU extends NotifierReact {
             );
         }
 
-        if (align === NotificationAlign.Center)
-            className += ' ' + options.screenCenter;
-
         // Use SnackBar for layout
         return (
             <Snackbar
                 anchorOrigin={NotifierMU.getOrigin(align)}
                 className={className}
                 key={`layout-${alignText}`}
+                sx={
+                    align === NotificationAlign.Center
+                        ? { position: 'fixed', top: '50%!important' }
+                        : undefined
+                }
                 open
             >
                 <Box
@@ -520,7 +505,11 @@ export class NotifierMU extends NotifierReact {
                     flexDirection="column"
                     flexWrap="nowrap"
                     key={`box-${alignText}`}
-                    className={options.listBox}
+                    sx={{
+                        '& >*:not(:first-child)': {
+                            marginTop: (theme) => theme.spacing(1)
+                        }
+                    }}
                 >
                     {children}
                 </Box>
