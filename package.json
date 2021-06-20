@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.1.9",
+    "version": "1.1.10",
     "description": "TypeScript ReactJs framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -50,6 +50,7 @@
         "@types/pulltorefreshjs": "^0.1.4",
         "@types/react": "^17.0.11",
         "@types/react-dom": "^17.0.7",
+        "pulltorefreshjs": "^0.1.22",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-draggable": "^4.4.3",
@@ -70,7 +71,6 @@
         "eslint-plugin-import": "^2.23.4",
         "eslint-plugin-react": "^7.24.0",
         "jest": "^27.0.4",
-        "pulltorefreshjs": "^0.1.22",
         "react-test-renderer": "^17.0.2",
         "ts-jest": "^27.0.3"
     }

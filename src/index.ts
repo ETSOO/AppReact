@@ -18,7 +18,6 @@ export * from './mu/MUGlobal';
 export * from './mu/NotifierMU';
 export * from './mu/PList';
 export * from './mu/PullToRefreshUI';
-export type { Options } from 'pulltorefreshjs';
 export * from './mu/ScrollTopFab';
 export * from './mu/TextFieldEx';
 export * from './mu/VBox';
