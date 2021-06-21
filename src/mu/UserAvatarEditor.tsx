@@ -6,8 +6,8 @@ import RotateRightIcon from '@material-ui/icons/RotateRight';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import ComputerIcon from '@material-ui/icons/Computer';
 import DoneIcon from '@material-ui/icons/Done';
-import { DataTypes } from '@etsoo/shared';
 import pica from 'pica';
+import { Labels } from '../app/Labels';
 
 /**
  * User avatar editor to Blob helper
@@ -40,11 +40,6 @@ export interface UserAvatarEditorProps {
      * Image source
      */
     image?: string | File;
-
-    /**
-     * Labels
-     */
-    labels?: DataTypes.ReadonlyStringDictionary;
 
     /**
      * Max width to save
@@ -93,7 +88,6 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
     const {
         border = 30,
         image,
-        labels = {},
         maxWidth,
         onDone,
         scaledResult = false,
@@ -109,12 +103,7 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
         maxWidth == null || maxWidth < 200 ? 3 * width : maxWidth;
 
     // Labels
-    const labelUpload = labels.upload ?? 'Upload';
-    const labelDone = labels.done ?? 'Done';
-    const labelReset = labels.reset ?? 'Reset';
-    const labelZoom = labels.zoom ?? 'Zoom';
-    const labelRotateLeft = labels.rotateLeft ?? 'Rotate left 90°';
-    const labelRotateRight = labels.rotateRight ?? 'Rotate right 90°';
+    const labels = Labels.UserAvatarEditor;
 
     // Ref
     const ref = React.createRef<AvatarEditor>();
@@ -226,7 +215,7 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
                 startIcon={<ComputerIcon />}
                 fullWidth
             >
-                {labelUpload}
+                {labels.upload}
                 <input
                     id="fileInput"
                     type="file"
@@ -254,23 +243,23 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
                 >
                     <Button
                         onClick={() => handleRotate(90)}
-                        title={labelRotateRight}
+                        title={labels.rotateRight}
                     >
                         <RotateRightIcon />
                     </Button>
                     <Button
                         onClick={() => handleRotate(-90)}
-                        title={labelRotateLeft}
+                        title={labels.rotateLeft}
                     >
                         <RotateLeftIcon />
                     </Button>
-                    <Button onClick={handleReset} title={labelReset}>
+                    <Button onClick={handleReset} title={labels.reset}>
                         <ClearAllIcon />
                     </Button>
                 </ButtonGroup>
             </Stack>
             <Slider
-                title={labelZoom}
+                title={labels.zoom}
                 disabled={!ready}
                 min={1}
                 max={5}
@@ -284,7 +273,7 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
                 disabled={!ready}
                 onClick={handleDone}
             >
-                {labelDone}
+                {labels.done}
             </Button>
         </Stack>
     );

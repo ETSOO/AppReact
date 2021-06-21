@@ -1,4 +1,5 @@
 // app
+export * from './app/Labels';
 export * from './app/ReactApp';
 
 // mu

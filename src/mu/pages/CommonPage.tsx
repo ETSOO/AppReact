@@ -4,9 +4,9 @@ import { FabBox } from '../FabBox';
 import { ScrollTopFab } from '../ScrollTopFab';
 import { PullToRefreshUI } from '../PullToRefreshUI';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { DataTypes } from '@etsoo/shared';
 import { CustomFabSize } from '../CustomFabProps';
 import { MoreAction, MoreFab } from '../MoreFab';
+import { Labels } from '../../app/Labels';
 
 /**
  * Common page props
@@ -21,11 +21,6 @@ export interface CommonPageProps extends ContainerProps {
      * Fab size
      */
     fabSize?: CustomFabSize;
-
-    /**
-     * Labels
-     */
-    labels?: DataTypes.ReadonlyStringDictionary;
 
     /**
      * More actions
@@ -52,7 +47,6 @@ export function CommonPage(props: CommonPageProps) {
     const {
         children,
         disableGutters = true,
-        labels = {},
         fabButtons,
         fabSize = 'medium',
         maxWidth = false,
@@ -69,13 +63,7 @@ export function CommonPage(props: CommonPageProps) {
     });
 
     // Labels
-    const labelScrollTop = labels.scrollTop ?? 'Scroll to top';
-    const labelRefresh = labels.refresh ?? 'Refresh';
-    const labelMore = labels.more ?? 'More';
-    const labelPullToRefresh = labels.pullToRefresh ?? 'Pull down to refresh';
-    const labelRefreshing = labels.refreshing ?? 'Refreshing';
-    const labelReleaseToRefresh =
-        labels.releaseToRefresh ?? 'Release to refresh';
+    const labels = Labels.CommonPage;
 
     // Return the UI
     return (
@@ -87,18 +75,18 @@ export function CommonPage(props: CommonPageProps) {
         >
             {onRefresh != null && (
                 <PullToRefreshUI
-                    instructionsPullToRefresh={labelPullToRefresh}
-                    instructionsReleaseToRefresh={labelReleaseToRefresh}
-                    instructionsRefreshing={labelRefreshing}
+                    instructionsPullToRefresh={labels.pullToRefresh}
+                    instructionsReleaseToRefresh={labels.releaseToRefresh}
+                    instructionsRefreshing={labels.refreshing}
                     onRefresh={onRefresh}
                 />
             )}
             <FabBox>
-                <ScrollTopFab size={fabSize} title={labelScrollTop} />
+                <ScrollTopFab size={fabSize} title={labels.scrollTop} />
                 {fabButtons}
                 {onRefresh != null && (
                     <Fab
-                        title={labelRefresh}
+                        title={labels.refresh}
                         size={fabSize}
                         onClick={onRefresh}
                         sx={{ display: { xs: 'none', md: 'inherit' } }}
@@ -108,7 +96,7 @@ export function CommonPage(props: CommonPageProps) {
                 )}
                 <MoreFab
                     size={fabSize}
-                    title={labelMore}
+                    title={labels.more}
                     actions={moreActions}
                 />
             </FabBox>
