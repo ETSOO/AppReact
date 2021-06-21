@@ -16,19 +16,20 @@ export interface UserAvatarProps {
     title?: string;
 }
 
-const transformTitle = (title?: string) => {
+const transformTitle = (title?: string): [string | undefined, number] => {
     // Just return for empty cases
-    if (title == null || title === '') return undefined;
+    if (title == null || title === '') return [undefined, 0];
 
     // split with words
     const items = title.trim().split(/\s+/g);
 
     if (items.length === 1) {
         // 2-3 Chinese names
-        if (title.length < 4) return title.toUpperCase();
+        const titleLen = title.length;
+        if (titleLen < 4) return [title.toUpperCase(), titleLen];
 
         // Return ME for simplicity
-        return 'ME';
+        return ['ME', 2];
     }
 
     // First letter of each item
@@ -37,9 +38,10 @@ const transformTitle = (title?: string) => {
         .join('')
         .toUpperCase();
 
-    if (firstLetters.length < 4) return firstLetters;
+    const flen = firstLetters.length;
+    if (flen < 4) return [firstLetters, flen];
 
-    return 'ME';
+    return ['ME', 2];
 };
 
 /**
@@ -51,13 +53,20 @@ export function UserAvatar(props: UserAvatarProps) {
     // Destruct
     const { src, title } = props;
 
+    // Format
+    const [formatedTitle, count] = transformTitle(title);
+
     return (
         <Avatar
             title={title}
             src={src}
-            sx={{ width: 48, height: 32, fontSize: '0.8em' }}
+            sx={{
+                width: 48,
+                height: 32,
+                fontSize: count <= 2 ? '15px' : '12px'
+            }}
         >
-            {transformTitle(title)}
+            {formatedTitle}
         </Avatar>
     );
 }

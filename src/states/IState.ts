@@ -20,7 +20,7 @@ export interface IUpdate<S extends IState, A extends IAction> {
  * State update interface
  */
 export interface IStateUpdate {
-    (authorized?: boolean): void;
+    (authorized?: boolean): PromiseLike<void> | void;
 }
 
 /**
