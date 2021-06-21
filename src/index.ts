@@ -10,8 +10,6 @@ export * from './mu/pages/ViewPage';
 export * from './mu/CountdownButton';
 export * from './mu/CustomFabProps';
 export * from './mu/FabBox';
-export * from './mu/FlexBox';
-export * from './mu/HBox';
 export * from './mu/ItemList';
 export * from './mu/MoreFab';
 export * from './mu/MUGlobal';
@@ -20,7 +18,8 @@ export * from './mu/PList';
 export * from './mu/PullToRefreshUI';
 export * from './mu/ScrollTopFab';
 export * from './mu/TextFieldEx';
-export * from './mu/VBox';
+export * from './mu/UserAvatar';
+export * from './mu/UserAvatarEditor';
 
 // notifier
 export * from './notifier/Notifier';

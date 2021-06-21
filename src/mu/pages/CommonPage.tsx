@@ -25,7 +25,7 @@ export interface CommonPageProps extends ContainerProps {
     /**
      * Labels
      */
-    labels?: DataTypes.ReadonlySimpleObject;
+    labels?: DataTypes.ReadonlyStringDictionary;
 
     /**
      * More actions
@@ -69,14 +69,13 @@ export function CommonPage(props: CommonPageProps) {
     });
 
     // Labels
-    const labelScrollTop = labels.scrollTop?.toString() ?? 'Scroll to top';
-    const labelRefresh = labels.refresh?.toString() ?? 'Refresh';
-    const labelMore = labels.more?.toString() ?? 'More';
-    const labelPullToRefresh =
-        labels.pullToRefresh?.toString() ?? 'Pull down to refresh';
-    const labelRefreshing = labels.refreshing?.toString() ?? 'Refreshing';
+    const labelScrollTop = labels.scrollTop ?? 'Scroll to top';
+    const labelRefresh = labels.refresh ?? 'Refresh';
+    const labelMore = labels.more ?? 'More';
+    const labelPullToRefresh = labels.pullToRefresh ?? 'Pull down to refresh';
+    const labelRefreshing = labels.refreshing ?? 'Refreshing';
     const labelReleaseToRefresh =
-        labels.releaseToRefresh?.toString() ?? 'Release to refresh';
+        labels.releaseToRefresh ?? 'Release to refresh';
 
     // Return the UI
     return (
