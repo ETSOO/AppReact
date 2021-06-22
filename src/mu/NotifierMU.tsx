@@ -3,8 +3,7 @@ import {
     NotificationAlign,
     NotificationMessageType,
     NotificationRenderProps,
-    NotificationType,
-    NotifierLabelKeys
+    NotificationType
 } from '@etsoo/notificationbase';
 import { DataTypes } from '@etsoo/shared';
 import {
@@ -29,13 +28,13 @@ import {
     Snackbar,
     styled,
     Switch,
-    TextField,
-    Theme
+    TextField
 } from '@material-ui/core';
 import { Color } from '@material-ui/core/Alert';
 import { Error, Info, Help } from '@material-ui/icons';
 import React from 'react';
 import Draggable from 'react-draggable';
+import { Labels } from '../app/Labels';
 import {
     INotificationReact,
     NotificationReact,
@@ -80,15 +79,12 @@ export class NotificationMU extends NotificationReact {
 
     // Create alert
     private createAlert(
-        props: NotificationRenderProps,
+        _props: NotificationRenderProps,
         className: string,
         classes: ClassNameMap<string>
     ) {
-        const labels = props.labels;
-        const title =
-            this.title ?? labels[NotifierLabelKeys.alertTitle] ?? 'Warning';
-
-        const ok = labels[NotifierLabelKeys.alertOK] ?? 'OK';
+        const labels = Labels.NotificationMU;
+        const title = this.title ?? labels.alertTitle;
 
         return (
             <Dialog
@@ -113,7 +109,7 @@ export class NotificationMU extends NotificationReact {
                         onClick={() => this.returnValue(undefined)}
                         autoFocus
                     >
-                        {ok}
+                        {labels.alertOK}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -122,16 +118,15 @@ export class NotificationMU extends NotificationReact {
 
     // Create confirm
     private createConfirm(
-        props: NotificationRenderProps,
+        _props: NotificationRenderProps,
         className: string,
         classes: ClassNameMap<string>
     ) {
-        const labels = props.labels;
-        const title =
-            this.title ?? labels[NotifierLabelKeys.confirmTitle] ?? 'Confirm';
+        const labels = Labels.NotificationMU;
+        const title = this.title ?? labels.confirmTitle;
 
-        const noLabel = labels[NotifierLabelKeys.confirmNo] ?? 'Cancel';
-        const yesLabel = labels[NotifierLabelKeys.confirmYes] ?? 'OK';
+        const noLabel = labels.confirmNo;
+        const yesLabel = labels.confirmYes;
 
         return (
             <Dialog
@@ -208,16 +203,15 @@ export class NotificationMU extends NotificationReact {
 
     // Create prompt
     private createPrompt(
-        props: NotificationRenderProps,
+        _props: NotificationRenderProps,
         className: string,
         classes: ClassNameMap<string>
     ) {
-        const labels = props.labels;
-        const title =
-            this.title ?? labels[NotifierLabelKeys.promptTitle] ?? 'Input';
+        const labels = Labels.NotificationMU;
+        const title = this.title ?? labels.promptTitle;
 
-        const noLabel = labels[NotifierLabelKeys.promptCancel] ?? 'Cancel';
-        const yesLabel = labels[NotifierLabelKeys.promptOK] ?? 'OK';
+        const noLabel = labels.promptCancel;
+        const yesLabel = labels.promptOK;
 
         const { type, ...rest } = this.inputProps;
 
@@ -317,19 +311,18 @@ export class NotificationMU extends NotificationReact {
 
     // Create loading
     private createLoading(
-        props: NotificationRenderProps,
+        _props: NotificationRenderProps,
         className: string,
-        classes: ClassNameMap<string>
+        _classes: ClassNameMap<string>
     ) {
         // Properties
         const setupProps: CircularProgressProps = { color: 'primary' };
 
+        const labels = Labels.NotificationMU;
+
         // Content
         let content = this.content;
-        if (content === '@')
-            content = (
-                props.labels[NotifierLabelKeys.loading] ?? 'Loading...'
-            ).toString();
+        if (content === '@') content = labels.loading.toString();
 
         // Setup callback
         if (this.renderSetup) this.renderSetup(setupProps);

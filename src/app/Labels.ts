@@ -17,6 +17,21 @@ export namespace Labels {
     };
 
     /**
+     * Notification MU labels
+     */
+    export const NotificationMU = {
+        alertTitle: 'Warning',
+        alertOK: 'OK',
+        confirmTitle: 'Confirm',
+        confirmYes: 'OK',
+        confirmNo: 'Cancel',
+        promptTitle: 'Input',
+        promptCancel: 'Cancel',
+        promptOK: 'OK',
+        loading: 'Loading'
+    };
+
+    /**
      * UserAvatarEditor labels
      */
     export const UserAvatarEditor = {
@@ -28,12 +43,23 @@ export namespace Labels {
         zoom: 'Zoom'
     };
 
+    export interface setLabelsReference {
+        commonPage?: DataTypes.ReadonlyStringDictionary;
+        notificationMU?: DataTypes.ReadonlyStringDictionary;
+        userAvatarEditor?: DataTypes.ReadonlyStringDictionary;
+    }
+
     /**
      * Set components' labels
      * @param labels Labels
+     * @param reference Key reference
      */
-    export const setLabels = (labels: DataTypes.ReadonlySimpleObject) => {
-        Utils.setLabels(CommonPage, labels);
-        Utils.setLabels(UserAvatarEditor, labels);
+    export const setLabels = (
+        labels: DataTypes.ReadonlySimpleObject,
+        reference: setLabelsReference = {}
+    ) => {
+        Utils.setLabels(CommonPage, labels, reference.commonPage);
+        Utils.setLabels(NotificationMU, labels, reference.notificationMU);
+        Utils.setLabels(UserAvatarEditor, labels, reference.userAvatarEditor);
     };
 }
