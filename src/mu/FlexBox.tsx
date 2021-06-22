@@ -6,7 +6,7 @@ import React from 'react';
  * @param props Props
  * @returns Component
  */
-export function HBox(props: StackProps) {
+export function HBox(props: Exclude<StackProps, 'ref'>) {
     return <Stack direction="row" width="100%" {...props} />;
 }
 
@@ -15,6 +15,6 @@ export function HBox(props: StackProps) {
  * @param props Props
  * @returns Component
  */
-export function VBox(props: StackProps) {
+export function VBox(props: Exclude<StackProps, 'ref'>) {
     return <Stack direction="column" {...props} />;
 }

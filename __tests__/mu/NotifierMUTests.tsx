@@ -10,7 +10,7 @@ root.append(container);
 
 // The state provider
 var Provider = NotifierMU.setup();
-ReactDOM.render(<Provider labels={{}} />, container);
+ReactDOM.render(<Provider />, container);
 
 // Notifier
 const notifier = NotifierMU.instance;

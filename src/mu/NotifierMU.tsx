@@ -343,7 +343,7 @@ export class NotificationMU extends NotificationReact {
                     flexWrap="nowrap"
                     alignItems="center"
                     sx={{
-                        '& >*:not(:first-child)': {
+                        '& > :not(style) + :not(style)': {
                             marginTop: (theme) => theme.spacing(1)
                         }
                     }}
@@ -461,7 +461,7 @@ export class NotifierMU extends NotifierReact {
     protected createContainer = (
         align: NotificationAlign,
         children: React.ReactNode[],
-        options: ClassNameMap<string>
+        _options: ClassNameMap<string>
     ) => {
         // Each align group, class equal to something similar to 'align-topleft'
         const alignText = NotificationAlign[align].toLowerCase();
@@ -499,7 +499,7 @@ export class NotifierMU extends NotifierReact {
                     flexWrap="nowrap"
                     key={`box-${alignText}`}
                     sx={{
-                        '& >*:not(:first-child)': {
+                        '& > :not(style) + :not(style)': {
                             marginTop: (theme) => theme.spacing(1)
                         }
                     }}

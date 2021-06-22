@@ -26,7 +26,7 @@ export function FabBox(props: FabBoxProps) {
         position: 'fixed',
         display: 'flex',
         flexDirection: 'column',
-        '& > *:not(:first-child)': {
+        '& > :not(style) + :not(style)': {
             marginTop: spaceGap
         },
         bottom: { xs: spaceMobile, sm: spaceOther },
