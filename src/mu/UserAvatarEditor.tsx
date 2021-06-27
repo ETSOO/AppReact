@@ -108,6 +108,9 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
     // Ref
     const ref = React.createRef<AvatarEditor>();
 
+    // Button ref
+    const buttonRef = React.createRef<HTMLButtonElement>();
+
     // Preview image state
     const [previewImage, setPreviewImage] = React.useState(image);
 
@@ -146,6 +149,9 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
 
         // Set ready state
         setReady(false);
+
+        // Make the submit button visible
+        buttonRef.current?.scrollIntoView(false);
     };
 
     // Handle reset
@@ -268,6 +274,7 @@ export function UserAvatarEditor(props: UserAvatarEditorProps) {
                 onChange={handleZoom}
             />
             <Button
+                ref={buttonRef}
                 variant="contained"
                 startIcon={<DoneIcon />}
                 disabled={!ready}

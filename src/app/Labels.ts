@@ -43,6 +43,9 @@ export namespace Labels {
         zoom: 'Zoom'
     };
 
+    /**
+     * setLabelReference key reference
+     */
     export interface setLabelsReference {
         commonPage?: DataTypes.ReadonlyStringDictionary;
         notificationMU?: DataTypes.ReadonlyStringDictionary;
