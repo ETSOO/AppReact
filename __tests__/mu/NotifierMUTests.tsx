@@ -84,11 +84,21 @@ test('Prompt tests', () => {
     jest.runOnlyPendingTimers();
 });
 
-test('Message tests', () => {
+test('Message tests', (done) => {
+    // Callback
+    const callback = jest.fn(() => done());
+
     let n: INotification<React.ReactNode> | undefined;
     act(() => {
         // Add the notification
-        n = notifier.message(NotificationMessageType.Danger, 'Error Message');
+        n = notifier.message(
+            NotificationMessageType.Danger,
+            'Error Message',
+            undefined,
+            {
+                callback
+            }
+        );
     });
 
     expect(n?.timespan).toBe(5);
@@ -104,6 +114,7 @@ test('Message tests', () => {
     });
 
     expect(root.innerHTML).not.toContain('Error Message');
+    expect(callback).toBeCalled();
 });
 
 test('Loading tests', () => {
