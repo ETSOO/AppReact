@@ -191,7 +191,7 @@ export class NotificationMU extends NotificationReact {
             <Fade in={true} key={this.id}>
                 <Alert
                     {...setupProps}
-                    onClose={() => this.returnValue(undefined)}
+                    onClose={() => this.dismiss()} // dismiss will trigger the onReturn callback
                     className={className}
                 >
                     {this.title && <AlertTitle>{this.title}</AlertTitle>}
