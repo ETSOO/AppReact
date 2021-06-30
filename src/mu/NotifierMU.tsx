@@ -31,7 +31,7 @@ import {
     TextField
 } from '@material-ui/core';
 import { Color } from '@material-ui/core/Alert';
-import { Error, Info, Help } from '@material-ui/icons';
+import { Error, Info, Help, Warning, Done } from '@material-ui/icons';
 import React from 'react';
 import Draggable from 'react-draggable';
 import { Labels } from '../app/Labels';
@@ -84,7 +84,22 @@ export class NotificationMU extends NotificationReact {
         classes: ClassNameMap<string>
     ) {
         const labels = Labels.NotificationMU;
-        const title = this.title ?? labels.alertTitle;
+
+        let title = this.title;
+        let icon: React.ReactNode;
+        if (this.type === NotificationMessageType.Success) {
+            icon = <Done color="primary" />;
+            title ??= labels.success;
+        } else if (this.type === NotificationMessageType.Info) {
+            icon = <Info />;
+            title ??= labels.info;
+        } else if (this.type === NotificationMessageType.Warning) {
+            icon = <Warning color="secondary" />;
+            title ??= labels.warning;
+        } else {
+            icon = <Error color="error" />;
+            title ??= labels.alertTitle;
+        }
 
         return (
             <Dialog
@@ -97,7 +112,7 @@ export class NotificationMU extends NotificationReact {
                     className={classes.iconTitle}
                     id="draggable-dialog-title"
                 >
-                    <Error color="error" />
+                    {icon}
                     <span className="dialogTitle">{title}</span>
                 </IconDialogTitle>
                 <DialogContent>
@@ -369,12 +384,16 @@ export class NotificationMU extends NotificationReact {
         // Loading bar
         if (this.type === NotificationType.Loading) {
             return this.createLoading(props, className, classes);
-        } else if (this.type === NotificationType.Error) {
-            return this.createAlert(props, className, classes);
         } else if (this.type === NotificationType.Confirm) {
             return this.createConfirm(props, className, classes);
         } else if (this.type === NotificationType.Prompt) {
             return this.createPrompt(props, className, classes);
+        } else if (
+            this.type === NotificationType.Error ||
+            (this.modal && this.type in NotificationMessageType)
+        ) {
+            // Alert or modal message
+            return this.createAlert(props, className, classes);
         } else {
             return this.createMessage(props, className, classes);
         }
@@ -513,8 +532,12 @@ export class NotifierMU extends NotifierReact {
     /**
      * Add raw definition
      * @param data Notification data definition
+     * @param modal Show as modal
      */
-    protected addRaw(data: INotificaseBase): INotificationReact {
+    protected addRaw(
+        data: INotificaseBase,
+        modal?: boolean
+    ): INotificationReact {
         // Destruct
         const { type, content, title, align, timespan, ...rest } = data;
 
@@ -523,6 +546,9 @@ export class NotifierMU extends NotifierReact {
 
         // Assign other properties
         Object.assign(n, rest);
+
+        // Is modal
+        if (modal != null) n.modal = modal;
 
         // Add to the collection
         this.add(n);

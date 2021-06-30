@@ -28,7 +28,10 @@ export namespace Labels {
         promptTitle: 'Input',
         promptCancel: 'Cancel',
         promptOK: 'OK',
-        loading: 'Loading'
+        loading: 'Loading',
+        success: 'Success',
+        warning: 'Warning',
+        info: 'Information'
     };
 
     /**
