@@ -1,3 +1,4 @@
+import { Stack } from '@material-ui/core';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
 import {
@@ -20,6 +21,11 @@ export interface ListPageProps<T> extends CommonPageProps {
      * Fields
      */
     fields: React.ReactElement[];
+
+    /**
+     * Search part and content gap
+     */
+    gap?: number;
 
     /**
      * Item renderer
@@ -51,6 +57,7 @@ export function ListPage<T>(props: ListPageProps<T>) {
     const {
         loadBatchSize = 10,
         fields,
+        gap = 2,
         itemRenderer,
         listItemSize,
         loadData,
@@ -78,14 +85,16 @@ export function ListPage<T>(props: ListPageProps<T>) {
     // Layout
     return (
         <CommonPage {...rest}>
-            <SearchBar fields={fields} onSubmit={onSubmit} />
-            <ScrollerList<T>
-                loadBatchSize={loadBatchSize}
-                itemRenderer={itemRenderer}
-                itemSize={listItemSize}
-                loadData={listLoadData}
-                mRef={listRef}
-            />
+            <Stack spacing={gap}>
+                <SearchBar fields={fields} onSubmit={onSubmit} />
+                <ScrollerList<T>
+                    loadBatchSize={loadBatchSize}
+                    itemRenderer={itemRenderer}
+                    itemSize={listItemSize}
+                    loadData={listLoadData}
+                    mRef={listRef}
+                />
+            </Stack>
         </CommonPage>
     );
 }
