@@ -82,6 +82,15 @@ export function ListPage<T>(props: ListPageProps<T>) {
         return await loadData(states.data, page, loadBatchSize);
     };
 
+    // Item key
+    const itemKey = (index: number, data: T) => {
+        if (data != null && 'id' in data) {
+            return (data as any)['id'];
+        }
+
+        return index;
+    };
+
     // Layout
     return (
         <CommonPage {...rest}>
@@ -91,6 +100,7 @@ export function ListPage<T>(props: ListPageProps<T>) {
                     loadBatchSize={loadBatchSize}
                     itemRenderer={itemRenderer}
                     itemSize={listItemSize}
+                    itemKey={itemKey}
                     loadData={listLoadData}
                     mRef={listRef}
                 />
