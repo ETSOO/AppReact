@@ -19,6 +19,7 @@ export function ScrollTopFab(props: CustomFabProps) {
     });
 
     // Icon click handler
+    // behavior: 'smooth'
     const handleClick = () => {
         window.scrollTo({ top: 0 });
     };

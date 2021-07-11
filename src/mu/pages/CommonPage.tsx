@@ -30,7 +30,7 @@ export interface CommonPageProps extends ContainerProps {
     /**
      * On refresh callback
      */
-    onRefresh?: (() => PromiseLike<void>) | (() => void);
+    onRefresh?: () => void | PromiseLike<void>;
 
     /**
      * Paddings in [xs, md]
@@ -81,7 +81,7 @@ export function CommonPage(props: CommonPageProps) {
                     onRefresh={onRefresh}
                 />
             )}
-            <FabBox>
+            <FabBox sx={{ zIndex: 1 }}>
                 <ScrollTopFab size={fabSize} title={labels.scrollTop} />
                 {fabButtons}
                 {onRefresh != null && (

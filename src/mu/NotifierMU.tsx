@@ -8,6 +8,7 @@ import {
 import { DataTypes } from '@etsoo/shared';
 import {
     Alert,
+    AlertColor,
     AlertProps,
     AlertTitle,
     Backdrop,
@@ -30,7 +31,6 @@ import {
     Switch,
     TextField
 } from '@material-ui/core';
-import { Color } from '@material-ui/core/Alert';
 import { Error, Info, Help, Warning, Done } from '@material-ui/icons';
 import React from 'react';
 import Draggable from 'react-draggable';
@@ -179,7 +179,7 @@ export class NotificationMU extends NotificationReact {
         );
     }
 
-    private createMessageColor(): Color {
+    private createMessageColor(): AlertColor {
         if (this.type === NotificationMessageType.Danger) return 'error';
         if (this.type === NotificationMessageType.Success) return 'success';
         if (this.type === NotificationMessageType.Warning) return 'warning';

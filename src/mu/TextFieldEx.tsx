@@ -19,6 +19,11 @@ export type TextFieldExProps = TextFieldProps & {
     onEnter?: React.KeyboardEventHandler<HTMLDivElement>;
 
     /**
+     * Is the field read only?
+     */
+    readOnly?: boolean;
+
+    /**
      * Show clear button
      */
     showClear?: boolean;
@@ -54,6 +59,7 @@ export const TextFieldEx = React.forwardRef<
         onKeyPress,
         onEnter,
         inputRef,
+        readOnly,
         showClear,
         showPassword,
         type,
@@ -65,6 +71,9 @@ export const TextFieldEx = React.forwardRef<
     const [errorText, updateErrorText] = React.useState<React.ReactNode>();
     const [passwordVisible, updatePasswordVisible] = React.useState<boolean>();
     const [empty, updateEmpty] = React.useState<boolean>(true);
+
+    // Read only
+    if (readOnly != null) InputProps.readOnly = readOnly;
 
     // Calculate
     let errorEx = error;
