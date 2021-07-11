@@ -38,7 +38,7 @@ export interface ListPageProps<T> extends CommonPageProps {
         data: FormData,
         page: number,
         loadBatchSize: number
-    ) => PromiseLike<T[]>;
+    ) => PromiseLike<T[] | null | undefined>;
 }
 
 /**
