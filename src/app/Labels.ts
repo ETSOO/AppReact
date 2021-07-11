@@ -25,6 +25,7 @@ export namespace Labels {
         refresh: 'Refresh',
         refreshing: 'Refreshing',
         releaseToRefresh: 'Release to refresh',
+        reset: 'Reset',
         scrollTop: 'Scroll to top'
     };
 

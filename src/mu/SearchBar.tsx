@@ -4,6 +4,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useDimensions } from '../uses/useDimensions';
 import { Utils as AppUtils } from '../app/Utils';
 import { Utils } from '@etsoo/shared';
+import { Labels } from '../app/Labels';
 
 /**
  * Search bar props
@@ -73,6 +74,9 @@ const setChildState = (child: Element, enabled: boolean) => {
 export function SearchBar(props: SearchBarProps) {
     // Destruct
     const { className, fields, onSubmit } = props;
+
+    // Labels
+    const labels = Labels.CommonPage;
 
     // Menu index
     const [index, updateIndex] = React.useState<number>();
@@ -313,7 +317,7 @@ export function SearchBar(props: SearchBarProps) {
                         ref={resetButtonRef}
                         onClick={handleReset}
                     >
-                        Reset
+                        {labels.reset}
                     </Button>
                 </Stack>
             </form>
