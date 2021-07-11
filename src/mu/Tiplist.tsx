@@ -35,7 +35,10 @@ export interface TiplistProps<T>
     /**
      * Load data callback
      */
-    loadData: (keyword?: string, id?: string) => T[] | PromiseLike<T[]>;
+    loadData: (
+        keyword?: string,
+        id?: string
+    ) => PromiseLike<T[] | null | undefined>;
 
     /**
      * Name of the field
@@ -166,14 +169,9 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         }
 
         // Load list
-        const result = loadData(keyword, id);
-        if (Array.isArray(result)) {
-            setOptions(result);
-        } else {
-            result.then((options) => {
-                setOptions(options);
-            });
-        }
+        loadData(keyword, id).then((options) => {
+            if (options != null) setOptions(options);
+        });
     };
 
     const setInputValue = (value: T | null) => {
