@@ -80,6 +80,11 @@ interface States<T> {
  */
 export interface ScrollerListForwardRef extends ScrollerListRef {
     /**
+     * Refresh data
+     */
+    refresh(): void;
+
+    /**
      * Reset all data
      * @param reload Reload data, default is true
      */
@@ -134,7 +139,7 @@ export const ScrollerList = <T extends any>(
     );
 
     // Load data
-    const loadDataLocal = () => {
+    const loadDataLocal = (pageAdd: number = 1) => {
         // Prevent multiple loadings
         if (!state.hasNextPage || state.isNextPageLoading) return;
 
@@ -149,7 +154,7 @@ export const ScrollerList = <T extends any>(
 
             stateUpdate({
                 items: state.items.concat(result),
-                currentPage: state.currentPage + 1,
+                currentPage: state.currentPage + pageAdd,
                 hasNextPage: result.length >= loadBatchSize,
                 isNextPageLoading: false
             });
@@ -179,6 +184,13 @@ export const ScrollerList = <T extends any>(
         const refMethods = listRef.current as ScrollerListRef;
 
         return {
+            /**
+             * Refresh data
+             */
+            refresh(): void {
+                loadDataLocal(0);
+            },
+
             reset(reload: boolean = true): void {
                 // Reset state
                 stateUpdate({

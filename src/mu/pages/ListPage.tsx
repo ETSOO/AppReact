@@ -48,11 +48,23 @@ export interface ListPageProps<T> extends CommonPageProps {
 }
 
 /**
+ * List page forward ref
+ */
+export interface ListPageForwardRef {
+    /**
+     * Refresh data
+     */
+    refresh(): void;
+}
+
+/**
  * List page
  * @param props Props
  * @returns Component
  */
-export function ListPage<T>(props: ListPageProps<T>) {
+export function ListPage<T>(
+    props: ListPageProps<T> & { mRef?: React.Ref<ListPageForwardRef> }
+) {
     // Destruct
     const {
         loadBatchSize = 10,
@@ -61,6 +73,7 @@ export function ListPage<T>(props: ListPageProps<T>) {
         itemRenderer,
         listItemSize,
         loadData,
+        mRef,
         ...rest
     } = props;
 
@@ -90,6 +103,17 @@ export function ListPage<T>(props: ListPageProps<T>) {
 
         return index;
     };
+
+    React.useImperativeHandle(mRef, () => {
+        return {
+            /**
+             * Refresh data
+             */
+            refresh(): void {
+                listRef.current?.refresh();
+            }
+        };
+    });
 
     // Layout
     return (
