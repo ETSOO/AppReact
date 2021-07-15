@@ -57,8 +57,10 @@ export interface TiplistProps<T>
 }
 
 // Multiple states
-interface States {
+interface States<T> {
     open: boolean;
+    options: T[];
+    value?: T | null;
     loading?: boolean;
 }
 
@@ -94,22 +96,19 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         ...rest
     } = props;
 
-    // Value
-    const [valueLocal, updateValue] = React.useState(
-        value || defaultValue || null
-    );
-
     // Value input ref
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
-        (state: States, newState: Partial<States>) => {
+        (state: States<T>, newState: Partial<States<T>>) => {
             return { ...state, ...newState };
         },
         {
             // Loading unknown
-            open: false
+            open: false,
+            options: [],
+            value: value || defaultValue || null
         }
     );
 
@@ -119,9 +118,6 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         idLoaded?: boolean;
         idSet?: boolean;
     }>({});
-
-    // Options
-    const [options, setOptions] = React.useState<T[]>([]);
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
@@ -136,7 +132,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
     const changeHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
         // Stop processing with auto trigger event
         if (event.nativeEvent.cancelable && !event.nativeEvent.composed) {
-            setOptions([]);
+            stateUpdate({ options: [] });
             return;
         }
 
@@ -173,23 +169,27 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
                 Utils.triggerChange(input, '', false);
             }
 
-            if (options.length > 0) {
+            if (states.options.length > 0) {
                 // Reset options
-                setOptions([]);
+                stateUpdate({ options: [] });
             }
         }
 
+        // Loading indicator
+        stateUpdate({ loading: true });
+
         // Load list
         loadData(keyword, id).then((options) => {
-            if (options != null) setOptions(options);
-
             // Indicates loading completed
-            stateUpdate({ loading: false });
+            stateUpdate({
+                loading: false,
+                ...(options != null && { options })
+            });
         });
     };
 
     const setInputValue = (value: T | null) => {
-        updateValue(value);
+        stateUpdate({ value });
 
         // Input value
         const input = inputRef.current;
@@ -209,8 +209,8 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
     if (idValue != null) {
         if (state.idLoaded) {
             // Set default
-            if (!state.idSet && options.length == 1) {
-                updateValue(options[0]);
+            if (!state.idSet && states.options.length == 1) {
+                stateUpdate({ value: states.options[0] });
                 state.idSet = true;
             }
         } else {
@@ -239,9 +239,9 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
                 noOptionsText={noOptionsText}
                 getLimitTagsText={getLimitTagsText}
                 filterOptions={(options, _state) => options}
-                value={valueLocal}
+                value={states.value}
                 openText={openText}
-                options={options}
+                options={states.options}
                 onChange={(event, value, reason, details) => {
                     // Set value
                     setInputValue(value);
@@ -252,7 +252,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
 
                     // For clear case
                     if (reason === 'clear') {
-                        setOptions([]);
+                        stateUpdate({ options: [] });
                     }
                 }}
                 open={states.open}
@@ -260,7 +260,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
                     // Should load
                     const loading = states.loading
                         ? true
-                        : options.length === 0;
+                        : states.options.length === 0;
 
                     stateUpdate({ open: true, loading });
 
