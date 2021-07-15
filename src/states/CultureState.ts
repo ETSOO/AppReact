@@ -58,7 +58,7 @@ export class CultureState {
      */
     constructor(item?: DataTypes.CultureDefinition) {
         // Default
-        const defaultItem: ICulture = item ?? ({} as ICulture);
+        const defaultItem = item ?? ({} as ICulture);
 
         // Act
         const { context, provider } = State.create(

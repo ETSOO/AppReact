@@ -3,6 +3,7 @@ import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
+import { PageAction, PageActionType } from '../states/PageState';
 import { UserAction, UserActionType, UserState } from '../states/UserState';
 
 /**
@@ -53,6 +54,11 @@ export abstract class ReactApp<
     };
 
     /**
+     * Page state dispatch
+     */
+    pageStateDispatch?: React.Dispatch<PageAction>;
+
+    /**
      * User state dispatch
      */
     userStateDispatch?: React.Dispatch<UserAction>;
@@ -71,6 +77,36 @@ export abstract class ReactApp<
 
         // Super call
         super.changeCulture(culture);
+    }
+
+    /**
+     * Set page data
+     * @param data Page data
+     */
+    setPageData(data: {}): void {
+        // Dispatch the change
+        if (this.pageStateDispatch != null) {
+            this.pageStateDispatch({
+                type: PageActionType.Data,
+                data
+            });
+        }
+    }
+
+    /**
+     * Set page title
+     * @param title Page title
+     * @param data Page data
+     */
+    setPageTitle(title: string, data?: {}): void {
+        // Dispatch the change
+        if (this.pageStateDispatch != null) {
+            this.pageStateDispatch({
+                type: PageActionType.Title,
+                title,
+                data
+            });
+        }
     }
 
     /**

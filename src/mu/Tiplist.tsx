@@ -56,6 +56,12 @@ export interface TiplistProps<T>
     search?: boolean;
 }
 
+// Multiple states
+interface States {
+    open: boolean;
+    loading?: boolean;
+}
+
 /**
  * Tiplist
  * @param props Props
@@ -96,8 +102,16 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
     // Value input ref
     const inputRef = React.createRef<HTMLInputElement>();
 
-    // Open state
-    const [open, setOpen] = React.useState(false);
+    // Changable states
+    const [states, stateUpdate] = React.useReducer(
+        (state: States, newState: Partial<States>) => {
+            return { ...state, ...newState };
+        },
+        {
+            // Loading unknown
+            open: false
+        }
+    );
 
     // State
     const [state] = React.useState<{
@@ -108,9 +122,6 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
 
     // Options
     const [options, setOptions] = React.useState<T[]>([]);
-
-    // Current loading or not
-    const loading = open && options.length === 0;
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
@@ -171,6 +182,9 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         // Load list
         loadData(keyword, id).then((options) => {
             if (options != null) setOptions(options);
+
+            // Indicates loading completed
+            stateUpdate({ loading: false });
         });
     };
 
@@ -241,15 +255,22 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
                         setOptions([]);
                     }
                 }}
-                open={open}
+                open={states.open}
                 onOpen={() => {
-                    setOpen(true);
-                    if (options.length === 0) loadDataDirect();
+                    // Should load
+                    const loading = states.loading
+                        ? true
+                        : options.length === 0;
+
+                    stateUpdate({ open: true, loading });
+
+                    // If not loading
+                    if (loading) loadDataDirect();
                 }}
                 onClose={() => {
-                    setOpen(false);
+                    stateUpdate({ open: false });
                 }}
-                loading={loading}
+                loading={states.loading}
                 sx={sx}
                 renderInput={(params) =>
                     search ? (
