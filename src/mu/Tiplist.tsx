@@ -176,7 +176,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         }
 
         // Loading indicator
-        stateUpdate({ loading: true });
+        if (!states.loading) stateUpdate({ loading: true });
 
         // Load list
         loadData(keyword, id).then((options) => {
