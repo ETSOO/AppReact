@@ -56,6 +56,11 @@ export interface ListPageForwardRef {
      * Refresh data
      */
     refresh(): void;
+
+    /**
+     * Reset data
+     */
+    reset(): void;
 }
 
 /**
@@ -114,10 +119,17 @@ export function ListPage<T>(
     React.useImperativeHandle(mRef, () => {
         return {
             /**
-             * Refresh data
+             * Refresh latest page data
              */
             refresh(): void {
                 listRef.current?.refresh();
+            },
+
+            /**
+             * Refresh data
+             */
+            reset(): void {
+                listRef.current?.reset(true);
             }
         };
     });

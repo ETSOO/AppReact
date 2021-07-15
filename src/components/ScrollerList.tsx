@@ -70,6 +70,7 @@ interface ScrollerListRef {
 // Multiple states
 interface States<T> {
     currentPage: number;
+    lastLoadedItems?: number;
     hasNextPage: boolean;
     isNextPageLoading: boolean;
     items: T[];
@@ -80,7 +81,7 @@ interface States<T> {
  */
 export interface ScrollerListForwardRef extends ScrollerListRef {
     /**
-     * Refresh data
+     * Refresh latest page data
      */
     refresh(): void;
 
@@ -166,12 +167,35 @@ export const ScrollerList = <T extends any>(
                 return;
             }
 
-            stateUpdate({
-                items: state.items.concat(result),
-                currentPage: state.currentPage + pageAdd,
-                hasNextPage: result.length >= loadBatchSize,
-                isNextPageLoading: false
-            });
+            const newItems = result.length;
+
+            if (pageAdd === 0) {
+                // New items
+                const items = state.lastLoadedItems
+                    ? state.items
+                          .splice(
+                              state.items.length - state.lastLoadedItems,
+                              state.lastLoadedItems
+                          )
+                          .concat(result)
+                    : result;
+
+                // Refresh current page
+                stateUpdate({
+                    items,
+                    lastLoadedItems: newItems,
+                    hasNextPage: newItems >= loadBatchSize,
+                    isNextPageLoading: false
+                });
+            } else {
+                stateUpdate({
+                    items: state.items.concat(result),
+                    lastLoadedItems: newItems,
+                    currentPage: state.currentPage + pageAdd,
+                    hasNextPage: newItems >= loadBatchSize,
+                    isNextPageLoading: false
+                });
+            }
         });
     };
 
@@ -209,6 +233,7 @@ export const ScrollerList = <T extends any>(
                 // Reset state
                 stateUpdate({
                     items: [],
+                    lastLoadedItems: undefined,
                     currentPage: 0,
                     hasNextPage: true,
                     isNextPageLoading: false
