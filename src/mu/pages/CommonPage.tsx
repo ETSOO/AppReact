@@ -10,8 +10,9 @@ import { Labels } from '../../app/Labels';
 
 /**
  * Common page props
+ * Default container id is 'pageContainer'
  */
-export interface CommonPageProps extends ContainerProps {
+export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     /**
      * Fab buttons
      */
@@ -67,13 +68,35 @@ export function CommonPage(props: CommonPageProps) {
 
     // Return the UI
     return (
-        <Container
-            disableGutters={disableGutters}
-            maxWidth={maxWidth}
-            sx={sx}
-            id="pageContainer"
-            {...rest}
-        >
+        <React.Fragment>
+            <Container
+                disableGutters={disableGutters}
+                maxWidth={maxWidth}
+                sx={sx}
+                id="pageContainer"
+                {...rest}
+            >
+                <FabBox sx={{ zIndex: 1 }}>
+                    <ScrollTopFab size={fabSize} title={labels.scrollTop} />
+                    {fabButtons}
+                    {onRefresh != null && (
+                        <Fab
+                            title={labels.refresh}
+                            size={fabSize}
+                            onClick={onRefresh}
+                            sx={{ display: { xs: 'none', md: 'inherit' } }}
+                        >
+                            <RefreshIcon />
+                        </Fab>
+                    )}
+                    <MoreFab
+                        size={fabSize}
+                        title={labels.more}
+                        actions={moreActions}
+                    />
+                </FabBox>
+                {children}
+            </Container>
             {onRefresh != null && (
                 <PullToRefreshUI
                     mainElement="#pageContainer"
@@ -84,26 +107,6 @@ export function CommonPage(props: CommonPageProps) {
                     onRefresh={onRefresh}
                 />
             )}
-            <FabBox sx={{ zIndex: 1 }}>
-                <ScrollTopFab size={fabSize} title={labels.scrollTop} />
-                {fabButtons}
-                {onRefresh != null && (
-                    <Fab
-                        title={labels.refresh}
-                        size={fabSize}
-                        onClick={onRefresh}
-                        sx={{ display: { xs: 'none', md: 'inherit' } }}
-                    >
-                        <RefreshIcon />
-                    </Fab>
-                )}
-                <MoreFab
-                    size={fabSize}
-                    title={labels.more}
-                    actions={moreActions}
-                />
-            </FabBox>
-            {children}
-        </Container>
+        </React.Fragment>
     );
 }
