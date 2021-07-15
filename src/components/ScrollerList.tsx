@@ -267,7 +267,9 @@ export const ScrollerList = <T extends any>(
 
     // Local items renderer callback
     const onItemsRenderedLocal = (props: ListOnItemsRenderedProps) => {
-        if (props.visibleStopIndex + threshold > state.items.length) {
+        // No items, means no necessary to load more data during reset
+        const itemCount = state.items.length;
+        if (itemCount > 0 && props.visibleStopIndex + threshold > itemCount) {
             // Auto load next page
             loadDataLocal();
         }

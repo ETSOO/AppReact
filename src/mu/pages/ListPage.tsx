@@ -68,7 +68,7 @@ export function ListPage<T>(
 ) {
     // Destruct
     const {
-        loadBatchSize = 10,
+        loadBatchSize,
         fields,
         gap = 2,
         itemRenderer,
@@ -94,8 +94,6 @@ export function ListPage<T>(
     const listLoadData = async (page: number, loadBatchSize: number) => {
         const data = states.data;
         if (data == null) return;
-
-        console.log(Array.from(data.keys()), page, loadBatchSize);
 
         // Clear empty value
         Utils.clearFormData(data);
