@@ -71,10 +71,13 @@ export function CommonPage(props: CommonPageProps) {
             disableGutters={disableGutters}
             maxWidth={maxWidth}
             sx={sx}
+            id="pageContainer"
             {...rest}
         >
             {onRefresh != null && (
                 <PullToRefreshUI
+                    mainElement="#pageContainer"
+                    triggerElement="#pageContainer"
                     instructionsPullToRefresh={labels.pullToRefresh}
                     instructionsReleaseToRefresh={labels.releaseToRefresh}
                     instructionsRefreshing={labels.refreshing}
