@@ -1,3 +1,4 @@
+import { Utils } from '@etsoo/shared';
 import { Stack } from '@material-ui/core';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
@@ -91,8 +92,16 @@ export function ListPage<T>(
 
     // On list load data
     const listLoadData = async (page: number, loadBatchSize: number) => {
-        if (states.data == null) return;
-        return await loadData(states.data, page, loadBatchSize);
+        const data = states.data;
+        if (data == null) return;
+
+        console.log(Array.from(data.keys()), page, loadBatchSize);
+
+        // Clear empty value
+        Utils.clearFormData(data);
+
+        // Load data
+        return await loadData(data, page, loadBatchSize);
     };
 
     // Item key

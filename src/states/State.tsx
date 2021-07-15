@@ -34,11 +34,8 @@ export class State {
             // Update reducer
             const [state, dispatch] = React.useReducer(reducer, initState);
 
-            // When layout ready
-            React.useEffect(() => {
-                // Callback
-                if (update != null) update(dispatch);
-            }, [update, dispatch]);
+            // Callback
+            if (update != null) update(dispatch);
 
             if (uiCreator) {
                 // Custom renderer

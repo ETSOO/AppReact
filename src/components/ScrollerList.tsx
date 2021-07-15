@@ -37,7 +37,7 @@ export interface ScrollerListProps<T>
     itemSize: ((index: number) => number) | number;
 
     /**
-     * Batch size when load data, default is 10
+     * Batch size when load data, default will be calcuated with height and itemSize
      */
     loadBatchSize?: number;
 
@@ -99,6 +99,20 @@ export interface ScrollerListForwardRef extends ScrollerListRef {
 export const ScrollerList = <T extends any>(
     props: ScrollerListProps<T> & { mRef?: React.Ref<ScrollerListForwardRef> }
 ) => {
+    // Calculate loadBatchSize
+    const calculateBatchSize = (
+        height: number,
+        itemSize: ((index: number) => number) | number
+    ) => {
+        return (
+            2 +
+            Math.ceil(
+                height /
+                    (typeof itemSize === 'function' ? itemSize(0) : itemSize)
+            )
+        );
+    };
+
     // Destruct
     const {
         height = window.innerHeight,
@@ -107,7 +121,7 @@ export const ScrollerList = <T extends any>(
         style = {},
         itemRenderer,
         itemSize,
-        loadBatchSize = 10,
+        loadBatchSize = calculateBatchSize(height, itemSize),
         loadData,
         threshold = Math.ceil(loadBatchSize / 2),
         onItemsRendered,

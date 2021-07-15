@@ -268,7 +268,10 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
                     if (loading) loadDataDirect();
                 }}
                 onClose={() => {
-                    stateUpdate({ open: false });
+                    stateUpdate({
+                        open: false,
+                        ...(!states.value && { options: [] })
+                    });
                 }}
                 loading={states.loading}
                 sx={sx}
