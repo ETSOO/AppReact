@@ -92,7 +92,7 @@ export function ListPage<T>(
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
         states.data = data;
-        listRef.current?.reset(true);
+        listRef.current?.reset();
     };
 
     // On list load data
@@ -129,7 +129,7 @@ export function ListPage<T>(
              * Refresh data
              */
             reset(): void {
-                listRef.current?.reset(true);
+                listRef.current?.reset();
             }
         };
     });

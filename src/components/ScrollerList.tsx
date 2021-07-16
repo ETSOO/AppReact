@@ -89,7 +89,7 @@ export interface ScrollerListForwardRef extends ScrollerListRef {
      * Reset all data
      * @param reload Reload data, default is true
      */
-    reset(reload?: boolean): void;
+    reset(): void;
 }
 
 /**
@@ -162,8 +162,10 @@ export const ScrollerList = <T extends any>(
         state.isNextPageLoading = true;
 
         loadData(state.currentPage, loadBatchSize).then((result) => {
+            // Loading state
+            state.isNextPageLoading = false;
+
             if (result == null) {
-                state.isNextPageLoading = false;
                 return;
             }
 
@@ -184,16 +186,14 @@ export const ScrollerList = <T extends any>(
                 stateUpdate({
                     items,
                     lastLoadedItems: newItems,
-                    hasNextPage: newItems >= loadBatchSize,
-                    isNextPageLoading: false
+                    hasNextPage: newItems >= loadBatchSize
                 });
             } else {
                 stateUpdate({
                     items: state.items.concat(result),
                     lastLoadedItems: newItems,
                     currentPage: state.currentPage + pageAdd,
-                    hasNextPage: newItems >= loadBatchSize,
-                    isNextPageLoading: false
+                    hasNextPage: newItems >= loadBatchSize
                 });
             }
         });
@@ -229,8 +229,8 @@ export const ScrollerList = <T extends any>(
                 loadDataLocal(0);
             },
 
-            reset(reload: boolean = true): void {
-                // Reset state
+            reset(): void {
+                // Reset state, will load data soon
                 stateUpdate({
                     items: [],
                     lastLoadedItems: undefined,
@@ -238,9 +238,6 @@ export const ScrollerList = <T extends any>(
                     hasNextPage: true,
                     isNextPageLoading: false
                 });
-
-                // Reload data
-                if (reload) loadDataLocal();
             },
 
             scrollTo(scrollOffset: number): void {
@@ -276,9 +273,6 @@ export const ScrollerList = <T extends any>(
         // Add scroll event
         window.addEventListener('scroll', handleWindowScroll);
 
-        // First load
-        loadDataLocal();
-
         // Return clear function
         return () => {
             // Cancel animation frame
@@ -307,6 +301,9 @@ export const ScrollerList = <T extends any>(
     const itemCount = state.hasNextPage
         ? state.items.length + 1
         : state.items.length;
+
+    // Auto load data when current page is 0
+    if (state.currentPage === 0) loadDataLocal();
 
     // Layout
     return typeof itemSize === 'function' ? (
