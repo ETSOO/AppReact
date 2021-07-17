@@ -1,4 +1,4 @@
-import { Utils } from '@etsoo/shared';
+import { DomUtils } from '@etsoo/shared';
 import { Stack } from '@material-ui/core';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
@@ -101,7 +101,7 @@ export function ListPage<T>(
         if (data == null) return;
 
         // Clear empty value
-        Utils.clearFormData(data);
+        DomUtils.clearFormData(data);
 
         // Load data
         return await loadData(data, page, loadBatchSize);

@@ -1,4 +1,3 @@
-import { Utils } from '@etsoo/shared';
 import React from 'react';
 import { SearchBar } from '../SearchBar';
 import { CommonPage, CommonPageProps } from './CommonPage';
@@ -28,9 +27,7 @@ export function SearchPage<T>(props: SearchPageProps<T>) {
     const { fields, loadData, ...rest } = props;
 
     // On submit callback
-    const onSubmit = (data: FormData, reset: boolean) => {
-        console.log(reset, Utils.formDataToObject(Utils.clearFormData(data)));
-    };
+    const onSubmit = (data: FormData, reset: boolean) => {};
 
     // Layout
     return (

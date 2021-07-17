@@ -3,7 +3,7 @@ import React from 'react';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useDimensions } from '../uses/useDimensions';
 import { Utils as AppUtils } from '../app/Utils';
-import { Utils } from '@etsoo/shared';
+import { DomUtils } from '@etsoo/shared';
 import { Labels } from '../app/Labels';
 
 /**
@@ -259,7 +259,7 @@ export function SearchBar(props: SearchBarProps) {
         // Prepare data
         const data = new FormData(forms.form);
         if (forms.moreForm != null) {
-            Utils.mergeFormData(data, new FormData(forms.moreForm));
+            DomUtils.mergeFormData(data, new FormData(forms.moreForm));
         }
 
         onSubmit(data, reset);
