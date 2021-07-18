@@ -1,4 +1,4 @@
-import { Button, Drawer, IconButton, Stack } from '@material-ui/core';
+import { Button, Drawer, IconButton, Stack, useTheme } from '@material-ui/core';
 import React from 'react';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useDimensions } from '../uses/useDimensions';
@@ -78,6 +78,10 @@ export function SearchBar(props: SearchBarProps) {
     // Labels
     const labels = Labels.CommonPage;
 
+    // Spacing
+    const theme = useTheme();
+    const gap = parseFloat(theme.spacing(1));
+
     // Menu index
     const [index, updateIndex] = React.useState<number>();
 
@@ -89,53 +93,45 @@ export function SearchBar(props: SearchBarProps) {
         form?: HTMLFormElement;
         moreForm?: HTMLFormElement;
         submitSeed?: number;
+        refreshSeed?: number;
+        lastMaxWidth?: number;
     }>({});
 
     // Watch container
-    const { ref, dimensions } = useDimensions<HTMLElement>(true);
+    const { dimensions } = useDimensions(1);
 
-    // Reset button ref
-    const resetButtonRef = (instance: HTMLButtonElement) => {
-        // Reset button
-        const resetButton = instance;
+    // Refresh bar layout
+    const refreshBar = (resetButton: HTMLButtonElement) => {
+        forms.refreshSeed = undefined;
 
-        // Check
-        if (
-            ref.current == null ||
-            resetButton == null ||
-            dimensions == null ||
-            dimensions.width == 0
-        ) {
+        // First
+        const [_, container, containerRect] = dimensions[0];
+        if (container == null || containerRect == null) return;
+
+        // Container width
+        let maxWidth = containerRect.width;
+        if (maxWidth === forms.lastMaxWidth) {
             return;
         }
-
-        // Ready to do calculation
+        forms.lastMaxWidth = maxWidth;
 
         // More button
         const buttonMore = resetButton.previousElementSibling!;
-
-        // Container
-        const container = ref.current;
-
-        // Container width
-        let maxWidth = dimensions.width;
 
         // Cached button width
         const cachedButtonWidth = container.getAttribute(cachedWidthName);
         if (cachedButtonWidth) {
             maxWidth -= Number.parseFloat(cachedButtonWidth);
         } else {
-            // Reset rect
+            // Reset button rect
             const resetButtonRect = resetButton.getBoundingClientRect();
 
+            // More button rect
             const buttonMoreRect = buttonMore.getBoundingClientRect();
-
-            // Gap
-            const gap = resetButtonRect.left - buttonMoreRect.right;
 
             // Total
             const totalButtonWidth =
-                resetButtonRect.width + buttonMoreRect.width + 2 * gap;
+                resetButtonRect.width + buttonMoreRect.width + 3 * gap;
 
             // Cache
             container.setAttribute(
@@ -164,7 +160,7 @@ export function SearchBar(props: SearchBarProps) {
                 childWidth = Number.parseFloat(cachedWidth);
             } else {
                 const childD = child.getBoundingClientRect();
-                childWidth = childD.width + 8;
+                childWidth = childD.width + gap;
                 child.setAttribute(cachedWidthName, childWidth.toString());
             }
 
@@ -172,10 +168,10 @@ export function SearchBar(props: SearchBarProps) {
             if (childWidth <= maxWidth) {
                 maxWidth -= childWidth;
                 setChildState(child, true);
-                child.classList.remove('hiddenChild');
+                setElementVisible(child, true);
             } else {
                 setChildState(child, false);
-                child.classList.add('hiddenChild');
+                setElementVisible(child, false);
 
                 if (!hasMore) {
                     // Make sure coming logic to the block
@@ -191,11 +187,27 @@ export function SearchBar(props: SearchBarProps) {
         }
 
         // Show or hide more button
-        if (hasMore) buttonMore.classList.remove('hiddenChild');
-        else buttonMore.classList.add('hiddenChild');
+        setElementVisible(buttonMore, hasMore);
 
         // Update menu start index
         updateIndex(newIndex);
+    };
+
+    // Show or hide element
+    const setElementVisible = (element: Element, visible: boolean) => {
+        element.classList.remove(visible ? 'hiddenChild' : 'showChild');
+        element.classList.add(visible ? 'showChild' : 'hiddenChild');
+    };
+
+    // Reset button ref
+    const resetButtonRef = (instance: HTMLButtonElement) => {
+        // Reset button
+        const resetButton = instance;
+
+        if (forms.refreshSeed != null) {
+            clearTimeout(forms.refreshSeed);
+        }
+        forms.refreshSeed = window.setTimeout(refreshBar, 10, resetButton);
     };
 
     // More items creator
@@ -283,7 +295,7 @@ export function SearchBar(props: SearchBarProps) {
                 }}
             >
                 <Stack
-                    ref={ref}
+                    ref={dimensions[0][0]}
                     justifyContent="center"
                     alignItems="center"
                     direction="row"
@@ -293,10 +305,15 @@ export function SearchBar(props: SearchBarProps) {
                             flexBasis: 'auto',
                             flexGrow: 0,
                             flexShrink: 0,
-                            maxWidth: '180px'
+                            maxWidth: '180px',
+                            position: 'fixed'
                         },
                         '& > .hiddenChild': {
                             display: 'none'
+                        },
+                        '& > .showChild': {
+                            display: 'block',
+                            position: 'static'
                         }
                     }}
                 >
@@ -316,6 +333,7 @@ export function SearchBar(props: SearchBarProps) {
                         size="medium"
                         ref={resetButtonRef}
                         onClick={handleReset}
+                        className="showChild"
                     >
                         {labels.reset}
                     </Button>
