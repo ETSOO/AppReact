@@ -70,6 +70,14 @@ export function useDimensions(elements: number) {
     // Dimensions
     const [dimensions] = React.useState(init);
 
+    // Layout ready
+    React.useEffect(() => {
+        return () => {
+            // Clear the observer
+            resizeObserver.disconnect();
+        };
+    }, []);
+
     // Return
     return { dimensions, state };
 }

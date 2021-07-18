@@ -281,6 +281,12 @@ export function SearchBar(props: SearchBarProps) {
     React.useEffect(() => {
         // Delayed way
         handleSubmit();
+
+        return () => {
+            // Clear the seeds
+            if (forms.refreshSeed != null) clearTimeout(forms.refreshSeed);
+            if (forms.submitSeed != null) clearTimeout(forms.submitSeed);
+        };
     }, []);
 
     // Layout
