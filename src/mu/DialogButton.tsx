@@ -31,11 +31,6 @@ export interface DialogButtonProps extends ButtonProps {
     fullScreen?: boolean;
 
     /**
-     * Button label
-     */
-    label: string;
-
-    /**
      * Max width of the dialog
      */
     maxWidth?: Breakpoint | false;
