@@ -26,6 +26,12 @@ export interface DialogButtonProps extends ButtonProps {
     dialogTitle?: string;
 
     /**
+     * Disable the scroll lock behavior.
+     * @default false
+     */
+    disableScrollLock?: boolean;
+
+    /**
      * Show fullscreen dialog
      */
     fullScreen?: boolean;
@@ -43,6 +49,7 @@ export function DialogButton(props: DialogButtonProps) {
         content,
         contentPre,
         dialogTitle,
+        disableScrollLock,
         fullScreen,
         maxWidth,
         onClick,
@@ -73,6 +80,7 @@ export function DialogButton(props: DialogButtonProps) {
                 {children}
             </Button>
             <Dialog
+                disableScrollLock={disableScrollLock}
                 fullScreen={fullScreen}
                 maxWidth={maxWidth}
                 open={open}
