@@ -11,14 +11,14 @@ import React from 'react';
 
 export interface DialogButtonProps extends ButtonProps {
     /**
-     * Dialog content component, default is span
-     */
-    component?: string;
-
-    /**
      * Dialog content
      */
     content: string;
+
+    /**
+     * Show content in pre component
+     */
+    contentPre?: boolean;
 
     /**
      * Default is label
@@ -45,8 +45,8 @@ export function DialogButton(props: DialogButtonProps) {
     // Destruct
     const {
         children,
-        component,
         content,
+        contentPre,
         dialogTitle,
         fullScreen,
         maxWidth,
@@ -87,7 +87,7 @@ export function DialogButton(props: DialogButtonProps) {
                     {dialogTitle ? dialogTitle : children}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText component={component}>
+                    <DialogContentText component={contentPre ? 'pre' : 'span'}>
                         {content}
                     </DialogContentText>
                 </DialogContent>
