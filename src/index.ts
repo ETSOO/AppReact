@@ -16,6 +16,7 @@ export * from './mu/pages/ViewPage';
 export * from './mu/ComboBox';
 export * from './mu/CountdownButton';
 export * from './mu/CustomFabProps';
+export * from './mu/DialogButton';
 export * from './mu/FabBox';
 export * from './mu/FlexBox';
 export * from './mu/InputField';
