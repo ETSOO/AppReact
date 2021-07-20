@@ -11,6 +11,11 @@ import React from 'react';
 
 export interface DialogButtonProps extends ButtonProps {
     /**
+     * Dialog content component, default is span
+     */
+    component?: string;
+
+    /**
      * Dialog content
      */
     content: string;
@@ -39,10 +44,11 @@ export interface DialogButtonProps extends ButtonProps {
 export function DialogButton(props: DialogButtonProps) {
     // Destruct
     const {
+        children,
+        component,
         content,
         dialogTitle,
         fullScreen,
-        label,
         maxWidth,
         onClick,
         ...rest
@@ -69,7 +75,7 @@ export function DialogButton(props: DialogButtonProps) {
     return (
         <React.Fragment>
             <Button {...rest} onClick={onClickLocal}>
-                {label}
+                {children}
             </Button>
             <Dialog
                 fullScreen={fullScreen}
@@ -77,9 +83,13 @@ export function DialogButton(props: DialogButtonProps) {
                 open={open}
                 onClose={handleClose}
             >
-                <DialogTitle>{dialogTitle ?? label}</DialogTitle>
+                <DialogTitle>
+                    {dialogTitle ? dialogTitle : children}
+                </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>{content}</DialogContentText>
+                    <DialogContentText component={component}>
+                        {content}
+                    </DialogContentText>
                 </DialogContent>
             </Dialog>
         </React.Fragment>
