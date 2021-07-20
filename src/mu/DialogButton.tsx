@@ -90,7 +90,10 @@ export function DialogButton(props: DialogButtonProps) {
                     {dialogTitle ? dialogTitle : children}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText component={contentPre ? 'pre' : 'span'}>
+                    <DialogContentText
+                        component={contentPre ? 'pre' : 'span'}
+                        sx={{ pointerEvents: 'none' }}
+                    >
                         {content}
                     </DialogContentText>
                 </DialogContent>
