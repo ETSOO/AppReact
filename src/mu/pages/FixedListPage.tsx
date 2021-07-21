@@ -17,10 +17,14 @@ import { itemKey, ListPageForwardRef, ListPageProps } from './ListPageTypes';
  * @returns Component
  */
 export function FixedListPage<T>(
-    props: ListPageProps<T> & { mRef?: React.Ref<ListPageForwardRef> }
+    props: ListPageProps<T> & {
+        mRef?: React.Ref<ListPageForwardRef>;
+        adjustHeight?: (height: number) => number;
+    }
 ) {
     // Destruct
     const {
+        adjustHeight,
         loadBatchSize,
         fields,
         itemRenderer,
@@ -36,6 +40,11 @@ export function FixedListPage<T>(
 
     // States
     const [states] = React.useState<{ data?: FormData }>({});
+
+    // Scroll container
+    const [scrollContainer, updateScrollContainer] = React.useState<
+        HTMLElement | undefined
+    >();
 
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
@@ -78,22 +87,30 @@ export function FixedListPage<T>(
     const rect = dimensions[0][2];
     const list = React.useMemo(() => {
         if (rect != null && rect.height > 50) {
+            let height =
+                window.innerHeight - Math.round(rect.top + rect.height + 1);
+
+            if (adjustHeight != null) {
+                height += adjustHeight(height);
+            }
+
             return (
                 <Box
                     sx={{
-                        height:
-                            window.innerHeight -
-                            Math.ceil(rect.top + rect.height) +
-                            'px'
+                        height: height + 'px'
                     }}
                 >
                     <ScrollerList<T>
                         loadBatchSize={loadBatchSize}
+                        height={height}
                         itemRenderer={itemRenderer}
                         itemSize={itemSize}
                         itemKey={itemKey}
                         loadData={listLoadData}
                         mRef={listRef}
+                        oRef={(element) => {
+                            if (element != null) updateScrollContainer(element);
+                        }}
                     />
                 </Box>
             );
@@ -102,7 +119,7 @@ export function FixedListPage<T>(
 
     // Layout
     return (
-        <CommonPage {...rest} paddings={{}}>
+        <CommonPage {...rest} paddings={{}} scrollContainer={scrollContainer}>
             <Stack>
                 <Box ref={dimensions[0][0]} sx={{ padding: paddings }}>
                     <SearchBar fields={fields} onSubmit={onSubmit} />

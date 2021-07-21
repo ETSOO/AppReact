@@ -7,6 +7,7 @@ import {
     ListProps,
     VariableSizeList
 } from 'react-window';
+import useCombinedRefs from '../uses/useCombinedRefs';
 
 /**
  * Scroller vertical list props
@@ -98,7 +99,10 @@ export interface ScrollerListForwardRef extends ScrollerListRef {
  * @returns Component
  */
 export const ScrollerList = <T extends any>(
-    props: ScrollerListProps<T> & { mRef?: React.Ref<ScrollerListForwardRef> }
+    props: ScrollerListProps<T> & {
+        mRef?: React.Ref<ScrollerListForwardRef>;
+        oRef?: React.Ref<HTMLDivElement>;
+    }
 ) => {
     // Calculate loadBatchSize
     const calculateBatchSize = (
@@ -119,6 +123,7 @@ export const ScrollerList = <T extends any>(
         height = window.innerHeight,
         width = '100%',
         mRef,
+        oRef,
         style = {},
         itemRenderer,
         itemSize,
@@ -139,6 +144,8 @@ export const ScrollerList = <T extends any>(
     // Refs
     const listRef = React.useRef<any>();
     const outerRef = React.useRef<HTMLDivElement>();
+
+    const refs = useCombinedRefs(oRef, outerRef);
 
     // States
     const [state, stateUpdate] = React.useReducer(
@@ -312,7 +319,7 @@ export const ScrollerList = <T extends any>(
             width={width}
             itemCount={itemCount}
             itemSize={itemSize}
-            outerRef={outerRef}
+            outerRef={refs}
             ref={listRef}
             style={style}
             onItemsRendered={onItemsRenderedLocal}
@@ -326,7 +333,7 @@ export const ScrollerList = <T extends any>(
             width={width}
             itemCount={itemCount}
             itemSize={itemSize}
-            outerRef={outerRef}
+            outerRef={refs}
             ref={listRef}
             style={style}
             onItemsRendered={onItemsRenderedLocal}

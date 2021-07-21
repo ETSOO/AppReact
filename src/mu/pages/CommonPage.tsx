@@ -38,6 +38,11 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
      * Paddings
      */
     paddings?: {};
+
+    /**
+     * Scroll container
+     */
+    scrollContainer?: HTMLElement;
 }
 
 /**
@@ -55,6 +60,7 @@ export function CommonPage(props: CommonPageProps) {
         moreActions,
         onRefresh,
         paddings = MUGlobal.pagePaddings,
+        scrollContainer,
         sx = {},
         ...rest
     } = props;
@@ -78,7 +84,11 @@ export function CommonPage(props: CommonPageProps) {
                 {...rest}
             >
                 <FabBox sx={{ zIndex: 1 }}>
-                    <ScrollTopFab size={fabSize} title={labels.scrollTop} />
+                    <ScrollTopFab
+                        size={fabSize}
+                        target={scrollContainer}
+                        title={labels.scrollTop}
+                    />
                     {fabButtons}
                     {onRefresh != null && (
                         <Fab

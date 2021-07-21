@@ -13,6 +13,11 @@ export interface CustomFabProps {
     size?: CustomFabSize;
 
     /**
+     * Scroll target
+     */
+    target?: any;
+
+    /**
      * Fab title
      */
     title?: string;

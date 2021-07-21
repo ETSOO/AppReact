@@ -9,11 +9,11 @@ import { CustomFabProps } from './CustomFabProps';
  */
 export function ScrollTopFab(props: CustomFabProps) {
     // Destruct
-    const { size, title } = props;
+    const { size, target, title } = props;
 
     // Scroll trigger
     const trigger = useScrollTrigger({
-        target: window,
+        target,
         disableHysteresis: true,
         threshold: 120
     });
@@ -21,7 +21,7 @@ export function ScrollTopFab(props: CustomFabProps) {
     // Icon click handler
     // behavior: 'smooth'
     const handleClick = () => {
-        window.scrollTo({ top: 0 });
+        target.scrollTo({ top: 0 });
     };
 
     return (
