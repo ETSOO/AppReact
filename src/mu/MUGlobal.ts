@@ -33,4 +33,9 @@ export class MUGlobal {
      * TextField variant
      */
     static textFieldVariant: 'standard' | 'filled' | 'outlined' = 'filled';
+
+    /**
+     * Page default paddings
+     */
+    static pagePaddings = { xs: 2, sm: 3 };
 }

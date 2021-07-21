@@ -5,17 +5,18 @@ import {
     ScrollerList,
     ScrollerListForwardRef
 } from '../../components/ScrollerList';
+import { useDimensions } from '../../uses/useDimensions';
 import { MUGlobal } from '../MUGlobal';
 import { SearchBar } from '../SearchBar';
 import { CommonPage } from './CommonPage';
 import { itemKey, ListPageForwardRef, ListPageProps } from './ListPageTypes';
 
 /**
- * List page
+ * Fixed height list page
  * @param props Props
  * @returns Component
  */
-export function ListPage<T>(
+export function FixedListPage<T>(
     props: ListPageProps<T> & { mRef?: React.Ref<ListPageForwardRef> }
 ) {
     // Destruct
@@ -72,25 +73,41 @@ export function ListPage<T>(
         };
     });
 
-    // Layout
-    return (
-        <CommonPage {...rest} paddings={paddings}>
-            <Stack>
+    // Watch container
+    const { dimensions } = useDimensions(1);
+    const rect = dimensions[0][2];
+    const list = React.useMemo(() => {
+        if (rect != null && rect.height > 50) {
+            return (
                 <Box
                     sx={{
-                        paddingBottom: paddings
+                        height:
+                            window.innerHeight -
+                            Math.ceil(rect.top + rect.height) +
+                            'px'
                     }}
                 >
+                    <ScrollerList<T>
+                        loadBatchSize={loadBatchSize}
+                        itemRenderer={itemRenderer}
+                        itemSize={itemSize}
+                        itemKey={itemKey}
+                        loadData={listLoadData}
+                        mRef={listRef}
+                    />
+                </Box>
+            );
+        }
+    }, [rect]);
+
+    // Layout
+    return (
+        <CommonPage {...rest} paddings={{}}>
+            <Stack>
+                <Box ref={dimensions[0][0]} sx={{ padding: paddings }}>
                     <SearchBar fields={fields} onSubmit={onSubmit} />
                 </Box>
-                <ScrollerList<T>
-                    loadBatchSize={loadBatchSize}
-                    itemRenderer={itemRenderer}
-                    itemSize={itemSize}
-                    itemKey={itemKey}
-                    loadData={listLoadData}
-                    mRef={listRef}
-                />
+                {list}
             </Stack>
         </CommonPage>
     );

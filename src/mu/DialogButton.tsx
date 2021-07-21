@@ -85,9 +85,6 @@ export function DialogButton(props: DialogButtonProps) {
                 maxWidth={maxWidth}
                 open={open}
                 onClose={handleClose}
-                onTouchStart={(event) => {
-                    event.preventDefault();
-                }}
             >
                 <DialogTitle>
                     {dialogTitle ? dialogTitle : children}

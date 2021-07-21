@@ -93,20 +93,32 @@ export function SearchBar(props: SearchBarProps) {
         form?: HTMLFormElement;
         moreForm?: HTMLFormElement;
         submitSeed?: number;
-        refreshSeed?: number;
         lastMaxWidth?: number;
     }>({});
 
     // Watch container
     const { dimensions } = useDimensions(1);
 
-    // Refresh bar layout
-    const refreshBar = (resetButton: HTMLButtonElement) => {
-        forms.refreshSeed = undefined;
+    // Show or hide element
+    const setElementVisible = (element: Element, visible: boolean) => {
+        element.classList.remove(visible ? 'hiddenChild' : 'showChild');
+        element.classList.add(visible ? 'showChild' : 'hiddenChild');
+    };
+
+    // Reset button ref
+    const resetButtonRef = (instance: HTMLButtonElement) => {
+        // Reset button
+        const resetButton = instance;
+        if (resetButton == null) return;
 
         // First
         const [_, container, containerRect] = dimensions[0];
-        if (container == null || containerRect == null) return;
+        if (
+            container == null ||
+            containerRect == null ||
+            containerRect.width < 10
+        )
+            return;
 
         // Container width
         let maxWidth = containerRect.width;
@@ -193,23 +205,6 @@ export function SearchBar(props: SearchBarProps) {
         updateIndex(newIndex);
     };
 
-    // Show or hide element
-    const setElementVisible = (element: Element, visible: boolean) => {
-        element.classList.remove(visible ? 'hiddenChild' : 'showChild');
-        element.classList.add(visible ? 'showChild' : 'hiddenChild');
-    };
-
-    // Reset button ref
-    const resetButtonRef = (instance: HTMLButtonElement) => {
-        // Reset button
-        const resetButton = instance;
-
-        if (forms.refreshSeed != null) {
-            clearTimeout(forms.refreshSeed);
-        }
-        forms.refreshSeed = window.setTimeout(refreshBar, 10, resetButton);
-    };
-
     // More items creator
     const moreItems: React.ReactElement[] = [];
     if (index != null) {
@@ -284,7 +279,6 @@ export function SearchBar(props: SearchBarProps) {
 
         return () => {
             // Clear the seeds
-            if (forms.refreshSeed != null) clearTimeout(forms.refreshSeed);
             if (forms.submitSeed != null) clearTimeout(forms.submitSeed);
         };
     }, []);
@@ -312,13 +306,15 @@ export function SearchBar(props: SearchBarProps) {
                             flexGrow: 0,
                             flexShrink: 0,
                             maxWidth: '180px',
-                            position: 'fixed'
+                            position: 'fixed',
+                            visibility: 'hidden'
                         },
                         '& > .hiddenChild': {
                             display: 'none'
                         },
                         '& > .showChild': {
                             display: 'block',
+                            visibility: 'visible',
                             position: 'static'
                         }
                     }}

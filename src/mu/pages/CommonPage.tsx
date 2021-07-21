@@ -7,6 +7,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { CustomFabSize } from '../CustomFabProps';
 import { MoreAction, MoreFab } from '../MoreFab';
 import { Labels } from '../../app/Labels';
+import { MUGlobal } from '../MUGlobal';
 
 /**
  * Common page props
@@ -34,9 +35,9 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     onRefresh?: () => void | PromiseLike<void>;
 
     /**
-     * Paddings in [xs, md]
+     * Paddings
      */
-    paddings?: [number, number];
+    paddings?: {};
 }
 
 /**
@@ -53,14 +54,14 @@ export function CommonPage(props: CommonPageProps) {
         maxWidth = false,
         moreActions,
         onRefresh,
-        paddings = [2, 3],
+        paddings = MUGlobal.pagePaddings,
         sx = {},
         ...rest
     } = props;
 
     // Merge style
     Object.assign(sx, {
-        padding: { xs: paddings[0], sm: paddings[1] }
+        padding: paddings
     });
 
     // Labels

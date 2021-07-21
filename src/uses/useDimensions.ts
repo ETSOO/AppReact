@@ -12,16 +12,20 @@ const createRef = (
     ];
 };
 
+interface states {
+    count: number;
+    indices: number[];
+    seed?: number;
+}
+
 /**
  * Calculate element(s) dimensions
- * @elements Observed elments count
+ * @param elements Observed elments count
+ * @param miliseconds Miliseconds to wait before update
  */
-export function useDimensions(elements: number) {
+export function useDimensions(elements: number, miliseconds: number = 50) {
     // State
-    const [state, setState] = React.useState<{
-        count: number;
-        indices: number[];
-    }>({
+    const [state, setState] = React.useState<states>({
         count: 0,
         indices: []
     });
@@ -43,7 +47,21 @@ export function useDimensions(elements: number) {
 
         // Update state
         if (indices.length > 0) {
-            setState({ count: state.count + 1, indices });
+            const update = { count: state.count + 1, indices, seed: undefined };
+            if (miliseconds > 0) {
+                if (state.seed != null) {
+                    clearTimeout(state.seed);
+                }
+                state.seed = window.setTimeout(
+                    (localUpdate: states) => {
+                        setState(localUpdate);
+                    },
+                    miliseconds,
+                    update
+                );
+            } else {
+                setState(update);
+            }
         }
     });
 
@@ -75,6 +93,10 @@ export function useDimensions(elements: number) {
         return () => {
             // Clear the observer
             resizeObserver.disconnect();
+
+            if (state.seed != null) {
+                clearTimeout(state.seed);
+            }
         };
     }, []);
 
