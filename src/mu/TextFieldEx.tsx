@@ -180,15 +180,19 @@ export const TextFieldEx = React.forwardRef<
                   }
               };
 
-    React.useImperativeHandle(ref, () => ({
-        /**
-         * Set error
-         * @param error Error
-         */
-        setError(error: React.ReactNode): void {
-            updateErrorText(error);
-        }
-    }));
+    React.useImperativeHandle(
+        ref,
+        () => ({
+            /**
+             * Set error
+             * @param error Error
+             */
+            setError(error: React.ReactNode): void {
+                updateErrorText(error);
+            }
+        }),
+        []
+    );
 
     // Textfield
     return (

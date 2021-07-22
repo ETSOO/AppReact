@@ -40,9 +40,15 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     paddings?: {};
 
     /**
+     * Pull container
+     * @default '#page-container'
+     */
+    pullContainer?: string;
+
+    /**
      * Scroll container
      */
-    scrollContainer?: HTMLElement;
+    scrollContainer?: HTMLElement | object;
 }
 
 /**
@@ -61,6 +67,7 @@ export function CommonPage(props: CommonPageProps) {
         onRefresh,
         paddings = MUGlobal.pagePaddings,
         scrollContainer,
+        pullContainer,
         sx = {},
         ...rest
     } = props;
@@ -80,7 +87,7 @@ export function CommonPage(props: CommonPageProps) {
                 disableGutters={disableGutters}
                 maxWidth={maxWidth}
                 sx={sx}
-                id="pageContainer"
+                id="page-container"
                 {...rest}
             >
                 <FabBox sx={{ zIndex: 1 }}>
@@ -108,10 +115,10 @@ export function CommonPage(props: CommonPageProps) {
                 </FabBox>
                 {children}
             </Container>
-            {onRefresh != null && (
+            {onRefresh != null && pullContainer != null && (
                 <PullToRefreshUI
-                    mainElement="#pageContainer"
-                    triggerElement="#pageContainer"
+                    mainElement={pullContainer}
+                    triggerElement={pullContainer}
                     instructionsPullToRefresh={labels.pullToRefresh}
                     instructionsReleaseToRefresh={labels.releaseToRefresh}
                     instructionsRefreshing={labels.refreshing}

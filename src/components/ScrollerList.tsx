@@ -225,37 +225,41 @@ export const ScrollerList = <T extends any>(
         refMethods.scrollTo(scrollTop);
     };
 
-    React.useImperativeHandle(mRef, () => {
-        const refMethods = listRef.current as ScrollerListRef;
+    React.useImperativeHandle(
+        mRef,
+        () => {
+            const refMethods = listRef.current as ScrollerListRef;
 
-        return {
-            /**
-             * Refresh data
-             */
-            refresh(): void {
-                loadDataLocal(0);
-            },
+            return {
+                /**
+                 * Refresh data
+                 */
+                refresh(): void {
+                    loadDataLocal(0);
+                },
 
-            reset(): void {
-                // Reset state, will load data soon
-                stateUpdate({
-                    items: [],
-                    lastLoadedItems: undefined,
-                    currentPage: 0,
-                    hasNextPage: true,
-                    isNextPageLoading: false
-                });
-            },
+                reset(): void {
+                    // Reset state, will load data soon
+                    stateUpdate({
+                        items: [],
+                        lastLoadedItems: undefined,
+                        currentPage: 0,
+                        hasNextPage: true,
+                        isNextPageLoading: false
+                    });
+                },
 
-            scrollTo(scrollOffset: number): void {
-                refMethods.scrollTo(scrollOffset);
-            },
+                scrollTo(scrollOffset: number): void {
+                    refMethods.scrollTo(scrollOffset);
+                },
 
-            scrollToItem(index: number, align?: Align): void {
-                refMethods.scrollToItem(index, align);
-            }
-        };
-    });
+                scrollToItem(index: number, align?: Align): void {
+                    refMethods.scrollToItem(index, align);
+                }
+            };
+        },
+        [listRef.current]
+    );
 
     // When layout ready
     React.useEffect(() => {

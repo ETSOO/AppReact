@@ -306,7 +306,6 @@ export function SearchBar(props: SearchBarProps) {
                             flexGrow: 0,
                             flexShrink: 0,
                             maxWidth: '180px',
-                            position: 'fixed',
                             visibility: 'hidden'
                         },
                         '& > .hiddenChild': {
@@ -314,8 +313,7 @@ export function SearchBar(props: SearchBarProps) {
                         },
                         '& > .showChild': {
                             display: 'block',
-                            visibility: 'visible',
-                            position: 'static'
+                            visibility: 'visible'
                         }
                     }}
                 >

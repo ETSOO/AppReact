@@ -19,6 +19,11 @@ import { itemKey, ListPageForwardRef, ListPageProps } from './ListPageTypes';
 export function FixedListPage<T>(
     props: ListPageProps<T> & {
         mRef?: React.Ref<ListPageForwardRef>;
+
+        /**
+         * Height will be deducted
+         * @param height Current calcuated height
+         */
         adjustHeight?: (height: number) => number;
     }
 ) {
@@ -35,11 +40,11 @@ export function FixedListPage<T>(
         ...rest
     } = props;
 
-    // Refs
-    const listRef = React.createRef<ScrollerListForwardRef>();
-
     // States
-    const [states] = React.useState<{ data?: FormData }>({});
+    const [states] = React.useState<{
+        data?: FormData;
+        ref?: ScrollerListForwardRef;
+    }>({});
 
     // Scroll container
     const [scrollContainer, updateScrollContainer] = React.useState<
@@ -49,11 +54,12 @@ export function FixedListPage<T>(
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
         states.data = data;
-        listRef.current?.reset();
+        methods.reset();
     };
 
     // On list load data
     const listLoadData = async (page: number, loadBatchSize: number) => {
+        // Form data
         const data = states.data;
         if (data == null) return;
 
@@ -64,23 +70,27 @@ export function FixedListPage<T>(
         return await loadData(data, page, loadBatchSize);
     };
 
-    React.useImperativeHandle(mRef, () => {
+    // Methods
+    const methods = React.useMemo(() => {
         return {
             /**
              * Refresh latest page data
              */
             refresh(): void {
-                listRef.current?.refresh();
+                states.ref?.refresh();
             },
 
             /**
              * Refresh data
              */
             reset(): void {
-                listRef.current?.reset();
+                if (states.ref == null || states.data == null) return;
+                states.ref.reset();
             }
         };
-    });
+    }, [states]);
+
+    React.useImperativeHandle(mRef, () => methods, [states]);
 
     // Watch container
     const { dimensions } = useDimensions(1);
@@ -91,11 +101,12 @@ export function FixedListPage<T>(
                 window.innerHeight - Math.round(rect.top + rect.height + 1);
 
             if (adjustHeight != null) {
-                height += adjustHeight(height);
+                height -= adjustHeight(height);
             }
 
             return (
                 <Box
+                    id="list-container"
                     sx={{
                         height: height + 'px'
                     }}
@@ -107,7 +118,11 @@ export function FixedListPage<T>(
                         itemSize={itemSize}
                         itemKey={itemKey}
                         loadData={listLoadData}
-                        mRef={listRef}
+                        mRef={(ref) => {
+                            if (ref == null) return;
+                            states.ref = ref;
+                            methods.reset();
+                        }}
                         oRef={(element) => {
                             if (element != null) updateScrollContainer(element);
                         }}
@@ -117,9 +132,19 @@ export function FixedListPage<T>(
         }
     }, [rect]);
 
+    // Pull container id
+    const pullContainer = scrollContainer?.parentElement
+        ? '#' + scrollContainer?.parentElement.id
+        : undefined;
+
     // Layout
     return (
-        <CommonPage {...rest} paddings={{}} scrollContainer={scrollContainer}>
+        <CommonPage
+            {...rest}
+            paddings={{}}
+            scrollContainer={scrollContainer}
+            pullContainer={pullContainer}
+        >
             <Stack>
                 <Box ref={dimensions[0][0]} sx={{ padding: paddings }}>
                     <SearchBar fields={fields} onSubmit={onSubmit} />
