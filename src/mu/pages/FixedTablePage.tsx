@@ -12,11 +12,11 @@ import { CommonPage } from './CommonPage';
 import { itemKey, ListPageForwardRef, ListPageProps } from './ListPageTypes';
 
 /**
- * Fixed height list page
+ * Fixed table list page
  * @param props Props
  * @returns Component
  */
-export function FixedListPage<T>(
+export function FixedTablePage<T>(
     props: ListPageProps<T> & {
         mRef?: React.Ref<ListPageForwardRef>;
 

@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import {
     Checkbox,
     FormControl,
@@ -13,7 +14,13 @@ import React from 'react';
 /**
  * OptionGroup props
  */
-export interface OptionGroupProps<T> extends FormControlProps<'fieldset'> {
+export interface OptionGroupProps<T>
+    extends Omit<FormControlProps<'fieldset'>, 'defaultValue'> {
+    /**
+     * Default value
+     */
+    defaultValue?: string | number | ReadonlyArray<DataTypes.IdType>;
+
     /**
      * Get option label function
      */
@@ -83,8 +90,8 @@ export function OptionGroup<T = any>(props: OptionGroupProps<T>) {
     } = props;
 
     // Get option value
-    const getOptionValue = (option: T) => {
-        return `${(option as any)[idField]}`;
+    const getOptionValue = (option: any) => {
+        return option[idField];
     };
 
     // Item checked
@@ -95,9 +102,9 @@ export function OptionGroup<T = any>(props: OptionGroupProps<T>) {
         const value = getOptionValue(option);
 
         if (Array.isArray(defaultValue)) {
-            return defaultValue.findIndex((d: string) => d == value) != -1;
+            return defaultValue.findIndex((d: string) => d === value) != -1;
         } else {
-            return defaultValue == value;
+            return defaultValue === value;
         }
     };
 

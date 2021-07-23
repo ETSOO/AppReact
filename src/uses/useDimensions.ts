@@ -21,9 +21,14 @@ interface states {
 /**
  * Calculate element(s) dimensions
  * @param elements Observed elments count
+ * @param updateCallback Update callback
  * @param miliseconds Miliseconds to wait before update
  */
-export function useDimensions(elements: number, miliseconds: number = 50) {
+export function useDimensions(
+    elements: number,
+    updateCallback?: (target: Element, rect: DOMRect) => boolean | void,
+    miliseconds: number = 50
+) {
     // State
     const [state, setState] = React.useState<states>({
         count: 0,
@@ -39,7 +44,17 @@ export function useDimensions(elements: number, miliseconds: number = 50) {
             if (index !== -1) {
                 const rect = entry.target.getBoundingClientRect();
                 if (!DomUtils.dimensionEqual(init[index][2], rect)) {
+                    // Update callback
+                    if (updateCallback) {
+                        // Return false means no further push
+                        if (updateCallback(entry.target, rect) === false)
+                            return;
+                    }
+
+                    // Update rect
                     init[index][2] = rect;
+
+                    // Push for update
                     indices.push(index);
                 }
             }
@@ -73,6 +88,17 @@ export function useDimensions(elements: number, miliseconds: number = 50) {
                 return [
                     (instance) => {
                         if (instance != null) {
+                            // Current element
+                            const currentElement = init[index][1];
+
+                            if (currentElement != null) {
+                                // Same target, return
+                                if (currentElement == instance) return;
+
+                                // Cancel observation
+                                resizeObserver.unobserve(currentElement);
+                            }
+
                             // Update element
                             init[index][1] = instance;
 

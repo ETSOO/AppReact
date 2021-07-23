@@ -37,10 +37,11 @@ const resetForm = (form: HTMLFormElement) => {
 
         // All non hidden inputs
         if (input instanceof HTMLInputElement) {
-            // Ignore readOnly inputs
-            if (input.readOnly) continue;
+            // Ignore hidden input
+            if (input.type === 'hidden') continue;
 
-            if (input.type !== 'hidden' || input.dataset.reset === 'true') {
+            // Ignore eadOnly without data-reset=true inputs
+            if (!input.readOnly || input.dataset.reset === 'true') {
                 AppUtils.triggerChange(input, '', true);
             }
             continue;
@@ -56,6 +57,10 @@ const resetForm = (form: HTMLFormElement) => {
             continue;
         }
     }
+
+    // Trigger reset event
+    const resetEvent = new Event('reset');
+    form.dispatchEvent(resetEvent);
 };
 
 // Disable inputs avoid auto trigger change events for them
@@ -97,7 +102,17 @@ export function SearchBar(props: SearchBarProps) {
     }>({});
 
     // Watch container
-    const { dimensions } = useDimensions(1);
+    const { dimensions } = useDimensions(1, (target, rect) => {
+        // Same logic from resetButtonRef
+        if (rect.width === forms.lastMaxWidth) return false;
+
+        // Len
+        const len = target.children.length;
+        for (let i = 0; i < len; i++) {
+            var classList = target.children[i].classList;
+            classList.remove('showChild');
+        }
+    });
 
     // Show or hide element
     const setElementVisible = (element: Element, visible: boolean) => {
@@ -200,6 +215,7 @@ export function SearchBar(props: SearchBarProps) {
 
         // Show or hide more button
         setElementVisible(buttonMore, hasMore);
+        setElementVisible(resetButton, true);
 
         // Update menu start index
         updateIndex(newIndex);
@@ -333,7 +349,6 @@ export function SearchBar(props: SearchBarProps) {
                         size="medium"
                         ref={resetButtonRef}
                         onClick={handleReset}
-                        className="showChild"
                     >
                         {labels.reset}
                     </Button>

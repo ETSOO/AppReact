@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import {
     Autocomplete,
     AutocompleteProps,
@@ -23,11 +24,6 @@ export interface TiplistProps<T>
     idField?: string;
 
     /**
-     * Id value
-     */
-    idValue?: string | number;
-
-    /**
      * Label of the field
      */
     label: string;
@@ -37,7 +33,7 @@ export interface TiplistProps<T>
      */
     loadData: (
         keyword?: string,
-        id?: string
+        id?: DataTypes.IdType
     ) => PromiseLike<T[] | null | undefined>;
 
     /**
@@ -77,7 +73,6 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
     const {
         search = false,
         idField = 'id',
-        idValue,
         label,
         loadData,
         defaultValue,
@@ -99,6 +94,18 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
     // Value input ref
     const inputRef = React.createRef<HTMLInputElement>();
 
+    // Local value
+    let localValue = value ?? defaultValue;
+    let idValue: any;
+    if (localValue == null) {
+        idValue = undefined;
+    } else if (DataTypes.isBaseType(localValue, true)) {
+        idValue = localValue;
+        localValue = undefined;
+    } else {
+        idValue = (localValue as any)[idField];
+    }
+
     // Changable states
     const [states, stateUpdate] = React.useReducer(
         (state: States<T>, newState: Partial<States<T>>) => {
@@ -108,7 +115,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
             // Loading unknown
             open: false,
             options: [],
-            value: value || defaultValue || null
+            value: localValue ?? null
         }
     );
 
@@ -153,7 +160,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
     };
 
     // Directly load data
-    const loadDataDirect = (keyword?: string, id?: string) => {
+    const loadDataDirect = (keyword?: string, id?: DataTypes.IdType) => {
         // Reset seed value
         state.loadDataSeed = undefined;
 
@@ -215,7 +222,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
             }
         } else {
             // Load id data
-            loadDataDirect(undefined, idValue.toString());
+            loadDataDirect(undefined, idValue);
             state.idLoaded = true;
         }
     }

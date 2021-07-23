@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import {
     Autocomplete,
     AutocompleteProps,
@@ -18,11 +19,6 @@ export interface ComboBoxProps<T>
      * Id field, default is id
      */
     idField?: string;
-
-    /**
-     * Id value
-     */
-    idValue?: string | number;
 
     /**
      * Label of the field
@@ -58,7 +54,6 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
     const {
         search = false,
         idField = 'id',
-        idValue,
         defaultValue,
         label,
         name,
@@ -72,6 +67,7 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
         openText = labels.open,
         readOnly,
         onChange,
+        value,
         sx = { minWidth: '120px' },
         ...rest
     } = props;
@@ -80,14 +76,27 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Local default value
-    const localDefaultValue = idValue
-        ? options.find((o) => (o as any)[idField] == idValue)
-        : defaultValue;
+    const localValue = defaultValue ?? value;
+    const localDefaultValue =
+        localValue == null
+            ? undefined
+            : DataTypes.isBaseType(localValue, true)
+            ? options.find((o: any) => o[idField] === localValue)
+            : localValue;
+
+    // Current id value
+    const idValue =
+        localValue == null ? undefined : (localDefaultValue as any)[idField];
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
         if (readOnly != null) {
             Object.assign(params, { readOnly });
+
+            if (readOnly) {
+                if (params.inputProps == null) params.inputProps = {};
+                Object.assign(params.inputProps, { 'data-reset': true });
+            }
         }
 
         return params;
@@ -136,11 +145,7 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
                 sx={sx}
                 renderInput={(params) =>
                     search ? (
-                        <SearchField
-                            readOnly={readOnly}
-                            {...params}
-                            label={label}
-                        />
+                        <SearchField {...addReadOnly(params)} label={label} />
                     ) : (
                         <InputField {...addReadOnly(params)} label={label} />
                     )

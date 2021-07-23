@@ -258,7 +258,7 @@ export const ScrollerList = <T extends any>(
                 }
             };
         },
-        [listRef.current]
+        []
     );
 
     // When layout ready
