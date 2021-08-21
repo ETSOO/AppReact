@@ -14,7 +14,7 @@ import React from 'react';
 /**
  * OptionGroup props
  */
-export interface OptionGroupProps<T>
+export interface OptionGroupProps<T extends Record<string, any>>
     extends Omit<FormControlProps<'fieldset'>, 'defaultValue'> {
     /**
      * Default value
@@ -72,7 +72,9 @@ export interface OptionGroupProps<T>
  * @param props Props
  * @returns Component
  */
-export function OptionGroup<T = any>(props: OptionGroupProps<T>) {
+export function OptionGroup<T extends Record<string, any>>(
+    props: OptionGroupProps<T>
+) {
     // Destruct
     const {
         getOptionLabel,
@@ -125,7 +127,7 @@ export function OptionGroup<T = any>(props: OptionGroupProps<T>) {
         // Label
         const label =
             getOptionLabel == null
-                ? `${(option as any)[labelField]}`
+                ? `${option[labelField]}`
                 : getOptionLabel(option);
 
         // Value, convert to string

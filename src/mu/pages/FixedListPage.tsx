@@ -1,15 +1,14 @@
-import { DomUtils } from '@etsoo/shared';
 import { Box, Stack } from '@material-ui/core';
 import React from 'react';
-import {
-    ScrollerList,
-    ScrollerListForwardRef
-} from '../../components/ScrollerList';
+import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
+import { ScrollerListForwardRef } from '../../components/ScrollerList';
+import useCombinedRefs from '../../uses/useCombinedRefs';
 import { useDimensions } from '../../uses/useDimensions';
 import { MUGlobal } from '../MUGlobal';
+import { ScrollerListEx } from '../ScrollerListEx';
 import { SearchBar } from '../SearchBar';
 import { CommonPage } from './CommonPage';
-import { itemKey, ListPageForwardRef, ListPageProps } from './ListPageTypes';
+import { ListPageProps } from './ListPageProps';
 
 /**
  * Fixed height list page
@@ -18,8 +17,6 @@ import { itemKey, ListPageForwardRef, ListPageProps } from './ListPageTypes';
  */
 export function FixedListPage<T>(
     props: ListPageProps<T> & {
-        mRef?: React.Ref<ListPageForwardRef>;
-
         /**
          * Height will be deducted
          * @param height Current calcuated height
@@ -30,15 +27,14 @@ export function FixedListPage<T>(
     // Destruct
     const {
         adjustHeight,
-        loadBatchSize,
         fields,
-        itemRenderer,
-        itemSize,
         loadData,
         mRef,
-        paddings = MUGlobal.pagePaddings,
+        pageProps = {},
         ...rest
     } = props;
+
+    pageProps.paddings ??= MUGlobal.pagePaddings;
 
     // States
     const [states] = React.useState<{
@@ -51,46 +47,31 @@ export function FixedListPage<T>(
         HTMLElement | undefined
     >();
 
+    const refs = useCombinedRefs(mRef, (ref: ScrollerListForwardRef) => {
+        if (ref == null) return;
+
+        const first = states.ref == null;
+
+        states.ref = ref;
+
+        if (first) reset();
+    });
+
+    const reset = () => {
+        if (states.data == null || states.ref == null) return;
+        states.ref.reset({ data: states.data });
+    };
+
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
         states.data = data;
-        methods.reset();
+        reset();
     };
 
-    // On list load data
-    const listLoadData = async (page: number, loadBatchSize: number) => {
-        // Form data
-        const data = states.data;
-        if (data == null) return;
-
-        // Clear empty value
-        DomUtils.clearFormData(data);
-
-        // Load data
-        return await loadData(data, page, loadBatchSize);
+    const localLoadData = ({ data, ...rest }: GridLoadDataProps) => {
+        const json = GridDataGet(data);
+        return loadData({ ...json, ...rest });
     };
-
-    // Methods
-    const methods = React.useMemo(() => {
-        return {
-            /**
-             * Refresh latest page data
-             */
-            refresh(): void {
-                states.ref?.refresh();
-            },
-
-            /**
-             * Refresh data
-             */
-            reset(): void {
-                if (states.ref == null || states.data == null) return;
-                states.ref.reset();
-            }
-        };
-    }, [states]);
-
-    React.useImperativeHandle(mRef, () => methods, [states]);
 
     // Watch container
     const { dimensions } = useDimensions(1, undefined, 100);
@@ -111,21 +92,15 @@ export function FixedListPage<T>(
                         height: height + 'px'
                     }}
                 >
-                    <ScrollerList<T>
-                        loadBatchSize={loadBatchSize}
+                    <ScrollerListEx<T>
+                        autoLoad={false}
                         height={height}
-                        itemRenderer={itemRenderer}
-                        itemSize={itemSize}
-                        itemKey={itemKey}
-                        loadData={listLoadData}
-                        mRef={(ref) => {
-                            if (ref == null) return;
-                            states.ref = ref;
-                            methods.reset();
-                        }}
+                        loadData={localLoadData}
+                        mRef={refs}
                         oRef={(element) => {
                             if (element != null) updateScrollContainer(element);
                         }}
+                        {...rest}
                     />
                 </Box>
             );
@@ -137,10 +112,12 @@ export function FixedListPage<T>(
         ? '#' + scrollContainer?.parentElement.id
         : undefined;
 
+    const { paddings, ...pageRest } = pageProps;
+
     // Layout
     return (
         <CommonPage
-            {...rest}
+            {...pageRest}
             paddings={{}}
             scrollContainer={scrollContainer}
             pullContainer={pullContainer}

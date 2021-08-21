@@ -5,7 +5,8 @@ import {
     Dialog,
     DialogContent,
     DialogContentText,
-    DialogTitle
+    DialogTitle,
+    IconButton
 } from '@material-ui/core';
 import React from 'react';
 
@@ -40,8 +41,18 @@ export interface DialogButtonProps extends ButtonProps {
      * Max width of the dialog
      */
     maxWidth?: Breakpoint | false;
+
+    /**
+     * Icon button
+     */
+    icon?: React.ReactNode;
 }
 
+/**
+ * Dialog button
+ * @param props Props
+ * @returns Component
+ */
 export function DialogButton(props: DialogButtonProps) {
     // Destruct
     const {
@@ -51,6 +62,7 @@ export function DialogButton(props: DialogButtonProps) {
         dialogTitle,
         disableScrollLock,
         fullScreen,
+        icon,
         maxWidth,
         onClick,
         ...rest
@@ -69,16 +81,34 @@ export function DialogButton(props: DialogButtonProps) {
 
     // Onclick handler
     const onClickLocal = (event: React.MouseEvent<HTMLButtonElement>) => {
+        // Stop propagation
+        event.stopPropagation();
+        event.preventDefault();
+
+        // Show dialog
         handleClickOpen();
+
+        // Additional callback
         if (onClick) onClick(event);
     };
 
     // Layout
     return (
         <React.Fragment>
-            <Button {...rest} onClick={onClickLocal}>
-                {children}
-            </Button>
+            {icon == null ? (
+                <Button {...rest} onClick={onClickLocal}>
+                    {children}
+                </Button>
+            ) : (
+                <IconButton
+                    {...rest}
+                    onClick={onClickLocal}
+                    title={children?.toString()}
+                >
+                    {icon}
+                </IconButton>
+            )}
+
             <Dialog
                 disableScrollLock={disableScrollLock}
                 fullScreen={fullScreen}

@@ -7,16 +7,39 @@ import {
     ListProps,
     VariableSizeList
 } from 'react-window';
+import { GridMethodRef } from '../mu/GridMethodRef';
 import useCombinedRefs from '../uses/useCombinedRefs';
+import {
+    GridLoadDataProps,
+    GridLoader,
+    GridLoaderStates,
+    GridSizeGet
+} from './GridLoader';
 
 /**
  * Scroller vertical list props
  */
 export interface ScrollerListProps<T>
-    extends Omit<
-        ListProps<T>,
-        'ref' | 'outerRef' | 'height' | 'width' | 'children' | 'itemCount'
-    > {
+    extends GridLoader<T>,
+        Omit<
+            ListProps<T>,
+            'ref' | 'outerRef' | 'height' | 'width' | 'children' | 'itemCount'
+        > {
+    /**
+     * Default order by asc/desc
+     */
+    defaultOrderByAsc?: boolean;
+
+    /**
+     * Methods ref
+     */
+    mRef?: React.Ref<ScrollerListForwardRef>;
+
+    /**
+     * Outer div ref
+     */
+    oRef?: React.Ref<HTMLDivElement>;
+
     /**
      * Height of the list
      */
@@ -30,30 +53,12 @@ export interface ScrollerListProps<T>
     /**
      * Item renderer
      */
-    itemRenderer: (itemProps: ListChildComponentProps<T>) => React.ReactElement;
+    itemRenderer: (props: ListChildComponentProps<T>) => React.ReactElement;
 
     /**
      * Item size, a function indicates its a variable size list
      */
     itemSize: ((index: number) => number) | number;
-
-    /**
-     * Batch size when load data, default will be calcuated with height and itemSize
-     */
-    loadBatchSize?: number;
-
-    /**
-     * Load data
-     */
-    loadData: (
-        page: number,
-        loadBatchSize: number
-    ) => PromiseLike<T[] | null | undefined>;
-
-    /**
-     * Threshold at which to pre-fetch data; default is half of loadBatchSize
-     */
-    threshold?: number | undefined;
 }
 
 interface ScrollerListRef {
@@ -68,58 +73,42 @@ interface ScrollerListRef {
     scrollToItem(index: number, align?: Align): void;
 }
 
-// Multiple states
-interface States<T> {
-    currentPage: number;
-    lastLoadedItems?: number;
-    hasNextPage: boolean;
-    isNextPageLoading: boolean;
-    items: T[];
-}
-
 /**
  * Scroller list forward ref
  */
-export interface ScrollerListForwardRef extends ScrollerListRef {
+export interface ScrollerListForwardRef extends GridMethodRef, ScrollerListRef {
     /**
      * Refresh latest page data
      */
     refresh(): void;
-
-    /**
-     * Reset all data
-     * @param reload Reload data, default is true
-     */
-    reset(): void;
 }
+
+// Calculate loadBatchSize
+const calculateBatchSize = (
+    height: number,
+    itemSize: ((index: number) => number) | number
+) => {
+    return (
+        2 +
+        Math.ceil(
+            height / (typeof itemSize === 'function' ? itemSize(0) : itemSize)
+        )
+    );
+};
 
 /**
  * Scroller vertical list
  * @param props Props
  * @returns Component
  */
-export const ScrollerList = <T extends any>(
-    props: ScrollerListProps<T> & {
-        mRef?: React.Ref<ScrollerListForwardRef>;
-        oRef?: React.Ref<HTMLDivElement>;
-    }
+export const ScrollerList = <T extends Record<string, any>>(
+    props: ScrollerListProps<T>
 ) => {
-    // Calculate loadBatchSize
-    const calculateBatchSize = (
-        height: number,
-        itemSize: ((index: number) => number) | number
-    ) => {
-        return (
-            2 +
-            Math.ceil(
-                height /
-                    (typeof itemSize === 'function' ? itemSize(0) : itemSize)
-            )
-        );
-    };
-
     // Destruct
     const {
+        autoLoad = true,
+        defaultOrderBy,
+        defaultOrderByAsc,
         height = window.innerHeight,
         width = '100%',
         mRef,
@@ -129,7 +118,7 @@ export const ScrollerList = <T extends any>(
         itemSize,
         loadBatchSize = calculateBatchSize(height, itemSize),
         loadData,
-        threshold = Math.ceil(loadBatchSize / 2),
+        threshold = GridSizeGet(loadBatchSize, height) / 2,
         onItemsRendered,
         ...rest
     } = props;
@@ -149,14 +138,24 @@ export const ScrollerList = <T extends any>(
 
     // States
     const [state, stateUpdate] = React.useReducer(
-        (state: States<T>, newState: Partial<States<T>>) => {
-            return { ...state, ...newState };
+        (
+            currentState: GridLoaderStates<T>,
+            newState: Partial<GridLoaderStates<T>>
+        ) => {
+            if (!currentState.mounted) return currentState;
+            return { ...currentState, ...newState };
         },
         {
+            autoLoad,
             currentPage: 0,
             hasNextPage: true,
+            mounted: true,
             isNextPageLoading: false,
-            items: []
+            orderBy: defaultOrderBy,
+            orderByAsc: defaultOrderByAsc,
+            rows: [],
+            batchSize: GridSizeGet(loadBatchSize, height),
+            selectedItems: []
         }
     );
 
@@ -167,11 +166,20 @@ export const ScrollerList = <T extends any>(
 
         // Update state
         state.isNextPageLoading = true;
+        // stateUpdate({ isNextPageLoading: true });
 
-        loadData(state.currentPage, loadBatchSize).then((result) => {
-            // Loading state
-            state.isNextPageLoading = false;
+        // Parameters
+        const { currentPage, batchSize, orderBy, orderByAsc, data } = state;
 
+        const loadProps: GridLoadDataProps = {
+            currentPage,
+            batchSize,
+            orderBy,
+            orderByAsc,
+            data
+        };
+
+        loadData(loadProps).then((result) => {
             if (result == null) {
                 return;
             }
@@ -180,10 +188,10 @@ export const ScrollerList = <T extends any>(
 
             if (pageAdd === 0) {
                 // New items
-                const items = state.lastLoadedItems
-                    ? state.items
+                const rows = state.lastLoadedItems
+                    ? state.rows
                           .splice(
-                              state.items.length - state.lastLoadedItems,
+                              state.rows.length - state.lastLoadedItems,
                               state.lastLoadedItems
                           )
                           .concat(result)
@@ -191,16 +199,18 @@ export const ScrollerList = <T extends any>(
 
                 // Refresh current page
                 stateUpdate({
-                    items,
+                    rows,
                     lastLoadedItems: newItems,
-                    hasNextPage: newItems >= loadBatchSize
+                    hasNextPage: newItems >= loadBatchSize,
+                    isNextPageLoading: false
                 });
             } else {
                 stateUpdate({
-                    items: state.items.concat(result),
+                    rows: state.rows.concat(result),
                     lastLoadedItems: newItems,
                     currentPage: state.currentPage + pageAdd,
-                    hasNextPage: newItems >= loadBatchSize
+                    hasNextPage: newItems >= loadBatchSize,
+                    isNextPageLoading: false
                 });
             }
         });
@@ -210,7 +220,7 @@ export const ScrollerList = <T extends any>(
         // Custom render
         return itemRenderer({
             ...itemProps,
-            data: state.items[itemProps.index]
+            data: state.rows[itemProps.index]
         });
     };
 
@@ -231,21 +241,20 @@ export const ScrollerList = <T extends any>(
             const refMethods = listRef.current as ScrollerListRef;
 
             return {
-                /**
-                 * Refresh data
-                 */
                 refresh(): void {
                     loadDataLocal(0);
                 },
 
-                reset(): void {
+                reset(add?: {}): void {
                     // Reset state, will load data soon
                     stateUpdate({
-                        items: [],
+                        autoLoad: true,
+                        rows: [],
                         lastLoadedItems: undefined,
                         currentPage: 0,
                         hasNextPage: true,
-                        isNextPageLoading: false
+                        isNextPageLoading: false,
+                        ...add
                     });
                 },
 
@@ -292,14 +301,20 @@ export const ScrollerList = <T extends any>(
 
             // Remove scroll event
             window.removeEventListener('scroll', handleWindowScroll);
+
+            state.mounted = false;
         };
     }, []);
+
+    // Destruct state
+    const { autoLoad: stateAutoLoad, rows, hasNextPage, currentPage } = state;
+    const rowCount = rows.length;
 
     // Local items renderer callback
     const onItemsRenderedLocal = (props: ListOnItemsRenderedProps) => {
         // No items, means no necessary to load more data during reset
-        const itemCount = state.items.length;
-        if (itemCount > 0 && props.visibleStopIndex + threshold > itemCount) {
+
+        if (rowCount > 0 && props.visibleStopIndex + threshold > rowCount) {
             // Auto load next page
             loadDataLocal();
         }
@@ -309,12 +324,10 @@ export const ScrollerList = <T extends any>(
     };
 
     // Item count
-    const itemCount = state.hasNextPage
-        ? state.items.length + 1
-        : state.items.length;
+    const itemCount = hasNextPage ? rowCount + 1 : rowCount;
 
     // Auto load data when current page is 0
-    if (state.currentPage === 0) loadDataLocal();
+    if (currentPage === 0 && stateAutoLoad) loadDataLocal();
 
     // Layout
     return typeof itemSize === 'function' ? (

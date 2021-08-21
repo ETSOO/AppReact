@@ -5,7 +5,6 @@ import {
     AutocompleteRenderInputParams
 } from '@material-ui/core';
 import React from 'react';
-import { Labels } from '../app/Labels';
 import { Utils } from '../app/Utils';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
@@ -13,7 +12,7 @@ import { SearchField } from './SearchField';
 /**
  * Tiplist props
  */
-export interface TiplistProps<T>
+export interface TiplistProps<T extends Record<string, any>>
     extends Omit<
         AutocompleteProps<T, undefined, false, false>,
         'renderInput' | 'options' | 'open'
@@ -53,7 +52,7 @@ export interface TiplistProps<T>
 }
 
 // Multiple states
-interface States<T> {
+interface States<T extends Record<string, any>> {
     open: boolean;
     options: T[];
     value?: T | null;
@@ -65,10 +64,7 @@ interface States<T> {
  * @param props Props
  * @returns Component
  */
-export function Tiplist<T = any>(props: TiplistProps<T>) {
-    // Labels
-    const labels = Labels.AutoComplete;
-
+export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
     // Destruct
     const {
         search = false,
@@ -78,13 +74,6 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         defaultValue,
         value,
         name,
-        clearText = labels.clear,
-        closeText = labels.close,
-        loadingText = labels.loading,
-        noOptionsText = labels.noOptions,
-        getLimitTagsText = (more: number) =>
-            labels.moreTag.replace('{0}', more.toString()),
-        openText = labels.open,
         readOnly,
         onChange,
         sx = { minWidth: '150px' },
@@ -103,13 +92,13 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         idValue = localValue;
         localValue = undefined;
     } else {
-        idValue = (localValue as any)[idField];
+        idValue = localValue[idField];
     }
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
-        (state: States<T>, newState: Partial<States<T>>) => {
-            return { ...state, ...newState };
+        (currentState: States<T>, newState: Partial<States<T>>) => {
+            return { ...currentState, ...newState };
         },
         {
             // Loading unknown
@@ -203,9 +192,7 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
         if (input) {
             // Update value
             const newValue =
-                value != null && idField in value
-                    ? `${(value as any)[idField]}`
-                    : '';
+                value != null && idField in value ? `${value[idField]}` : '';
             if (newValue !== input.value) {
                 // Different value, trigger change event
                 Utils.triggerChange(input, newValue, false);
@@ -240,14 +227,8 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
             />
             {/* Previous input will reset first, next input trigger change works */}
             <Autocomplete
-                clearText={clearText}
-                closeText={closeText}
-                loadingText={loadingText}
-                noOptionsText={noOptionsText}
-                getLimitTagsText={getLimitTagsText}
                 filterOptions={(options, _state) => options}
                 value={states.value}
-                openText={openText}
                 options={states.options}
                 onChange={(event, value, reason, details) => {
                     // Set value
@@ -297,6 +278,9 @@ export function Tiplist<T = any>(props: TiplistProps<T>) {
                             label={label}
                         />
                     )
+                }
+                isOptionEqualToValue={(option: any, value: any) =>
+                    option[idField] === value[idField]
                 }
                 {...rest}
             />

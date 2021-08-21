@@ -5,7 +5,6 @@ import {
     AutocompleteRenderInputParams
 } from '@material-ui/core';
 import React from 'react';
-import { Labels } from '../app/Labels';
 import { Utils } from '../app/Utils';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
@@ -13,7 +12,7 @@ import { SearchField } from './SearchField';
 /**
  * ComboBox props
  */
-export interface ComboBoxProps<T>
+export interface ComboBoxProps<T extends Record<string, any>>
     extends Omit<AutocompleteProps<T, undefined, false, false>, 'renderInput'> {
     /**
      * Id field, default is id
@@ -46,10 +45,9 @@ export interface ComboBoxProps<T>
  * @param props Props
  * @returns Component
  */
-export function ComboBox<T = any>(props: ComboBoxProps<T>) {
-    // Labels
-    const labels = Labels.AutoComplete;
-
+export function ComboBox<T extends Record<string, any>>(
+    props: ComboBoxProps<T>
+) {
     // Destruct
     const {
         search = false,
@@ -58,13 +56,6 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
         label,
         name,
         options,
-        clearText = labels.clear,
-        closeText = labels.close,
-        loadingText = labels.loading,
-        noOptionsText = labels.noOptions,
-        getLimitTagsText = (more: number) =>
-            labels.moreTag.replace('{0}', more.toString()),
-        openText = labels.open,
         readOnly,
         onChange,
         value,
@@ -86,7 +77,9 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
 
     // Current id value
     const idValue =
-        localValue == null ? undefined : (localDefaultValue as any)[idField];
+        localValue == null || localDefaultValue == null
+            ? undefined
+            : localDefaultValue[idField];
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
@@ -115,13 +108,10 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
             />
             {/* Previous input will reset first, next input trigger change works */}
             <Autocomplete
-                clearText={clearText}
-                closeText={closeText}
                 defaultValue={localDefaultValue}
-                loadingText={loadingText}
-                noOptionsText={noOptionsText}
-                getLimitTagsText={getLimitTagsText}
-                openText={openText}
+                isOptionEqualToValue={(option: T, value: T) =>
+                    option[idField] === value[idField]
+                }
                 onChange={(event, value, reason, details) => {
                     // Input value
                     const input = inputRef.current;
@@ -129,7 +119,7 @@ export function ComboBox<T = any>(props: ComboBoxProps<T>) {
                         // Update value
                         const newValue =
                             value != null && idField in value
-                                ? `${(value as any)[idField]}`
+                                ? `${value[idField]}`
                                 : '';
 
                         if (newValue !== input.value) {

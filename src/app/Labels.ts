@@ -5,18 +5,6 @@ import { DataTypes, Utils } from '@etsoo/shared';
  */
 export namespace Labels {
     /**
-     * AutoComplete labels
-     */
-    export const AutoComplete = {
-        clear: 'Clear',
-        close: 'Close',
-        loading: 'Loading…',
-        noOptions: 'No options',
-        moreTag: '{0} more',
-        open: 'Open'
-    };
-
-    /**
      * Common page labels
      */
     export const CommonPage = {
@@ -63,7 +51,6 @@ export namespace Labels {
      * setLabelReference key reference
      */
     export interface setLabelsReference {
-        autoComplete?: DataTypes.ReadonlyStringDictionary;
         commonPage?: DataTypes.ReadonlyStringDictionary;
         notificationMU?: DataTypes.ReadonlyStringDictionary;
         userAvatarEditor?: DataTypes.ReadonlyStringDictionary;
@@ -78,7 +65,6 @@ export namespace Labels {
         labels: DataTypes.ReadonlySimpleObject,
         reference: setLabelsReference = {}
     ) => {
-        Utils.setLabels(AutoComplete, labels, reference.autoComplete);
         Utils.setLabels(CommonPage, labels, reference.commonPage);
         Utils.setLabels(NotificationMU, labels, reference.notificationMU);
         Utils.setLabels(UserAvatarEditor, labels, reference.userAvatarEditor);

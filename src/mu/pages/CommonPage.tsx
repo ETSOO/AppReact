@@ -1,55 +1,13 @@
 import React from 'react';
-import { Container, ContainerProps, Fab } from '@material-ui/core';
+import { Container, Fab } from '@material-ui/core';
 import { FabBox } from '../FabBox';
 import { ScrollTopFab } from '../ScrollTopFab';
 import { PullToRefreshUI } from '../PullToRefreshUI';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { CustomFabSize } from '../CustomFabProps';
-import { MoreAction, MoreFab } from '../MoreFab';
 import { Labels } from '../../app/Labels';
 import { MUGlobal } from '../MUGlobal';
-
-/**
- * Common page props
- * Default container id is 'pageContainer'
- */
-export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
-    /**
-     * Fab buttons
-     */
-    fabButtons?: React.ReactNode;
-
-    /**
-     * Fab size
-     */
-    fabSize?: CustomFabSize;
-
-    /**
-     * More actions
-     */
-    moreActions?: MoreAction[];
-
-    /**
-     * On refresh callback
-     */
-    onRefresh?: () => void | PromiseLike<void>;
-
-    /**
-     * Paddings
-     */
-    paddings?: {};
-
-    /**
-     * Pull container
-     * @default '#page-container'
-     */
-    pullContainer?: string;
-
-    /**
-     * Scroll container
-     */
-    scrollContainer?: HTMLElement | object;
-}
+import { CommonPageProps } from './CommonPageProps';
+import { MoreFab } from '../MoreFab';
 
 /**
  * Common page
@@ -123,6 +81,10 @@ export function CommonPage(props: CommonPageProps) {
                     instructionsReleaseToRefresh={labels.releaseToRefresh}
                     instructionsRefreshing={labels.refreshing}
                     onRefresh={onRefresh}
+                    shouldPullToRefresh={() => {
+                        const container = document.querySelector(pullContainer);
+                        return !container?.scrollTop;
+                    }}
                 />
             )}
         </React.Fragment>

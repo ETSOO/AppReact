@@ -7,6 +7,7 @@ import {
     MenuItem,
     OutlinedInput,
     Select,
+    SelectChangeEvent,
     SelectProps
 } from '@material-ui/core';
 import React from 'react';
@@ -81,7 +82,7 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
     };
 
     // Change handler
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChange = (event: SelectChangeEvent<unknown>) => {
         const value = event.target.value;
         if (multiple && !Array.isArray(value)) setItemValue([value]);
         else setItemValue(value);

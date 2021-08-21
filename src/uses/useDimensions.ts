@@ -23,11 +23,16 @@ interface states {
  * @param elements Observed elments count
  * @param updateCallback Update callback
  * @param miliseconds Miliseconds to wait before update
+ * @param equalCallback Equall callback
  */
 export function useDimensions(
     elements: number,
     updateCallback?: (target: Element, rect: DOMRect) => boolean | void,
-    miliseconds: number = 50
+    miliseconds: number = 50,
+    equalCallback: (
+        d1?: DOMRect,
+        d2?: DOMRect
+    ) => boolean = DomUtils.dimensionEqual
 ) {
     // State
     const [state, setState] = React.useState<states>({
@@ -42,8 +47,14 @@ export function useDimensions(
         entries.forEach((entry) => {
             const index = init.findIndex((item) => item[1] === entry.target);
             if (index !== -1) {
+                // Previous rect
+                const pre = init[index][2];
+
+                // New rect
                 const rect = entry.target.getBoundingClientRect();
-                if (!DomUtils.dimensionEqual(init[index][2], rect)) {
+
+                // Check equal
+                if (!equalCallback(pre, rect)) {
                     // Update callback
                     if (updateCallback) {
                         // Return false means no further push

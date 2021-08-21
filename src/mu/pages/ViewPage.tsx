@@ -1,4 +1,4 @@
-import { CommonPageProps } from './CommonPage';
+import { CommonPageProps } from './CommonPageProps';
 
 /**
  * View page props

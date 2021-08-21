@@ -15,7 +15,7 @@ export function PullToRefreshUI(props: Options) {
         return () => {
             PullToRefresh.destroyAll();
         };
-    }, []);
+    }, [props]);
 
     return <React.Fragment />;
 }
