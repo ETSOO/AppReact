@@ -37,6 +37,7 @@ export namespace DataGridRenderers {
 
         // Cell value
         const value = formattedValue ?? data[field!];
+        if (value == null) return undefined;
 
         // For date time
         if (value instanceof Date) {
@@ -45,6 +46,15 @@ export namespace DataGridRenderers {
                 value,
                 type === GridDataType.DateTime ? 'ds' : 'd'
             );
+        }
+
+        // For numbers
+        if (typeof value === 'number') {
+            if (type === GridDataType.Money)
+                return new Intl.NumberFormat('lookup', {
+                    minimumFractionDigits: 2
+                }).format(value);
+            else return new Intl.NumberFormat().format(value);
         }
 
         // For boolean

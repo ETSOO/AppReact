@@ -13,7 +13,12 @@ export type GridAlign = 'center' | 'inherit' | 'justify' | 'left' | 'right';
  */
 export const GridAlignGet = (align?: GridAlign, type?: GridDataType) => {
     if (align == null && type != null) {
-        if (type === GridDataType.Number) return 'right';
+        if (
+            type === GridDataType.Money ||
+            type === GridDataType.Int ||
+            type === GridDataType.Number
+        )
+            return 'right';
         else if (type === GridDataType.Boolean) return 'center';
     }
     return align;
@@ -24,6 +29,8 @@ export const GridAlignGet = (align?: GridAlign, type?: GridDataType) => {
  */
 export enum GridDataType {
     String,
+    Int,
+    Money,
     Number,
     Date,
     DateTime,

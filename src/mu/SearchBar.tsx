@@ -40,7 +40,7 @@ const resetForm = (form: HTMLFormElement) => {
             // Ignore hidden input
             if (input.type === 'hidden') continue;
 
-            // Ignore eadOnly without data-reset=true inputs
+            // Ignore readOnly without data-reset=true inputs
             if (!input.readOnly || input.dataset.reset === 'true') {
                 AppUtils.triggerChange(input, '', true);
             }

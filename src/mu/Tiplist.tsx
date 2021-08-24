@@ -253,7 +253,13 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                     stateUpdate({ open: true, loading });
 
                     // If not loading
-                    if (loading) loadDataDirect();
+                    if (loading)
+                        loadDataDirect(
+                            undefined,
+                            states.value == null
+                                ? undefined
+                                : states.value[idField]
+                        );
                 }}
                 onClose={() => {
                     stateUpdate({
