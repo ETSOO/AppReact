@@ -20,6 +20,11 @@ export interface ComboBoxProps<T extends Record<string, any>>
     idField?: string;
 
     /**
+     * Id value
+     */
+    idValue?: DataTypes.IdType;
+
+    /**
      * Label of the field
      */
     label: string;
@@ -52,6 +57,7 @@ export function ComboBox<T extends Record<string, any>>(
     const {
         search = false,
         idField = 'id',
+        idValue,
         defaultValue,
         label,
         name,
@@ -67,19 +73,13 @@ export function ComboBox<T extends Record<string, any>>(
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Local default value
-    const localValue = defaultValue ?? value;
-    const localDefaultValue =
-        localValue == null
-            ? undefined
-            : DataTypes.isBaseType(localValue, true)
-            ? options.find((o: any) => o[idField] === localValue)
-            : localValue;
+    const localValue =
+        idValue != null
+            ? options.find((o) => o[idField] === idValue)
+            : defaultValue ?? value;
 
     // Current id value
-    const idValue =
-        localValue == null || localDefaultValue == null
-            ? undefined
-            : localDefaultValue[idField];
+    const localIdValue = localValue == null ? undefined : localValue[idField];
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
@@ -104,11 +104,11 @@ export function ComboBox<T extends Record<string, any>>(
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                defaultValue={idValue}
+                defaultValue={localIdValue}
             />
             {/* Previous input will reset first, next input trigger change works */}
             <Autocomplete
-                defaultValue={localDefaultValue}
+                defaultValue={localValue}
                 isOptionEqualToValue={(option: T, value: T) =>
                     option[idField] === value[idField]
                 }

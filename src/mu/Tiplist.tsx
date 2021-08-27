@@ -23,6 +23,11 @@ export interface TiplistProps<T extends Record<string, any>>
     idField?: string;
 
     /**
+     * Id value
+     */
+    idValue?: DataTypes.IdType;
+
+    /**
      * Label of the field
      */
     label: string;
@@ -69,6 +74,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
     const {
         search = false,
         idField = 'id',
+        idValue,
         label,
         loadData,
         defaultValue,
@@ -84,16 +90,9 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Local value
-    let localValue = value ?? defaultValue;
-    let idValue: any;
-    if (localValue == null) {
-        idValue = undefined;
-    } else if (DataTypes.isBaseType(localValue, true)) {
-        idValue = localValue;
-        localValue = undefined;
-    } else {
-        idValue = localValue[idField];
-    }
+    const localValue = value ?? defaultValue;
+    const localIdValue =
+        idValue ?? (localValue == null ? undefined : localValue[idField]);
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
@@ -200,7 +199,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
         }
     };
 
-    if (idValue != null) {
+    if (localIdValue != null) {
         if (state.idLoaded) {
             // Set default
             if (!state.idSet && states.options.length == 1) {
@@ -209,7 +208,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
             }
         } else {
             // Load id data
-            loadDataDirect(undefined, idValue);
+            loadDataDirect(undefined, localIdValue);
             state.idLoaded = true;
         }
     }
@@ -223,7 +222,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                defaultValue={idValue}
+                defaultValue={localIdValue}
             />
             {/* Previous input will reset first, next input trigger change works */}
             <Autocomplete
@@ -241,6 +240,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                     // For clear case
                     if (reason === 'clear') {
                         stateUpdate({ options: [] });
+                        loadDataDirect();
                     }
                 }}
                 open={states.open}
