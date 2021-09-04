@@ -180,12 +180,7 @@ export const ScrollerList = <T extends Record<string, any>>(
         };
 
         loadData(loadProps).then((result) => {
-            if (!state.mounted) {
-                return;
-            }
-
-            if (result == null) {
-                stateUpdate({ isNextPageLoading: false });
+            if (result == null || !state.mounted) {
                 return;
             }
 
