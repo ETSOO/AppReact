@@ -18,19 +18,9 @@ export enum UserActionType {
 }
 
 /**
- * User update interface
- */
-export interface IUserUpdate {
-    /**
-     * Callback function do update the state
-     */
-    <D extends IUser>(state: D): void;
-}
-
-/**
  * User action to manage the user
  */
-export interface UserAction extends IAction {
+export interface UserAction<D extends IUser> extends IAction {
     /**
      * Action type
      */
@@ -44,18 +34,18 @@ export interface UserAction extends IAction {
     /**
      * User update callback
      */
-    update?: IUserUpdate;
+    update?: (state: D) => void;
 }
 
 /**
  * User provider props
  */
-export type UserProviderProps = IProviderProps<UserAction>;
+export type UserProviderProps<D extends IUser> = IProviderProps<UserAction<D>>;
 
 /**
  * Users calls with the state
  */
-export interface UserCalls<D extends IUser> extends IUpdate<D, UserAction> {}
+export interface UserCalls<D extends IUser> extends IUpdate<D, UserAction<D>> {}
 
 /**
  * User state
@@ -64,19 +54,19 @@ export class UserState<D extends IUser> {
     /**
      * Context
      */
-    readonly context: React.Context<IUpdate<D, UserAction>>;
+    readonly context: React.Context<UserCalls<D>>;
 
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent<UserProviderProps>;
+    readonly provider: React.FunctionComponent<UserProviderProps<D>>;
 
     /**
      * Constructor
      */
     constructor() {
         const { context, provider } = State.create(
-            (state: D, action: UserAction) => {
+            (state: D, action: UserAction<D>) => {
                 // User reducer
                 switch (action.type) {
                     case UserActionType.Login:

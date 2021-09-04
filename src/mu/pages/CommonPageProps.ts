@@ -1,4 +1,5 @@
 import { ContainerProps } from '@material-ui/core';
+import { IStateUpdate } from '../../states/IState';
 import { CustomFabSize } from '../CustomFabProps';
 import { MoreAction } from '../MoreFab';
 
@@ -26,6 +27,11 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
      * On refresh callback
      */
     onRefresh?: () => void | PromiseLike<void>;
+
+    /**
+     * On page update, may uses onRefresh
+     */
+    onUpdate?: IStateUpdate;
 
     /**
      * Paddings

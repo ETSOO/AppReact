@@ -8,6 +8,7 @@ import { Labels } from '../../app/Labels';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPageProps } from './CommonPageProps';
 import { MoreFab } from '../MoreFab';
+import { ReactAppStateDetector } from '../../app/ReactApp';
 
 /**
  * Common page
@@ -23,6 +24,7 @@ export function CommonPage(props: CommonPageProps) {
         maxWidth = false,
         moreActions,
         onRefresh,
+        onUpdate,
         paddings = MUGlobal.pagePaddings,
         scrollContainer,
         pullContainer,
@@ -38,9 +40,19 @@ export function CommonPage(props: CommonPageProps) {
     // Labels
     const labels = Labels.CommonPage;
 
+    // Update
+    const update = onUpdate
+        ? onUpdate
+        : onRefresh
+        ? (authorized?: boolean) => {
+              if (authorized) onRefresh();
+          }
+        : undefined;
+
     // Return the UI
     return (
         <React.Fragment>
+            {update && <ReactAppStateDetector update={update} />}
             <Container
                 disableGutters={disableGutters}
                 maxWidth={maxWidth}

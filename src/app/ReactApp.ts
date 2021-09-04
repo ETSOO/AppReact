@@ -1,4 +1,10 @@
-import { CoreApp, IAppSettings, IUser, IUserData } from '@etsoo/appscript';
+import {
+    CoreApp,
+    IAppSettings,
+    ICoreApp,
+    IUser,
+    IUserData
+} from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { CultureAction } from '../states/CultureState';
@@ -6,52 +12,54 @@ import { IStateProps } from '../states/IState';
 import { PageAction, PageActionType } from '../states/PageState';
 import { UserAction, UserActionType, UserState } from '../states/UserState';
 
+let app: IReactApp<IAppSettings, any>;
+
+/**
+ * React app state detector
+ * @param props Props
+ * @returns Component
+ */
+export function ReactAppStateDetector(props: IStateProps) {
+    // Destruct
+    const { update } = props;
+
+    // Context
+    const { state } = React.useContext(
+        (app.userState as UserState<IUser>).context
+    );
+
+    // Ready
+    React.useEffect(() => {
+        // Callback
+        update(state.authorized);
+    }, [state.authorized]);
+
+    // return
+    return React.createElement(React.Fragment);
+}
+
+/**
+ * Core application interface
+ */
+export interface IReactApp<S extends IAppSettings, D extends IUser>
+    extends ICoreApp<S, React.ReactNode> {
+    /**
+     * User state
+     */
+    readonly userState: UserState<D>;
+}
+
 /**
  * React application
  */
-export abstract class ReactApp<
-    S extends IAppSettings,
-    D extends IUser
-> extends CoreApp<S, React.ReactNode> {
+export abstract class ReactApp<S extends IAppSettings, D extends IUser>
+    extends CoreApp<S, React.ReactNode>
+    implements IReactApp<S, D>
+{
     /**
      * User state
      */
     readonly userState = new UserState<D>();
-
-    /**
-     * User authentification state update component
-     * @returns Component
-     */
-    readonly userStateUpdate = (props: IStateProps) => {
-        // Destruct
-        const { update } = props;
-
-        // Context
-        const { state } = React.useContext(this.userState.context);
-
-        // Ready
-        React.useEffect(() => {
-            // Callback
-            update(state.authorized);
-        }, [state.authorized]);
-
-        /*
-        // Create element
-        return React.createElement(consumer, {
-            children: (value) => {
-                const { state } = value;
-                React.useEffect(() => {
-                    update(state);
-                }, [state]);
-
-                return undefined;
-            }
-        });
-        */
-
-        // return
-        return React.createElement(React.Fragment);
-    };
 
     /**
      * Page state dispatch
@@ -61,7 +69,15 @@ export abstract class ReactApp<
     /**
      * User state dispatch
      */
-    userStateDispatch?: React.Dispatch<UserAction>;
+    userStateDispatch?: React.Dispatch<UserAction<D>>;
+
+    /**
+     * Override setup to hold userState
+     */
+    override setup() {
+        super.setup();
+        app = this;
+    }
 
     /**
      * Change culture extended
