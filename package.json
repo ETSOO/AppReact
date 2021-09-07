@@ -49,6 +49,7 @@
         "@etsoo/shared": "^1.0.39",
         "@mui/icons-material": "^5.0.0-rc.0",
         "@mui/material": "^5.0.0-rc.0",
+        "@reach/router": "^1.3.4",
         "@types/pica": "^5.1.3",
         "@types/pulltorefreshjs": "^0.1.5",
         "@types/reach__router": "^1.3.9",
