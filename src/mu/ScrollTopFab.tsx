@@ -1,6 +1,6 @@
 import React from 'react';
-import { Fab, useScrollTrigger, Zoom } from '@material-ui/core';
-import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
+import { Fab, useScrollTrigger, Zoom } from '@mui/material';
+import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import { CustomFabProps } from './CustomFabProps';
 
 /**

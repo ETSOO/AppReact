@@ -1,9 +1,9 @@
 import React from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { GridCellRendererProps, GridDataType } from '../components/GridColumn';
 import { DateUtils } from '@etsoo/shared';
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 import { DataGridExFooterItemRendererProps } from './DataGridEx';
 
 /**

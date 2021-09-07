@@ -3,7 +3,7 @@ import {
     Autocomplete,
     AutocompleteProps,
     AutocompleteRenderInputParams
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
 import { InputField } from './InputField';

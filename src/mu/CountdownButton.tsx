@@ -1,5 +1,5 @@
+import { Button, ButtonProps, CircularProgress } from '@mui/material';
 import React from 'react';
-import { Button, ButtonProps, CircularProgress } from '@material-ui/core';
 
 /**
  * Countdown button action

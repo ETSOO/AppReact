@@ -1,6 +1,5 @@
 import { css } from '@emotion/css';
 import { Utils } from '@etsoo/shared';
-import { useTheme } from '@material-ui/core';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
 import { ScrollerList, ScrollerListProps } from '../components/ScrollerList';

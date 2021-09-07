@@ -1,5 +1,5 @@
 import { CustomFabProps } from './CustomFabProps';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import React from 'react';
 import {
     Divider,
@@ -9,7 +9,7 @@ import {
     ListItemText,
     Menu,
     MenuItem
-} from '@material-ui/core';
+} from '@mui/material';
 
 /**
  * More action interface

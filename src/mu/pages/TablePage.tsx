@@ -1,4 +1,4 @@
-import { Box, Stack } from '@material-ui/core';
+import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
 import useCombinedRefs from '../../uses/useCombinedRefs';

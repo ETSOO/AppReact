@@ -1,11 +1,11 @@
-import { Button, ButtonGroup, Slider, Stack } from '@material-ui/core';
+import { Button, ButtonGroup, Slider, Stack } from '@mui/material';
 import React from 'react';
 import AvatarEditor from 'react-avatar-editor';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import RotateRightIcon from '@material-ui/icons/RotateRight';
-import ClearAllIcon from '@material-ui/icons/ClearAll';
-import ComputerIcon from '@material-ui/icons/Computer';
-import DoneIcon from '@material-ui/icons/Done';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import RotateRightIcon from '@mui/icons-material/RotateRight';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
+import ComputerIcon from '@mui/icons-material/Computer';
+import DoneIcon from '@mui/icons-material/Done';
 import pica from 'pica';
 import { Labels } from '../app/Labels';
 

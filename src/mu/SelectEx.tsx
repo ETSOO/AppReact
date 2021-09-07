@@ -9,7 +9,7 @@ import {
     Select,
     SelectChangeEvent,
     SelectProps
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 import { MUGlobal } from './MUGlobal';
 

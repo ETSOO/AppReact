@@ -30,8 +30,8 @@ import {
     styled,
     Switch,
     TextField
-} from '@material-ui/core';
-import { Error, Info, Help, Warning, Done } from '@material-ui/icons';
+} from '@mui/material';
+import { Error, Info, Help, Warning, Done } from '@mui/icons-material';
 import React from 'react';
 import Draggable from 'react-draggable';
 import { Labels } from '../app/Labels';

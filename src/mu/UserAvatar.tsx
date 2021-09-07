@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar } from '@material-ui/core';
+import { Avatar } from '@mui/material';
 
 /**
  * User avatar props

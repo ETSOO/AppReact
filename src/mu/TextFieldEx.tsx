@@ -4,9 +4,9 @@ import {
     InputAdornment,
     TextField,
     TextFieldProps
-} from '@material-ui/core';
+} from '@mui/material';
 import { MUGlobal } from './MUGlobal';
-import { Clear, Visibility } from '@material-ui/icons';
+import { Clear, Visibility } from '@mui/icons-material';
 import useCombinedRefs from '../uses/useCombinedRefs';
 
 /**

@@ -7,7 +7,7 @@ import {
     ListItemText,
     DialogContent,
     Button
-} from '@material-ui/core';
+} from '@mui/material';
 
 /**
  * Item list label callback

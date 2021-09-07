@@ -1,7 +1,7 @@
 import React from 'react';
-import { FormControlLabel, FormControlLabelProps } from '@material-ui/core';
-import MuiCheckbox from '@material-ui/core/Checkbox';
-import MuiSwitch from '@material-ui/core/Switch';
+import { FormControlLabel, FormControlLabelProps } from '@mui/material';
+import MuiCheckbox from '@mui/material/Checkbox';
+import MuiSwitch from '@mui/material/Switch';
 
 /**
  * Switch props

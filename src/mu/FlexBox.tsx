@@ -1,4 +1,4 @@
-import { Stack, StackProps } from '@material-ui/core';
+import { Stack, StackProps } from '@mui/material';
 import React from 'react';
 
 /**

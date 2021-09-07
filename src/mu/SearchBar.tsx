@@ -1,6 +1,6 @@
-import { Button, Drawer, IconButton, Stack, useTheme } from '@material-ui/core';
+import { Button, Drawer, IconButton, Stack, useTheme } from '@mui/material';
 import React from 'react';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useDimensions } from '../uses/useDimensions';
 import { Utils as AppUtils } from '../app/Utils';
 import { DomUtils } from '@etsoo/shared';
@@ -357,7 +357,7 @@ export function SearchBar(props: SearchBarProps) {
             {index != null && index < fields.length && (
                 <Drawer
                     anchor="right"
-                    sx={{ minWidth: '200px' }}
+                    sx={{ minWidth: '250px' }}
                     ModalProps={{
                         keepMounted: true // Better open performance on mobile.
                     }}

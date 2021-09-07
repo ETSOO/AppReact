@@ -1,4 +1,4 @@
-import { ContainerProps } from '@material-ui/core';
+import { ContainerProps } from '@mui/material';
 import { IStateUpdate } from '../../states/IState';
 import { CustomFabSize } from '../CustomFabProps';
 import { MoreAction } from '../MoreFab';

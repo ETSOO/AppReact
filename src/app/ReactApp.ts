@@ -10,7 +10,12 @@ import React from 'react';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
 import { PageAction, PageActionType } from '../states/PageState';
-import { UserAction, UserActionType, UserState } from '../states/UserState';
+import {
+    UserAction,
+    UserActionType,
+    UserCalls,
+    UserState
+} from '../states/UserState';
 
 let app: IReactApp<IAppSettings, any>;
 
@@ -24,9 +29,10 @@ export function ReactAppStateDetector(props: IStateProps) {
     const { update } = props;
 
     // Context
-    const { state } = React.useContext(
-        (app.userState as UserState<IUser>).context
-    );
+    const { state } =
+        app == null
+            ? ({ state: {} } as UserCalls<IUser>)
+            : React.useContext((app.userState as UserState<IUser>).context);
 
     // Ready
     React.useEffect(() => {
