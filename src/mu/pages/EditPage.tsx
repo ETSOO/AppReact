@@ -1,8 +1,17 @@
+import { DataTypes } from '@etsoo/shared';
 import { Button, Grid } from '@mui/material';
+import { RouteComponentProps } from '@reach/router';
 import React, { FormEventHandler } from 'react';
 import { Labels } from '../../app/Labels';
+import { MUGlobal } from '../MUGlobal';
 import { CommonPage } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
+
+/**
+ * Edit page router props, include 'id' (/:id) query parameter
+ */
+export type EditPageRouterProps<T extends DataTypes.IdType = number> =
+    RouteComponentProps<{ id: T }>;
 
 /**
  * Edit page props
@@ -20,7 +29,12 @@ export interface EditPageProps extends Omit<CommonPageProps, 'onSubmit'> {
  */
 export function EditPage(props: EditPageProps) {
     // Destruct
-    const { children, onSubmit, paddings, ...rest } = props;
+    const {
+        children,
+        onSubmit,
+        paddings = MUGlobal.pagePaddings,
+        ...rest
+    } = props;
 
     // Labels
     const labels = Labels.CommonPage;
