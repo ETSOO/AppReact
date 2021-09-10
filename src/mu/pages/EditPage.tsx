@@ -6,6 +6,7 @@ import { Labels } from '../../app/Labels';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPage } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
+import EditIcon from '@mui/icons-material/Edit';
 
 /**
  * Edit page router props, include 'id' (/:id) query parameter
@@ -53,9 +54,14 @@ export function EditPage(props: EditPageProps) {
                 <Grid
                     container
                     position="sticky"
-                    sx={{ top: 'auto', bottom: 0 }}
+                    sx={{ top: 'auto', bottom: paddings, paddingTop: paddings }}
                 >
-                    <Button variant="contained" type="submit" fullWidth>
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        fullWidth
+                        startIcon={<EditIcon />}
+                    >
                         {labels.save}
                     </Button>
                 </Grid>
