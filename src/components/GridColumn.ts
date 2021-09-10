@@ -1,5 +1,12 @@
+import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { GridLoaderStates } from './GridLoader';
+
+/**
+ * Grid data type
+ */
+import GridDataType = DataTypes.DataType;
+export { GridDataType };
 
 /**
  * Grid align
@@ -23,19 +30,6 @@ export const GridAlignGet = (align?: GridAlign, type?: GridDataType) => {
     }
     return align;
 };
-
-/**
- * Grid data type
- */
-export enum GridDataType {
-    String,
-    Int,
-    Money,
-    Number,
-    Date,
-    DateTime,
-    Boolean
-}
 
 /**
  * Grid cell value type

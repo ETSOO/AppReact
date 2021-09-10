@@ -8,13 +8,16 @@ export namespace Labels {
      * Common page labels
      */
     export const CommonPage = {
+        add: 'Add',
         more: 'More',
         pullToRefresh: 'Pull down to refresh',
         refresh: 'Refresh',
         refreshing: 'Refreshing',
         releaseToRefresh: 'Release to refresh',
         reset: 'Reset',
-        scrollTop: 'Scroll to top'
+        save: 'Save',
+        scrollTop: 'Scroll to top',
+        submit: 'Submit'
     };
 
     /**
