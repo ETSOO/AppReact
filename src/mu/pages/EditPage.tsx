@@ -46,11 +46,15 @@ export function EditPage(props: EditPageProps) {
                     container
                     justifyContent="left"
                     spacing={paddings}
-                    paddingTop={paddings}
+                    paddingTop={1}
                 >
                     {children}
                 </Grid>
-                <Grid container paddingTop={paddings} paddingBottom={paddings}>
+                <Grid
+                    container
+                    position="sticky"
+                    sx={{ top: 'auto', bottom: 0 }}
+                >
                     <Button variant="contained" type="submit" fullWidth>
                         {labels.save}
                     </Button>
