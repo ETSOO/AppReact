@@ -6,7 +6,11 @@ import useCombinedRefs from '../../uses/useCombinedRefs';
 import { MUGlobal } from '../MUGlobal';
 import { ScrollerListEx } from '../ScrollerListEx';
 import { SearchBar } from '../SearchBar';
-import { CommonPage } from './CommonPage';
+import {
+    CommonPage,
+    CommonPagePullContainer,
+    CommonPageScrollContainer
+} from './CommonPage';
 import { ListPageProps } from './ListPageProps';
 
 /**
@@ -56,8 +60,8 @@ export function ListPage<T>(props: ListPageProps<T>) {
     return (
         <CommonPage
             {...pageProps}
-            scrollContainer={global}
-            pullContainer="#page-container"
+            scrollContainer={CommonPageScrollContainer}
+            pullContainer={CommonPagePullContainer}
         >
             <Stack>
                 <Box

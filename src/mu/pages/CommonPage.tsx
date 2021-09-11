@@ -9,6 +9,17 @@ import { MoreFab } from '../MoreFab';
 import { ReactAppStateDetector } from '../../app/ReactApp';
 import { Container, Fab } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+
+/**
+ * Default pull container
+ */
+export const CommonPagePullContainer = '#page-container';
+
+/**
+ * Default scroll container
+ */
+export const CommonPageScrollContainer = global;
+
 /**
  * Common page
  * @param props Props
@@ -60,11 +71,13 @@ export function CommonPage(props: CommonPageProps) {
                 {...rest}
             >
                 <FabBox sx={{ zIndex: 1 }}>
-                    <ScrollTopFab
-                        size={fabSize}
-                        target={scrollContainer}
-                        title={labels.scrollTop}
-                    />
+                    {scrollContainer && (
+                        <ScrollTopFab
+                            size={fabSize}
+                            target={scrollContainer}
+                            title={labels.scrollTop}
+                        />
+                    )}
                     {fabButtons}
                     {onRefresh != null && (
                         <Fab

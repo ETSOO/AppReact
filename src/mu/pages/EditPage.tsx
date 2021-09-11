@@ -4,7 +4,7 @@ import { RouteComponentProps } from '@reach/router';
 import React, { FormEventHandler } from 'react';
 import { Labels } from '../../app/Labels';
 import { MUGlobal } from '../MUGlobal';
-import { CommonPage } from './CommonPage';
+import { CommonPage, CommonPageScrollContainer } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -34,6 +34,7 @@ export function EditPage(props: EditPageProps) {
         children,
         onSubmit,
         paddings = MUGlobal.pagePaddings,
+        scrollContainer = CommonPageScrollContainer,
         ...rest
     } = props;
 
@@ -41,7 +42,11 @@ export function EditPage(props: EditPageProps) {
     const labels = Labels.CommonPage;
 
     return (
-        <CommonPage paddings={paddings} {...rest}>
+        <CommonPage
+            paddings={paddings}
+            scrollContainer={scrollContainer}
+            {...rest}
+        >
             <form onSubmit={onSubmit}>
                 <Grid
                     container
@@ -54,7 +59,12 @@ export function EditPage(props: EditPageProps) {
                 <Grid
                     container
                     position="sticky"
-                    sx={{ top: 'auto', bottom: paddings, paddingTop: paddings }}
+                    sx={{
+                        top: 'auto',
+                        bottom: (theme) =>
+                            MUGlobal.updateWithTheme(paddings, theme.spacing),
+                        paddingTop: paddings
+                    }}
                 >
                     <Button
                         variant="contained"

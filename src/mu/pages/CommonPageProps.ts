@@ -40,7 +40,6 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
 
     /**
      * Pull container
-     * @default '#page-container'
      */
     pullContainer?: string;
 

@@ -6,7 +6,11 @@ import { useDimensions } from '../../uses/useDimensions';
 import { MUGlobal } from '../MUGlobal';
 import { SearchBar } from '../SearchBar';
 import { TableEx, TableExMethodRef, TableExMinWidth } from '../TableEx';
-import { CommonPage } from './CommonPage';
+import {
+    CommonPage,
+    CommonPagePullContainer,
+    CommonPageScrollContainer
+} from './CommonPage';
 import { TablePageProps } from './TablePageProps';
 
 /**
@@ -89,8 +93,8 @@ export function TablePage<T>(props: TablePageProps<T>) {
     return (
         <CommonPage
             {...pageProps}
-            scrollContainer={global}
-            pullContainer="#page-container"
+            scrollContainer={CommonPageScrollContainer}
+            pullContainer={CommonPagePullContainer}
         >
             <Stack>
                 <Box
