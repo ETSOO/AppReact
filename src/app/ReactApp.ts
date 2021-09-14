@@ -7,6 +7,7 @@ import {
 } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import React from 'react';
+import { NotifierPromptProps } from '../mu/NotifierPromptProps';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
 import { PageAction, PageActionType } from '../states/PageState';
@@ -16,6 +17,7 @@ import {
     UserCalls,
     UserState
 } from '../states/UserState';
+import { InputDialogProps } from './InputDialogProps';
 
 let app: IReactApp<IAppSettings, any>;
 
@@ -129,6 +131,26 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
                 data
             });
         }
+    }
+
+    /**
+     * Show input dialog
+     * @param props Props
+     */
+    showInputDialog({
+        title,
+        message,
+        inputs,
+        callback,
+        cancelLabel,
+        okLabel
+    }: InputDialogProps): void {
+        const props: NotifierPromptProps = {
+            okLabel,
+            cancelLabel,
+            inputs
+        };
+        this.notifier.prompt<HTMLFormElement>(message, callback, title, props);
     }
 
     /**

@@ -38,6 +38,7 @@ import {
     NotifierReact
 } from '../notifier/Notifier';
 import { DraggablePaperComponent } from './DraggablePaperComponent';
+import { NotifierPromptProps } from './NotifierPromptProps';
 
 // Custom icon dialog title bar
 const IconDialogTitle = styled(DialogTitle)`
@@ -212,17 +213,20 @@ export class NotificationMU extends NotificationReact {
         const title = this.title ?? labels.promptTitle;
 
         const {
-            noLabel = labels.promptCancel,
-            yesLabel = labels.promptOK,
+            cancelLabel = labels.promptCancel,
+            okLabel = labels.promptOK,
             inputs,
             type,
             ...rest
-        } = this.inputProps;
+        } = this.inputProps as NotifierPromptProps;
 
         const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
 
             if (this.onReturn) {
+                // Inputs case, no HTMLForm set to value, set the current form
+                if (inputs && value == null) value = event.currentTarget;
+
                 if (inputRef.current) {
                     if (type === 'date') {
                         const dateValue = inputRef.current.valueAsDate;
@@ -318,10 +322,10 @@ export class NotificationMU extends NotificationReact {
                             color="secondary"
                             onClick={() => this.dismiss()}
                         >
-                            {noLabel}
+                            {cancelLabel}
                         </Button>
                         <Button type="submit" color="primary" autoFocus>
-                            {yesLabel}
+                            {okLabel}
                         </Button>
                     </DialogActions>
                 </form>
