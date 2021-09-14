@@ -23,8 +23,6 @@ import {
     DialogContentText,
     DialogTitle,
     Fade,
-    Paper,
-    PaperProps,
     Slider,
     Snackbar,
     styled,
@@ -33,25 +31,13 @@ import {
 } from '@mui/material';
 import { Error, Info, Help, Warning, Done } from '@mui/icons-material';
 import React from 'react';
-import Draggable from 'react-draggable';
 import { Labels } from '../app/Labels';
 import {
     INotificationReact,
     NotificationReact,
     NotifierReact
 } from '../notifier/Notifier';
-
-// Draggable Paper component for Dialog
-function PaperComponent(props: PaperProps) {
-    return (
-        <Draggable
-            handle="#draggable-dialog-title"
-            cancel={'[class*="MuiDialogContent-root"]'}
-        >
-            <Paper {...props} />
-        </Draggable>
-    );
-}
+import { DraggablePaperComponent } from './DraggablePaperComponent';
 
 // Custom icon dialog title bar
 const IconDialogTitle = styled(DialogTitle)`
@@ -105,7 +91,7 @@ export class NotificationMU extends NotificationReact {
             <Dialog
                 key={this.id}
                 open={this.open}
-                PaperComponent={PaperComponent}
+                PaperComponent={DraggablePaperComponent}
                 className={className}
             >
                 <IconDialogTitle
@@ -147,7 +133,7 @@ export class NotificationMU extends NotificationReact {
             <Dialog
                 key={this.id}
                 open={this.open}
-                PaperComponent={PaperComponent}
+                PaperComponent={DraggablePaperComponent}
                 className={className}
             >
                 <IconDialogTitle
@@ -225,12 +211,17 @@ export class NotificationMU extends NotificationReact {
         const labels = Labels.NotificationMU;
         const title = this.title ?? labels.promptTitle;
 
-        const noLabel = labels.promptCancel;
-        const yesLabel = labels.promptOK;
+        const {
+            noLabel = labels.promptCancel,
+            yesLabel = labels.promptOK,
+            inputs,
+            type,
+            ...rest
+        } = this.inputProps;
 
-        const { type, ...rest } = this.inputProps;
+        const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
 
-        const returnInputValue = () => {
             if (this.onReturn) {
                 if (inputRef.current) {
                     if (type === 'date') {
@@ -238,88 +229,102 @@ export class NotificationMU extends NotificationReact {
                         if (dateValue == null) {
                             inputRef.current.focus();
                             return;
-                        } else {
-                            this.onReturn(dateValue);
                         }
+                        if (this.onReturn(dateValue) === false) return;
                     } else if (type === 'number') {
                         const numberValue = inputRef.current.valueAsNumber;
                         if (isNaN(numberValue)) {
                             inputRef.current.focus();
                             return;
-                        } else {
-                            this.onReturn(numberValue);
                         }
+                        if (this.onReturn(numberValue) === false) return;
                     } else if (type === 'switch') {
                         const boolValue = inputRef.current.value == 'true';
-                        this.onReturn(boolValue);
+                        if (this.onReturn(boolValue) === false) return;
                     } else {
                         const textValue = inputRef.current.value;
                         if (textValue) {
-                            this.onReturn(textValue);
-                        } else {
-                            inputRef.current.focus();
-                            return;
+                            if (this.onReturn(textValue) === false) return;
                         }
+                        inputRef.current.focus();
                     }
                 } else if (value != null) {
-                    this.onReturn(value);
+                    if (this.onReturn(value) === false) return;
                 }
             }
 
             this.dismiss();
         };
 
+        let localInputs: React.ReactNode;
         let inputRef = React.createRef<HTMLInputElement>();
         let value: any = undefined;
-        let input: any;
-        if (type === 'switch') {
-            input = (
-                <Switch inputRef={inputRef} {...rest} value="true" autoFocus />
-            );
-        } else if (type === 'slider') {
-            input = <Slider onChange={(_e, v) => (value = v)} />;
+
+        let formChangeHandler:
+            | React.FormEventHandler<HTMLFormElement>
+            | undefined;
+
+        if (inputs == null) {
+            if (type === 'switch') {
+                localInputs = (
+                    <Switch
+                        inputRef={inputRef}
+                        {...rest}
+                        value="true"
+                        autoFocus
+                    />
+                );
+            } else if (type === 'slider') {
+                localInputs = <Slider onChange={(_e, v) => (value = v)} />;
+            } else {
+                localInputs = (
+                    <TextField
+                        inputRef={inputRef}
+                        autoFocus
+                        fullWidth
+                        type={type}
+                        {...rest}
+                    />
+                );
+            }
         } else {
-            input = (
-                <TextField
-                    autoFocus
-                    fullWidth
-                    inputRef={inputRef}
-                    type={type}
-                    {...rest}
-                />
-            );
+            localInputs = inputs;
+            formChangeHandler = (event) => {
+                value = event.currentTarget;
+            };
         }
 
         return (
             <Dialog
                 key={this.id}
                 open={this.open}
-                PaperComponent={PaperComponent}
+                PaperComponent={DraggablePaperComponent}
                 className={className}
             >
-                <IconDialogTitle
-                    className={classes.iconTitle}
-                    id="draggable-dialog-title"
-                >
-                    <Info color="primary" />
-                    <span className="dialogTitle">{title}</span>
-                </IconDialogTitle>
-                <DialogContent>
-                    <DialogContentText>{this.content}</DialogContentText>
-                    {input}
-                </DialogContent>
-                <DialogActions>
-                    <Button color="secondary" onClick={() => this.dismiss()}>
-                        {noLabel}
-                    </Button>
-                    <Button
-                        color="primary"
-                        onClick={() => returnInputValue()}
-                        autoFocus
+                <form onSubmit={handleSubmit} onChange={formChangeHandler}>
+                    <IconDialogTitle
+                        className={classes.iconTitle}
+                        id="draggable-dialog-title"
                     >
-                        {yesLabel}
-                    </Button>
-                </DialogActions>
+                        <Info color="primary" />
+                        <span className="dialogTitle">{title}</span>
+                    </IconDialogTitle>
+                    <DialogContent>
+                        <DialogContentText>{this.content}</DialogContentText>
+                        {localInputs}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            color="secondary"
+                            onClick={() => this.dismiss()}
+                        >
+                            {noLabel}
+                        </Button>
+                        <Button type="submit" color="primary" autoFocus>
+                            {yesLabel}
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         );
     }

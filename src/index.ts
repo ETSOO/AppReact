@@ -31,6 +31,7 @@ export * from './mu/CustomFabProps';
 export * from './mu/DataGridEx';
 export * from './mu/DataGridRenderers';
 export * from './mu/DialogButton';
+export * from './mu/DraggablePaperComponent';
 export * from './mu/FabBox';
 export * from './mu/FlexBox';
 export * from './mu/IconButtonLink';
