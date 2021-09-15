@@ -118,7 +118,7 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
     }
 
     /**
-     * Set page title
+     * Set page title and data
      * @param title Page title
      * @param data Page data
      */
@@ -131,6 +131,15 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
                 data
             });
         }
+    }
+
+    /**
+     * Set page title and data
+     * @param key Page title resource key
+     * @param data Page data
+     */
+    setPageKey(key: string, data?: {}): void {
+        this.setPageTitle(this.get<string>(key) ?? '', data);
     }
 
     /**
