@@ -30,6 +30,7 @@ export function DataGridPage<T>(props: DataGridPageProps<T>) {
         height,
         loadData,
         mRef,
+        sizeReadyMiliseconds = 100,
         pageProps = {},
         ...rest
     } = props;
@@ -63,7 +64,7 @@ export function DataGridPage<T>(props: DataGridPageProps<T>) {
     };
 
     // Watch container
-    const { dimensions } = useDimensions(1, undefined, 50);
+    const { dimensions } = useDimensions(1, undefined, sizeReadyMiliseconds);
     const rect = dimensions[0][2];
 
     React.useEffect(() => {

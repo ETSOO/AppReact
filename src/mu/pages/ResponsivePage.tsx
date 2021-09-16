@@ -35,6 +35,7 @@ export function ResponsivePage<T>(props: ResponsePageProps<T>) {
         innerItemRenderer,
         itemSize,
         mRef,
+        sizeReadyMiliseconds = 100,
         pageProps = {},
         ...rest
     } = props;
@@ -68,7 +69,7 @@ export function ResponsivePage<T>(props: ResponsePageProps<T>) {
     };
 
     // Watch container
-    const { dimensions } = useDimensions(1, undefined, 50);
+    const { dimensions } = useDimensions(1, undefined, sizeReadyMiliseconds);
     const rect = dimensions[0][2];
     const showDataGrid = (rect?.width ?? 0) >= dataGridMinWidth;
 

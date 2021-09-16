@@ -19,4 +19,10 @@ export interface SearchPageProps<T> extends Omit<GridLoader<T>, 'loadData'> {
      * Page props
      */
     pageProps?: CommonPageProps;
+
+    /**
+     * Size ready to read miliseconds span
+     * @default 100
+     */
+    sizeReadyMiliseconds?: number;
 }

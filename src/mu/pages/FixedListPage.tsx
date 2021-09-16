@@ -30,6 +30,7 @@ export function FixedListPage<T>(
         fields,
         loadData,
         mRef,
+        sizeReadyMiliseconds = 100,
         pageProps = {},
         ...rest
     } = props;
@@ -74,7 +75,7 @@ export function FixedListPage<T>(
     };
 
     // Watch container
-    const { dimensions } = useDimensions(1, undefined, 100);
+    const { dimensions } = useDimensions(1, undefined, sizeReadyMiliseconds);
     const rect = dimensions[0][2];
     const list = React.useMemo(() => {
         if (rect != null && rect.height > 50) {

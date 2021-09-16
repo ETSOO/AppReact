@@ -21,6 +21,12 @@ export interface SearchBarProps {
     fields: React.ReactElement[];
 
     /**
+     * Inner height
+     * @default 40
+     */
+    innerHeight?: number;
+
+    /**
      * On submit callback
      */
     onSubmit: (data: FormData, reset: boolean) => void | PromiseLike<void>;
@@ -78,7 +84,7 @@ const setChildState = (child: Element, enabled: boolean) => {
  */
 export function SearchBar(props: SearchBarProps) {
     // Destruct
-    const { className, fields, onSubmit } = props;
+    const { className, fields, innerHeight = 40, onSubmit } = props;
 
     // Labels
     const labels = Labels.CommonPage;
@@ -316,6 +322,7 @@ export function SearchBar(props: SearchBarProps) {
                     alignItems="center"
                     direction="row"
                     spacing={1}
+                    height={innerHeight}
                     sx={{
                         '& > :not(style)': {
                             flexBasis: 'auto',

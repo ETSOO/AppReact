@@ -20,7 +20,15 @@ import { TablePageProps } from './TablePageProps';
  */
 export function TablePage<T>(props: TablePageProps<T>) {
     // Destruct
-    const { columns, fields, loadData, mRef, pageProps = {}, ...rest } = props;
+    const {
+        columns,
+        fields,
+        loadData,
+        mRef,
+        sizeReadyMiliseconds = 100,
+        pageProps = {},
+        ...rest
+    } = props;
 
     pageProps.paddings ??= MUGlobal.pagePaddings;
 
@@ -66,7 +74,7 @@ export function TablePage<T>(props: TablePageProps<T>) {
     );
 
     // Watch container
-    const { dimensions } = useDimensions(1, undefined, 100);
+    const { dimensions } = useDimensions(1, undefined, sizeReadyMiliseconds);
     const rect = dimensions[0][2];
     const list = React.useMemo(() => {
         if (rect != null && rect.height > 50 && rect.width >= totalWidth) {
