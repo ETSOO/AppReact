@@ -39,6 +39,7 @@ import {
 } from '../notifier/Notifier';
 import { DraggablePaperComponent } from './DraggablePaperComponent';
 import { NotifierPromptProps } from './NotifierPromptProps';
+import { LoadingButton } from './LoadingButton';
 
 // Custom icon dialog title bar
 const IconDialogTitle = styled(DialogTitle)`
@@ -220,12 +221,16 @@ export class NotificationMU extends NotificationReact {
             ...rest
         } = this.inputProps as NotifierPromptProps;
 
-        const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
+        const handleSubmit = async (
+            event: React.MouseEvent<HTMLButtonElement>
+        ) => {
+            // Result
+            let result: boolean | void | PromiseLike<boolean | void> =
+                undefined;
 
             if (this.onReturn) {
                 // Inputs case, no HTMLForm set to value, set the current form
-                if (inputs && value == null) value = event.currentTarget;
+                if (inputs && value == null) value = event.currentTarget.form;
 
                 if (inputRef.current) {
                     if (type === 'date') {
@@ -234,28 +239,34 @@ export class NotificationMU extends NotificationReact {
                             inputRef.current.focus();
                             return;
                         }
-                        if (this.onReturn(dateValue) === false) return;
+                        result = this.onReturn(dateValue);
                     } else if (type === 'number') {
                         const numberValue = inputRef.current.valueAsNumber;
                         if (isNaN(numberValue)) {
                             inputRef.current.focus();
                             return;
                         }
-                        if (this.onReturn(numberValue) === false) return;
+                        result = this.onReturn(numberValue);
                     } else if (type === 'switch') {
                         const boolValue = inputRef.current.value == 'true';
-                        if (this.onReturn(boolValue) === false) return;
+                        result = this.onReturn(boolValue);
                     } else {
-                        const textValue = inputRef.current.value;
-                        if (textValue) {
-                            if (this.onReturn(textValue) === false) return;
+                        const textValue = inputRef.current.value.trim();
+                        if (textValue === '') {
+                            inputRef.current.focus();
+                            return;
                         }
-                        inputRef.current.focus();
+                        result = this.onReturn(textValue);
                     }
                 } else if (value != null) {
-                    if (this.onReturn(value) === false) return;
+                    result = this.onReturn(value);
                 }
             }
+
+            // Get the value
+            // returns false to prevent default dismiss
+            const v = await result;
+            if (v === false) return;
 
             this.dismiss();
         };
@@ -263,10 +274,6 @@ export class NotificationMU extends NotificationReact {
         let localInputs: React.ReactNode;
         let inputRef = React.createRef<HTMLInputElement>();
         let value: any = undefined;
-
-        let formChangeHandler:
-            | React.FormEventHandler<HTMLFormElement>
-            | undefined;
 
         if (inputs == null) {
             if (type === 'switch') {
@@ -293,9 +300,6 @@ export class NotificationMU extends NotificationReact {
             }
         } else {
             localInputs = inputs;
-            formChangeHandler = (event) => {
-                value = event.currentTarget;
-            };
         }
 
         return (
@@ -305,7 +309,7 @@ export class NotificationMU extends NotificationReact {
                 PaperComponent={DraggablePaperComponent}
                 className={className}
             >
-                <form onSubmit={handleSubmit} onChange={formChangeHandler}>
+                <form>
                     <IconDialogTitle
                         className={classes.iconTitle}
                         id="draggable-dialog-title"
@@ -324,9 +328,13 @@ export class NotificationMU extends NotificationReact {
                         >
                             {cancelLabel}
                         </Button>
-                        <Button type="submit" color="primary" autoFocus>
+                        <LoadingButton
+                            color="primary"
+                            autoFocus
+                            onClick={handleSubmit}
+                        >
                             {okLabel}
-                        </Button>
+                        </LoadingButton>
                     </DialogActions>
                 </form>
             </Dialog>
