@@ -38,6 +38,15 @@ export function LoadingButton(props: LoadingButtonProps) {
         endIcon
     );
 
+    // Check if the component is mounted
+    const isMounted = React.useRef(true);
+
+    React.useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
     // Layout
     return (
         <Button
@@ -51,12 +60,15 @@ export function LoadingButton(props: LoadingButtonProps) {
                     // const AsyncFunction = (async () => {}).constructor;
                     // onClick instanceof AsyncFunction
                     if (onClick.constructor.name === 'AsyncFunction') {
+                        // May long time running
                         await onClick(event);
                     } else {
                         onClick(event);
                     }
 
-                    setLoading(false);
+                    // Warning: Can't perform a React state update on an unmounted component
+                    // It's necessary to check the component is mounted now
+                    if (isMounted.current) setLoading(false);
                 }
             }}
             {...rest}
