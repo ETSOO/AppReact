@@ -23,6 +23,9 @@ let app: IReactApp<IAppSettings, any>;
 
 /**
  * React app state detector
+ * Case 1: undefined, when refresh the whole page
+ * Case 2: false, unauthorized
+ * Case 3: true, authorized or considered as authorized (maynot, like token expiry)
  * @param props Props
  * @returns Component
  */

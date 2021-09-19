@@ -24,14 +24,19 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     moreActions?: MoreAction[];
 
     /**
-     * On refresh callback
+     * On refresh callback, only when authorized = true
      */
     onRefresh?: () => void | PromiseLike<void>;
 
     /**
-     * On page update, may uses onRefresh
+     * On page update, when authorized = null or true case, may uses onRefresh
      */
-    onUpdate?: IStateUpdate;
+    onUpdate?: () => void | PromiseLike<void>;
+
+    /**
+     * On page update, all cases with authorized
+     */
+    onUpdateAll?: IStateUpdate;
 
     /**
      * Paddings

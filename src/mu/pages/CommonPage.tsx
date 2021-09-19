@@ -35,6 +35,7 @@ export function CommonPage(props: CommonPageProps) {
         moreActions,
         onRefresh,
         onUpdate,
+        onUpdateAll,
         paddings = MUGlobal.pagePaddings,
         scrollContainer,
         pullContainer,
@@ -51,8 +52,12 @@ export function CommonPage(props: CommonPageProps) {
     const labels = Labels.CommonPage;
 
     // Update
-    const update = onUpdate
-        ? onUpdate
+    const update = onUpdateAll
+        ? onUpdateAll
+        : onUpdate
+        ? (authorized?: boolean) => {
+              if (authorized == null || authorized) onUpdate();
+          }
         : onRefresh
         ? (authorized?: boolean) => {
               if (authorized) onRefresh();
