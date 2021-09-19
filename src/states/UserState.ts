@@ -7,14 +7,17 @@ import { State } from './State';
  * Style like 'const enum' will remove definition of the enum and cause module errors
  */
 export enum UserActionType {
-    // Login action
+    // Login
     Login = 'LOGIN',
 
-    // Logout action
+    // Logout
     Logout = 'LOGOUT',
 
-    // Update action
-    Update = 'UPDATE'
+    // Update
+    Update = 'UPDATE',
+
+    // Unauthorized
+    Unauthorized = 'UNAUTHORIZED'
 }
 
 /**
@@ -75,7 +78,7 @@ export class UserState<D extends IUser> {
                         return {
                             ...state, // Keep other user data
                             token: undefined, // Remove token
-                            authorized: false // Flag as authorized
+                            authorized: false // Flag as unauthorized
                         };
                     case UserActionType.Update:
                         if (action.update) {
@@ -84,6 +87,11 @@ export class UserState<D extends IUser> {
                             return newState;
                         }
                         return state;
+                    case UserActionType.Unauthorized:
+                        return {
+                            ...state, // Keep other user data and token for refresh
+                            authorized: false // Flag as unauthorized
+                        };
                     default:
                         return state;
                 }

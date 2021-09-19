@@ -104,6 +104,18 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
     }
 
     /**
+     * Try login
+     * Will update user state with UserActionType.Unauthorized
+     */
+    override tryLogin() {
+        // Dispatch action
+        if (this.userStateDispatch != null)
+            this.userStateDispatch({
+                type: UserActionType.Unauthorized
+            });
+    }
+
+    /**
      * Set page data
      * @param data Page data
      */
