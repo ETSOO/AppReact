@@ -163,6 +163,7 @@ export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
             selectedItems: []
         }
     );
+    const isMounted = React.useRef(true);
 
     // Reset the state and load again
     const reset = (add?: {}) => {
@@ -216,7 +217,7 @@ export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
         };
 
         loadData(loadProps).then((result) => {
-            if (result == null) {
+            if (!isMounted.current || result == null) {
                 return;
             }
 
@@ -324,6 +325,12 @@ export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
     // Auto load data when current page is 0
     if (currentPage === 0 && stateAutoLoad && lastLoadedItems == null)
         loadDataLocal();
+
+    React.useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     // Layout
     return (

@@ -1,3 +1,4 @@
+import Done from '@mui/icons-material/Done';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
@@ -33,7 +34,11 @@ test('Alert tests', () => {
 
     expect(button.length).toBe(1);
     expect(button[0].innerHTML).toContain('OK');
-    button[0].click();
+
+    act(() => {
+        button[0].click();
+    });
+
     expect(handleClick).toBeCalled();
 
     // Fast forward
@@ -54,7 +59,11 @@ test('Confirm tests', () => {
 
     expect(button.length).toBe(2);
     expect(button[0].innerHTML).toContain('Cancel');
-    button[0].click();
+
+    act(() => {
+        button[0].click();
+    });
+
     expect(handleClick).toBeCalled();
 
     // Fast forward
@@ -63,11 +72,13 @@ test('Confirm tests', () => {
 
 test('Prompt tests', () => {
     // Click
-    const handleClick = jest.fn();
+    const handleClick = jest.fn((result: boolean) => {
+        expect(result).toBeTruthy();
+    });
 
     act(() => {
         // Add the notification
-        notifier.prompt('Prompt message', handleClick, undefined, {
+        notifier.prompt<boolean>('Prompt message', handleClick, undefined, {
             type: 'switch'
         });
     });
@@ -77,10 +88,13 @@ test('Prompt tests', () => {
 
     expect(button.length).toBe(2); // Switch will generate a button
     expect(button[1].innerHTML).toContain('OK');
-    button[1].click();
+
+    act(() => {
+        button[1].click();
+    });
+
     expect(handleClick).toBeCalled();
 
-    // Fast forward
     jest.runOnlyPendingTimers();
 });
 

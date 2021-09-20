@@ -142,14 +142,12 @@ export const ScrollerList = <T extends Record<string, any>>(
             currentState: GridLoaderStates<T>,
             newState: Partial<GridLoaderStates<T>>
         ) => {
-            if (!currentState.mounted) return currentState;
             return { ...currentState, ...newState };
         },
         {
             autoLoad,
             currentPage: 0,
             hasNextPage: true,
-            mounted: true,
             isNextPageLoading: false,
             orderBy: defaultOrderBy,
             orderByAsc: defaultOrderByAsc,
@@ -158,6 +156,7 @@ export const ScrollerList = <T extends Record<string, any>>(
             selectedItems: []
         }
     );
+    const isMounted = React.useRef(true);
 
     // Load data
     const loadDataLocal = (pageAdd: number = 1) => {
@@ -180,7 +179,7 @@ export const ScrollerList = <T extends Record<string, any>>(
         };
 
         loadData(loadProps).then((result) => {
-            if (result == null || !state.mounted) {
+            if (result == null || !isMounted.current) {
                 return;
             }
 
@@ -302,7 +301,7 @@ export const ScrollerList = <T extends Record<string, any>>(
             // Remove scroll event
             window.removeEventListener('scroll', handleWindowScroll);
 
-            state.mounted = false;
+            isMounted.current = false;
         };
     }, []);
 

@@ -164,14 +164,12 @@ export const ScrollerGrid = <T extends Record<string, any>>(
             currentState: GridLoaderStates<T>,
             newState: Partial<GridLoaderStates<T>>
         ) => {
-            if (!currentState.mounted) return currentState;
             return { ...currentState, ...newState };
         },
         {
             autoLoad,
             currentPage: 0,
             hasNextPage: true,
-            mounted: true,
             isNextPageLoading: false,
             orderBy: defaultOrderBy,
             orderByAsc: defaultOrderByAsc,
@@ -180,6 +178,7 @@ export const ScrollerGrid = <T extends Record<string, any>>(
             selectedItems: []
         }
     );
+    const isMounted = React.useRef(true);
 
     const ref = React.createRef<VariableSizeGrid<T>>();
 
@@ -204,7 +203,7 @@ export const ScrollerGrid = <T extends Record<string, any>>(
         };
 
         loadData(loadProps).then((result) => {
-            if (result == null || !state.mounted) {
+            if (result == null || !isMounted.current) {
                 return;
             }
 
@@ -360,7 +359,7 @@ export const ScrollerGrid = <T extends Record<string, any>>(
 
     React.useEffect(() => {
         return () => {
-            state.mounted = false;
+            isMounted.current = false;
         };
     }, []);
 

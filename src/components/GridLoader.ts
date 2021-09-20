@@ -131,11 +131,6 @@ export interface GridLoaderStates<T> extends GridLoadDataProps {
     isNextPageLoading: boolean;
 
     /**
-     * Mounted or not
-     */
-    mounted?: boolean;
-
-    /**
      * Current rows
      */
     rows: T[];

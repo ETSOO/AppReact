@@ -248,7 +248,7 @@ export class NotificationMU extends NotificationReact {
                         }
                         result = this.onReturn(numberValue);
                     } else if (type === 'switch') {
-                        const boolValue = inputRef.current.value == 'true';
+                        const boolValue = inputRef.current.value === 'true';
                         result = this.onReturn(boolValue);
                     } else {
                         const textValue = inputRef.current.value.trim();

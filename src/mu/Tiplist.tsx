@@ -113,6 +113,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
         idLoaded?: boolean;
         idSet?: boolean;
     }>({});
+    const isMounted = React.useRef(true);
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
@@ -175,6 +176,8 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
 
         // Load list
         loadData(keyword, id).then((options) => {
+            if (!isMounted.current) return;
+
             // Indicates loading completed
             stateUpdate({
                 loading: false,
@@ -212,6 +215,17 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
             state.idLoaded = true;
         }
     }
+
+    React.useEffect(() => {
+        return () => {
+            // Clear any seed
+            if (state.loadDataSeed != null) {
+                clearTimeout(state.loadDataSeed);
+            }
+
+            isMounted.current = false;
+        };
+    }, []);
 
     // Layout
     return (
