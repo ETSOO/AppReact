@@ -9,7 +9,7 @@ export interface IPageData extends IState {
     /**
      * Page title
      */
-    title: string;
+    title?: string;
 }
 
 /**
@@ -89,7 +89,7 @@ export class PageState<D extends IPageData> {
                         return state;
                 }
             },
-            { title: '' } as D,
+            {} as D,
             {} as PageCalls<D>
         );
 
