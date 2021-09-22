@@ -10,7 +10,7 @@ import React from 'react';
 import { NotifierPromptProps } from '../mu/NotifierPromptProps';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
-import { PageAction, PageActionType } from '../states/PageState';
+import { IPageData, PageAction, PageActionType } from '../states/PageState';
 import {
     UserAction,
     UserActionType,
@@ -19,7 +19,7 @@ import {
 } from '../states/UserState';
 import { InputDialogProps } from './InputDialogProps';
 
-let app: IReactApp<IAppSettings, any>;
+let app: IReactApp<IAppSettings, any, any>;
 
 /**
  * React app state detector
@@ -52,8 +52,11 @@ export function ReactAppStateDetector(props: IStateProps) {
 /**
  * Core application interface
  */
-export interface IReactApp<S extends IAppSettings, D extends IUser>
-    extends ICoreApp<S, React.ReactNode> {
+export interface IReactApp<
+    S extends IAppSettings,
+    D extends IUser,
+    P extends IPageData
+> extends ICoreApp<S, React.ReactNode> {
     /**
      * User state
      */
@@ -63,9 +66,13 @@ export interface IReactApp<S extends IAppSettings, D extends IUser>
 /**
  * React application
  */
-export abstract class ReactApp<S extends IAppSettings, D extends IUser>
+export abstract class ReactApp<
+        S extends IAppSettings,
+        D extends IUser,
+        P extends IPageData
+    >
     extends CoreApp<S, React.ReactNode>
-    implements IReactApp<S, D>
+    implements IReactApp<S, D, P>
 {
     /**
      * User state
@@ -75,7 +82,7 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
     /**
      * Page state dispatch
      */
-    pageStateDispatch?: React.Dispatch<PageAction>;
+    pageStateDispatch?: React.Dispatch<PageAction<P>>;
 
     /**
      * User state dispatch
@@ -122,7 +129,7 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
      * Set page data
      * @param data Page data
      */
-    setPageData(data: {}): void {
+    setPageData(data: P): void {
         // Dispatch the change
         if (this.pageStateDispatch != null) {
             this.pageStateDispatch({
@@ -135,14 +142,15 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
     /**
      * Set page title and data
      * @param title Page title
-     * @param data Page data
      */
-    setPageTitle(title: string, data?: {}): void {
+    setPageTitle(title: string): void {
+        // Data
+        const data = { title } as P;
+
         // Dispatch the change
         if (this.pageStateDispatch != null) {
             this.pageStateDispatch({
                 type: PageActionType.Title,
-                title,
                 data
             });
         }
@@ -151,10 +159,9 @@ export abstract class ReactApp<S extends IAppSettings, D extends IUser>
     /**
      * Set page title and data
      * @param key Page title resource key
-     * @param data Page data
      */
-    setPageKey(key: string, data?: {}): void {
-        this.setPageTitle(this.get<string>(key) ?? '', data);
+    setPageKey(key: string): void {
+        this.setPageTitle(this.get<string>(key) ?? '');
     }
 
     /**

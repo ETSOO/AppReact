@@ -3,18 +3,13 @@ import { IProviderProps, IUpdate } from './IState';
 import { State } from './State';
 
 /**
- * Page state
+ * Page data interface
  */
-export interface IPageState extends IState {
+export interface IPageData extends IState {
     /**
      * Page title
      */
-    title?: string;
-
-    /**
-     * Page data
-     */
-    data?: {};
+    title: string;
 }
 
 /**
@@ -31,36 +26,44 @@ export enum PageActionType {
 /**
  * Page action
  */
-export interface PageAction extends IAction, IPageState {
+export interface PageAction<D extends IPageData> extends IAction {
     /**
      * Action type
      */
     type: PageActionType;
+
+    /**
+     * Action data
+     */
+    data: D;
 }
 
 /**
  * Page provider props
  */
-export type PageProviderProps = IProviderProps<PageAction>;
+export type PageProviderProps<D extends IPageData> = IProviderProps<
+    PageAction<D>
+>;
 
 /**
  * Page calls with the state
  */
-export interface PageCalls extends IUpdate<IPageState, PageAction> {}
+export interface PageCalls<D extends IPageData>
+    extends IUpdate<D, PageAction<D>> {}
 
 /**
  * User state
  */
-export class PageState {
+export class PageState<D extends IPageData> {
     /**
      * Context
      */
-    readonly context: React.Context<PageCalls>;
+    readonly context: React.Context<PageCalls<D>>;
 
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent<PageProviderProps>;
+    readonly provider: React.FunctionComponent<PageProviderProps<D>>;
 
     /**
      * Constructor
@@ -68,24 +71,26 @@ export class PageState {
     constructor() {
         // Act
         const { context, provider } = State.create(
-            (state: IPageState, action: PageAction) => {
-                switch (action.type) {
+            (state: D, { type, data }: PageAction<D>) => {
+                switch (type) {
                     case PageActionType.Data:
                         // Set page data
-                        return { ...state, data: action.data ?? {} };
+                        return { ...state, ...data };
                     case PageActionType.Title:
+                        // Same title
+                        if (state.title === data.title) return state;
+
                         // Set page title
                         return {
                             ...state,
-                            title: action.title,
-                            data: action.data ?? {}
+                            title: data.title
                         };
                     default:
                         return state;
                 }
             },
-            {} as IPageState,
-            {} as PageCalls
+            { title: '' } as D,
+            {} as PageCalls<D>
         );
 
         this.context = context;
