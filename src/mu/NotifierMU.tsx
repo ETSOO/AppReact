@@ -60,9 +60,12 @@ const IconDialogTitle = styled(DialogTitle)`
 export class NotificationMU extends NotificationReact {
     // On return
     // Dismiss first, then run callback
-    private returnValue(value: any) {
+    private async returnValue(value: any) {
+        if (this.onReturn) {
+            const result = await this.onReturn(value);
+            if (result === false) return;
+        }
         this.dismiss();
-        if (this.onReturn) this.onReturn(value);
     }
 
     // Create alert
@@ -107,13 +110,13 @@ export class NotificationMU extends NotificationReact {
                     <DialogContentText>{this.content}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <LoadingButton
                         color="primary"
-                        onClick={() => this.returnValue(undefined)}
+                        onClick={async () => await this.returnValue(undefined)}
                         autoFocus
                     >
                         {labels.alertOK}
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </Dialog>
         );
@@ -149,19 +152,19 @@ export class NotificationMU extends NotificationReact {
                     <DialogContentText>{this.content}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <LoadingButton
                         color="secondary"
-                        onClick={() => this.returnValue(false)}
+                        onClick={async () => await this.returnValue(false)}
                     >
                         {noLabel}
-                    </Button>
-                    <Button
+                    </LoadingButton>
+                    <LoadingButton
                         color="primary"
-                        onClick={() => this.returnValue(true)}
+                        onClick={async () => await this.returnValue(true)}
                         autoFocus
                     >
                         {yesLabel}
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </Dialog>
         );
