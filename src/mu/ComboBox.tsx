@@ -148,14 +148,14 @@ export function ComboBox<T extends Record<string, any>>(
                 renderInput={(params) =>
                     search ? (
                         <SearchField
-                            {...addReadOnly(params)}
                             {...inputProps}
+                            {...addReadOnly(params)}
                             label={label}
                         />
                     ) : (
                         <InputField
-                            {...addReadOnly(params)}
                             {...inputProps}
+                            {...addReadOnly(params)}
                             label={label}
                         />
                     )

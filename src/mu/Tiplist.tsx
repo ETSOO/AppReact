@@ -293,17 +293,16 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                 renderInput={(params) =>
                     search ? (
                         <SearchField
+                            {...inputProps}
                             onChange={changeHandle}
                             readOnly={readOnly}
-                            {...addReadOnly(params)}
-                            {...inputProps}
                             label={label}
                         />
                     ) : (
                         <InputField
+                            {...inputProps}
                             onChange={changeHandle}
                             {...addReadOnly(params)}
-                            {...inputProps}
                             label={label}
                         />
                     )
