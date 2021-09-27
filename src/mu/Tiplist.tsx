@@ -2,7 +2,8 @@ import { DataTypes } from '@etsoo/shared';
 import {
     Autocomplete,
     AutocompleteProps,
-    AutocompleteRenderInputParams
+    AutocompleteRenderInputParams,
+    TextFieldProps
 } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
@@ -14,7 +15,7 @@ import { SearchField } from './SearchField';
  */
 export interface TiplistProps<T extends Record<string, any>>
     extends Omit<
-        AutocompleteProps<T, undefined, false, false>,
+        AutocompleteProps<T, undefined, boolean, false>,
         'renderInput' | 'options' | 'open'
     > {
     /**
@@ -26,6 +27,11 @@ export interface TiplistProps<T extends Record<string, any>>
      * Id value
      */
     idValue?: DataTypes.IdType;
+
+    /**
+     * Input props
+     */
+    inputProps?: TextFieldProps;
 
     /**
      * Label of the field
@@ -75,6 +81,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
         search = false,
         idField = 'id',
         idValue,
+        inputProps,
         label,
         loadData,
         defaultValue,
@@ -288,13 +295,15 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                         <SearchField
                             onChange={changeHandle}
                             readOnly={readOnly}
-                            {...params}
+                            {...addReadOnly(params)}
+                            {...inputProps}
                             label={label}
                         />
                     ) : (
                         <InputField
                             onChange={changeHandle}
                             {...addReadOnly(params)}
+                            {...inputProps}
                             label={label}
                         />
                     )

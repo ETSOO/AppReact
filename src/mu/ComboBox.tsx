@@ -2,7 +2,8 @@ import { DataTypes } from '@etsoo/shared';
 import {
     Autocomplete,
     AutocompleteProps,
-    AutocompleteRenderInputParams
+    AutocompleteRenderInputParams,
+    TextFieldProps
 } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
@@ -13,7 +14,10 @@ import { SearchField } from './SearchField';
  * ComboBox props
  */
 export interface ComboBoxProps<T extends Record<string, any>>
-    extends Omit<AutocompleteProps<T, undefined, false, false>, 'renderInput'> {
+    extends Omit<
+        AutocompleteProps<T, undefined, boolean, false>,
+        'renderInput'
+    > {
     /**
      * Id field, default is id
      */
@@ -23,6 +27,11 @@ export interface ComboBoxProps<T extends Record<string, any>>
      * Id value
      */
     idValue?: DataTypes.IdType;
+
+    /**
+     * Input props
+     */
+    inputProps?: TextFieldProps;
 
     /**
      * Label of the field
@@ -57,12 +66,14 @@ export function ComboBox<T extends Record<string, any>>(
     const {
         search = false,
         idField = 'id',
+        inputProps,
         idValue,
         defaultValue,
         label,
         name,
         options,
-        readOnly,
+        disableClearable = true,
+        readOnly = true,
         onChange,
         value,
         sx = { minWidth: '120px' },
@@ -109,6 +120,7 @@ export function ComboBox<T extends Record<string, any>>(
             {/* Previous input will reset first, next input trigger change works */}
             <Autocomplete
                 defaultValue={localValue}
+                disableClearable={disableClearable}
                 isOptionEqualToValue={(option: T, value: T) =>
                     option[idField] === value[idField]
                 }
@@ -135,9 +147,17 @@ export function ComboBox<T extends Record<string, any>>(
                 sx={sx}
                 renderInput={(params) =>
                     search ? (
-                        <SearchField {...addReadOnly(params)} label={label} />
+                        <SearchField
+                            {...addReadOnly(params)}
+                            {...inputProps}
+                            label={label}
+                        />
                     ) : (
-                        <InputField {...addReadOnly(params)} label={label} />
+                        <InputField
+                            {...addReadOnly(params)}
+                            {...inputProps}
+                            label={label}
+                        />
                     )
                 }
                 options={options}
