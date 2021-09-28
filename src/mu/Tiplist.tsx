@@ -254,6 +254,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                     search ? (
                         <SearchField
                             onChange={changeHandle}
+                            {...params}
                             readOnly={readOnly}
                             label={label}
                             margin={inputMargin}
