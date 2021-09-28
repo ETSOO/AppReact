@@ -1,11 +1,8 @@
 import { DataTypes } from '@etsoo/shared';
-import {
-    Autocomplete,
-    AutocompleteProps,
-    AutocompleteRenderInputParams
-} from '@mui/material';
+import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
+import { AutocompleteExtendedProps } from './AutocompleteExtendedProps';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
 
@@ -13,25 +10,7 @@ import { SearchField } from './SearchField';
  * Tiplist props
  */
 export interface TiplistProps<T extends Record<string, any>>
-    extends Omit<
-        AutocompleteProps<T, undefined, false, false>,
-        'renderInput' | 'options' | 'open'
-    > {
-    /**
-     * Id field, default is id
-     */
-    idField?: string;
-
-    /**
-     * Id value
-     */
-    idValue?: DataTypes.IdType;
-
-    /**
-     * Label of the field
-     */
-    label: string;
-
+    extends Omit<AutocompleteExtendedProps<T>, 'options' | 'open'> {
     /**
      * Load data callback
      */
@@ -39,21 +18,6 @@ export interface TiplistProps<T extends Record<string, any>>
         keyword?: string,
         id?: DataTypes.IdType
     ) => PromiseLike<T[] | null | undefined>;
-
-    /**
-     * Name of the field
-     */
-    name: string;
-
-    /**
-     * Is the field read only?
-     */
-    readOnly?: boolean;
-
-    /**
-     * Is search field?
-     */
-    search?: boolean;
 }
 
 // Multiple states
@@ -75,6 +39,9 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
         search = false,
         idField = 'id',
         idValue,
+        inputMargin,
+        inputRequired,
+        inputVariant,
         label,
         loadData,
         defaultValue,
@@ -290,12 +257,18 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                             readOnly={readOnly}
                             {...params}
                             label={label}
+                            margin={inputMargin}
+                            variant={inputVariant}
+                            required={inputRequired}
                         />
                     ) : (
                         <InputField
                             onChange={changeHandle}
                             {...addReadOnly(params)}
                             label={label}
+                            margin={inputMargin}
+                            variant={inputVariant}
+                            required={inputRequired}
                         />
                     )
                 }

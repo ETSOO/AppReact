@@ -1,11 +1,7 @@
-import { DataTypes } from '@etsoo/shared';
-import {
-    Autocomplete,
-    AutocompleteProps,
-    AutocompleteRenderInputParams
-} from '@mui/material';
+import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
+import { AutocompleteExtendedProps } from './AutocompleteExtendedProps';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
 
@@ -13,37 +9,7 @@ import { SearchField } from './SearchField';
  * ComboBox props
  */
 export interface ComboBoxProps<T extends Record<string, any>>
-    extends Omit<AutocompleteProps<T, undefined, false, false>, 'renderInput'> {
-    /**
-     * Id field, default is id
-     */
-    idField?: string;
-
-    /**
-     * Id value
-     */
-    idValue?: DataTypes.IdType;
-
-    /**
-     * Label of the field
-     */
-    label: string;
-
-    /**
-     * Name of the field
-     */
-    name: string;
-
-    /**
-     * Is the field read only?
-     */
-    readOnly?: boolean;
-
-    /**
-     * Is search field?
-     */
-    search?: boolean;
-}
+    extends AutocompleteExtendedProps<T> {}
 
 /**
  * ComboBox
@@ -58,6 +24,9 @@ export function ComboBox<T extends Record<string, any>>(
         search = false,
         idField = 'id',
         idValue,
+        inputMargin,
+        inputRequired,
+        inputVariant,
         defaultValue,
         label,
         name,
@@ -135,9 +104,21 @@ export function ComboBox<T extends Record<string, any>>(
                 sx={sx}
                 renderInput={(params) =>
                     search ? (
-                        <SearchField {...addReadOnly(params)} label={label} />
+                        <SearchField
+                            {...addReadOnly(params)}
+                            label={label}
+                            margin={inputMargin}
+                            variant={inputVariant}
+                            required={inputRequired}
+                        />
                     ) : (
-                        <InputField {...addReadOnly(params)} label={label} />
+                        <InputField
+                            {...addReadOnly(params)}
+                            label={label}
+                            margin={inputMargin}
+                            variant={inputVariant}
+                            required={inputRequired}
+                        />
                     )
                 }
                 options={options}
