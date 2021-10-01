@@ -435,7 +435,10 @@ export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
                     >
                         {[...Array(batchSize)].map((_item, rowIndex) => {
                             // Row
-                            const row = rows[rowIndex];
+                            const row =
+                                rowIndex < rows.length
+                                    ? rows[rowIndex]
+                                    : undefined;
 
                             // Row id field value
                             const rowId = row == null ? rowIndex : row[idField];

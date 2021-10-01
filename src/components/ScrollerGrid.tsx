@@ -10,11 +10,16 @@ import { GridMethodRef } from '../mu/GridMethodRef';
 import { GridLoadDataProps, GridLoader, GridLoaderStates } from './GridLoader';
 
 export interface ScrollerGridItemRendererProps<T>
-    extends GridChildComponentProps<T> {
+    extends Omit<GridChildComponentProps<T>, 'data'> {
     /**
      * Selected items
      */
     selectedItems: T[];
+
+    /**
+     * Data
+     */
+    data?: T;
 }
 
 /**
@@ -245,9 +250,13 @@ export const ScrollerGrid = <T extends Record<string, any>>(
         state: GridLoaderStates<T>
     ) => {
         // Custom render
+        const data =
+            itemProps.rowIndex < state.rows.length
+                ? state.rows[itemProps.rowIndex]
+                : undefined;
         return itemRenderer({
             ...itemProps,
-            data: state.rows[itemProps.rowIndex],
+            data,
             selectedItems: state.selectedItems
         });
     };

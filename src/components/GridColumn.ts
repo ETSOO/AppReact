@@ -43,7 +43,7 @@ export interface GridCellFormatterProps<T> {
     /**
      * Current data
      */
-    data: T;
+    data?: T;
 
     /**
      * Data field

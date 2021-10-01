@@ -10,7 +10,7 @@ const container: HTMLElement = document.createElement('div');
 root.append(container);
 
 // The state provider
-var Provider = NotifierMU.setup();
+const Provider = NotifierMU.setup();
 ReactDOM.render(<Provider />, container);
 
 // Notifier
@@ -20,7 +20,7 @@ const notifier = NotifierMU.instance;
 // https://jestjs.io/docs/en/timer-mocks
 jest.useFakeTimers();
 
-test('Alert tests', () => {
+test('Alert tests', async () => {
     // Click
     const handleClick = jest.fn();
 
@@ -30,12 +30,12 @@ test('Alert tests', () => {
     });
 
     // Button
-    var button = root.getElementsByTagName('button');
+    const button = root.getElementsByTagName('button');
 
     expect(button.length).toBe(1);
     expect(button[0].innerHTML).toContain('OK');
 
-    act(() => {
+    await act(async () => {
         button[0].click();
     });
 
@@ -45,7 +45,7 @@ test('Alert tests', () => {
     jest.runOnlyPendingTimers();
 });
 
-test('Confirm tests', () => {
+test('Confirm tests', async () => {
     // Click
     const handleClick = jest.fn();
 
@@ -55,12 +55,12 @@ test('Confirm tests', () => {
     });
 
     // Button
-    var button = root.getElementsByTagName('button');
+    const button = root.getElementsByTagName('button');
 
     expect(button.length).toBe(2);
     expect(button[0].innerHTML).toContain('Cancel');
 
-    act(() => {
+    await act(async () => {
         button[0].click();
     });
 
@@ -70,7 +70,7 @@ test('Confirm tests', () => {
     jest.runOnlyPendingTimers();
 });
 
-test('Prompt tests', () => {
+test('Prompt tests', async () => {
     // Click
     const handleClick = jest.fn((result: boolean) => {
         expect(result).toBeTruthy();
@@ -84,12 +84,12 @@ test('Prompt tests', () => {
     });
 
     // Button
-    var button = root.getElementsByTagName('button');
+    const button = root.getElementsByTagName('button');
 
     expect(button.length).toBe(2); // Switch will generate a button
     expect(button[1].innerHTML).toContain('OK');
 
-    act(() => {
+    await act(async () => {
         button[1].click();
     });
 
