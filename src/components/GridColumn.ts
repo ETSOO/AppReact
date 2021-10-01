@@ -34,7 +34,7 @@ export const GridAlignGet = (align?: GridAlign, type?: GridDataType) => {
 /**
  * Grid cell value type
  */
-export type GridCellValueType = string | number | Date | boolean;
+export type GridCellValueType = string | number | Date | boolean | undefined;
 
 /**
  * Grid cell formatter props
