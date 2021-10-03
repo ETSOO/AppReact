@@ -205,7 +205,7 @@ export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
                 name={name}
                 defaultValue={localIdValue}
             />
-            {/* Previous input will reset first, next input trigger change works */}
+            {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
             <Autocomplete
                 filterOptions={(options, _state) => options}
                 value={states.value}

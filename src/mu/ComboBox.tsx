@@ -31,7 +31,6 @@ export function ComboBox<T extends Record<string, any>>(
         label,
         name,
         options,
-        disableClearable = true,
         readOnly = true,
         onChange,
         value,
@@ -76,10 +75,9 @@ export function ComboBox<T extends Record<string, any>>(
                 name={name}
                 defaultValue={localIdValue}
             />
-            {/* Previous input will reset first, next input trigger change works */}
+            {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
             <Autocomplete
                 defaultValue={localValue}
-                disableClearable={disableClearable}
                 isOptionEqualToValue={(option: T, value: T) =>
                     option[idField] === value[idField]
                 }

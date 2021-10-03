@@ -5,10 +5,7 @@ import { AutocompleteProps } from '@mui/material';
  * Autocomplete extended props
  */
 export interface AutocompleteExtendedProps<T extends Record<string, any>>
-    extends Omit<
-        AutocompleteProps<T, undefined, boolean, false>,
-        'renderInput'
-    > {
+    extends Omit<AutocompleteProps<T, undefined, false, false>, 'renderInput'> {
     /**
      * Id field, default is id
      */
