@@ -148,7 +148,7 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
                         .map((option: any) => option.label)
                         .join(', ');
                 }}
-                sx={{ minWidth: '120px' }}
+                sx={{ minWidth: '150px' }}
                 {...rest}
             >
                 {options.map((option: any) => {

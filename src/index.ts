@@ -24,6 +24,11 @@ export * from './mu/pages/ResponsivePageProps';
 export * from './mu/pages/SearchPageProps';
 export * from './mu/pages/TablePage';
 export * from './mu/pages/ViewPage';
+
+export * from './mu/texts/DateText';
+export * from './mu/texts/MoneyText';
+export * from './mu/texts/NumberText';
+
 export * from './mu/ButtonLink';
 export * from './mu/ComboBox';
 export * from './mu/CountdownButton';

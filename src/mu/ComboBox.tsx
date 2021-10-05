@@ -34,7 +34,7 @@ export function ComboBox<T extends Record<string, any>>(
         readOnly = true,
         onChange,
         value,
-        sx = { minWidth: '120px' },
+        sx = { minWidth: '150px' },
         ...rest
     } = props;
 
