@@ -21,7 +21,8 @@ export namespace DataGridRenderers {
         field,
         formattedValue,
         columnIndex,
-        type
+        type,
+        renderProps
     }: GridCellRendererProps<T>): React.ReactNode {
         // Is loading
         if (data == null) {
@@ -53,11 +54,17 @@ export namespace DataGridRenderers {
             if (type === GridDataType.Money || type === GridDataType.IntMoney)
                 return NumberUtils.formatMoney(
                     value,
-                    undefined,
-                    undefined,
-                    type === GridDataType.IntMoney
+                    renderProps?.currency,
+                    renderProps?.culture,
+                    type === GridDataType.IntMoney,
+                    renderProps?.numberFormatOptions
                 );
-            else return NumberUtils.format(value);
+            else
+                return NumberUtils.format(
+                    value,
+                    renderProps?.culture,
+                    renderProps?.numberFormatOptions
+                );
         }
 
         // For boolean

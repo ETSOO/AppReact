@@ -86,6 +86,11 @@ export interface GridCellRendererProps<T, P = any>
      * Data type
      */
     type?: GridDataType;
+
+    /**
+     * Render props
+     */
+    renderProps?: GridColumnRenderProps;
 }
 
 /**
@@ -111,6 +116,26 @@ export interface GridHeaderCellRendererProps<T, P = any> {
      * States
      */
     states: GridLoaderStates<T>;
+}
+
+/**
+ * Grid column render props
+ */
+export interface GridColumnRenderProps {
+    /**
+     * Culture, like zh-CN
+     */
+    culture?: string;
+
+    /**
+     * Currency, like USD for US dollar
+     */
+    currency?: string;
+
+    /**
+     * Number format options
+     */
+    numberFormatOptions?: Intl.NumberFormatOptions;
 }
 
 /**
@@ -167,6 +192,11 @@ export interface GridColumn<T> {
      * Cell renderer
      */
     cellRenderer?: (props: GridCellRendererProps<T>) => React.ReactNode;
+
+    /**
+     * Render props
+     */
+    renderProps?: GridColumnRenderProps;
 
     /**
      * Header cell renderer

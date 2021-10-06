@@ -505,7 +505,8 @@ export function DataGridEx<T extends Record<string, any>>(
             cellRenderer = DataGridRenderers.defaultCellRenderer,
             field,
             type,
-            valueFormatter
+            valueFormatter,
+            renderProps
         } = columns[columnIndex];
 
         // Props
@@ -554,7 +555,8 @@ export function DataGridEx<T extends Record<string, any>>(
             type,
             rowIndex,
             columnIndex,
-            cellProps
+            cellProps,
+            renderProps
         });
 
         return (
