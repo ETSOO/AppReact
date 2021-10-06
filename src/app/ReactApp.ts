@@ -117,6 +117,14 @@ export abstract class ReactApp<
     }
 
     /**
+     * Get date format props
+     * @returns Props
+     */
+    getDateFormatProps() {
+        return { culture: this.culture, timeZone: this.getTimeZone() };
+    }
+
+    /**
      * Get money format props
      * @returns Props
      */

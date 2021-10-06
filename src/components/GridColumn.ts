@@ -128,6 +128,11 @@ export interface GridColumnRenderProps {
     readonly culture?: string;
 
     /**
+     * Time zone
+     */
+    readonly timeZone?: string;
+
+    /**
      * Currency, like USD for US dollar
      */
     readonly currency?: string;

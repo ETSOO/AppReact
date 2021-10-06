@@ -44,8 +44,9 @@ export namespace DataGridRenderers {
         if (value instanceof Date) {
             return DateUtils.format(
                 value,
-                navigator.language,
-                type === GridDataType.DateTime ? 'ds' : 'd'
+                renderProps?.culture,
+                type === GridDataType.DateTime ? 'ds' : 'd',
+                renderProps?.timeZone
             );
         }
 
