@@ -106,6 +106,9 @@ export abstract class ReactApp<
         dispatch: React.Dispatch<CultureAction>,
         culture: DataTypes.CultureDefinition
     ): void {
+        // Same?
+        if (culture.name === this.culture) return;
+
         // Dispatch action
         dispatch(culture);
 
