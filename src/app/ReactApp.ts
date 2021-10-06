@@ -114,6 +114,14 @@ export abstract class ReactApp<
     }
 
     /**
+     * Get money format props
+     * @returns Props
+     */
+    getMoneyFormatProps() {
+        return { culture: this.culture, currency: this.currency };
+    }
+
+    /**
      * Try login
      * Will update user state with UserActionType.Unauthorized
      */

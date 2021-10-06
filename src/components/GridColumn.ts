@@ -125,17 +125,22 @@ export interface GridColumnRenderProps {
     /**
      * Culture, like zh-CN
      */
-    culture?: string;
+    readonly culture?: string;
 
     /**
      * Currency, like USD for US dollar
      */
-    currency?: string;
+    readonly currency?: string;
 
     /**
      * Number format options
      */
-    numberFormatOptions?: Intl.NumberFormatOptions;
+    readonly numberFormatOptions?: Intl.NumberFormatOptions;
+
+    /**
+     * Additional data
+     */
+    readonly data?: Readonly<Record<string, any>>;
 }
 
 /**
