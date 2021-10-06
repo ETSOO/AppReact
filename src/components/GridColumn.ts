@@ -22,6 +22,7 @@ export const GridAlignGet = (align?: GridAlign, type?: GridDataType) => {
     if (align == null && type != null) {
         if (
             type === GridDataType.Money ||
+            type === GridDataType.IntMoney ||
             type === GridDataType.Int ||
             type === GridDataType.Number
         )

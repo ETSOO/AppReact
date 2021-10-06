@@ -1,3 +1,4 @@
+import { NumberUtils } from '@etsoo/shared';
 import { Typography } from '@mui/material';
 import React from 'react';
 import { NumberTextProps } from './NumberText';
@@ -10,6 +11,11 @@ export interface MoneyTextProps extends NumberTextProps {
      * Currency, USD for US dollar
      */
     currency?: string;
+
+    /**
+     * Is integer number
+     */
+    isInteger?: boolean;
 }
 
 /**
@@ -19,26 +25,25 @@ export interface MoneyTextProps extends NumberTextProps {
  */
 export function MoneyText(props: MoneyTextProps) {
     // Destruct
-    const { currency, locale = 'lookup', options = {}, value, ...rest } = props;
-
-    // Default
-    if (currency) {
-        options.style ??= 'currency';
-        options.currency = currency;
-    }
-
-    options.minimumFractionDigits ??= 2;
-
-    // Formatter
-    const intl = new Intl.NumberFormat(locale, options);
-
-    // Formatted value
-    const localValue = value == null ? undefined : intl.format(value);
+    const {
+        currency,
+        isInteger = false,
+        locale,
+        options = {},
+        value,
+        ...rest
+    } = props;
 
     // Layout
     return (
         <Typography noWrap {...rest}>
-            {localValue}
+            {NumberUtils.formatMoney(
+                value,
+                currency,
+                locale,
+                isInteger,
+                options
+            )}
         </Typography>
     );
 }

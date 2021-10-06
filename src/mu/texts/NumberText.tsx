@@ -1,3 +1,4 @@
+import { NumberUtils } from '@etsoo/shared';
 import { Typography, TypographyProps } from '@mui/material';
 import React from 'react';
 
@@ -8,7 +9,7 @@ export interface NumberTextProps extends TypographyProps {
     /**
      * Locale
      */
-    locale?: string;
+    locale?: string | string[];
 
     /**
      * Options
@@ -28,18 +29,12 @@ export interface NumberTextProps extends TypographyProps {
  */
 export function NumberText(props: NumberTextProps) {
     // Destruct
-    const { locale = 'lookup', options = {}, value, ...rest } = props;
-
-    // Formatter
-    const intl = new Intl.NumberFormat(locale, options);
-
-    // Formatted value
-    const localValue = value == null ? undefined : intl.format(value);
+    const { locale, options = {}, value, ...rest } = props;
 
     // Layout
     return (
         <Typography noWrap {...rest}>
-            {localValue}
+            {NumberUtils.format(value, locale, options)}
         </Typography>
     );
 }

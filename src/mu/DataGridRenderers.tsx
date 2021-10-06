@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircularProgress } from '@mui/material';
 import { GridCellRendererProps, GridDataType } from '../components/GridColumn';
-import { DateUtils } from '@etsoo/shared';
+import { DateUtils, NumberUtils } from '@etsoo/shared';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { DataGridExFooterItemRendererProps } from './DataGridEx';
@@ -42,19 +42,22 @@ export namespace DataGridRenderers {
         // For date time
         if (value instanceof Date) {
             return DateUtils.format(
-                navigator.language,
                 value,
+                navigator.language,
                 type === GridDataType.DateTime ? 'ds' : 'd'
             );
         }
 
         // For numbers
         if (typeof value === 'number') {
-            if (type === GridDataType.Money)
-                return new Intl.NumberFormat('lookup', {
-                    minimumFractionDigits: 2
-                }).format(value);
-            else return new Intl.NumberFormat().format(value);
+            if (type === GridDataType.Money || type === GridDataType.IntMoney)
+                return NumberUtils.formatMoney(
+                    value,
+                    undefined,
+                    undefined,
+                    type === GridDataType.IntMoney
+                );
+            else return NumberUtils.format(value);
         }
 
         // For boolean

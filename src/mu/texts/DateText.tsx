@@ -40,7 +40,7 @@ export function DateText(props: DateTextProps) {
     const localValue =
         value == null
             ? undefined
-            : DateUtils.format(locale, value, options, timeZone);
+            : DateUtils.format(value, locale, options, timeZone);
 
     // Layout
     return (
