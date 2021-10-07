@@ -29,6 +29,11 @@ export interface SelectExProps<T = any>
     labelField?: ((option: T) => string) | string;
 
     /**
+     * Load data callback
+     */
+    loadData?: () => PromiseLike<T[] | null | undefined>;
+
+    /**
      * Array of options.
      */
     options?: ReadonlyArray<T>;
@@ -51,6 +56,7 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
         idField = 'id',
         label,
         labelField = 'label',
+        loadData,
         multiple = false,
         name,
         options = [],
@@ -58,6 +64,10 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
         value,
         ...rest
     } = props;
+
+    // Options state
+    const [localOptions, setOptions] = React.useState(options);
+    const isMounted = React.useRef(true);
 
     // Local value
     const valueSource = defaultValue ?? value ?? '';
@@ -69,7 +79,7 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
         localValue = valueSource;
     }
 
-    // State
+    // Value state
     const [valueState, setValueState] = React.useState(localValue);
 
     // Label id
@@ -107,11 +117,23 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
     // When layout ready
     React.useEffect(() => {
         const input = divRef.current?.querySelector('input');
-        if (input)
-            input.addEventListener('change', (event) => {
-                // Reset case
-                if (event.cancelable) setValueState(multiple ? [] : '');
+        const inputChange = (event: Event) => {
+            // Reset case
+            if (event.cancelable) setValueState(multiple ? [] : '');
+        };
+        input?.addEventListener('change', inputChange);
+
+        if (loadData) {
+            loadData().then((result) => {
+                if (result == null || !isMounted.current) return;
+                setOptions(result);
             });
+        }
+
+        return () => {
+            isMounted.current = false;
+            input?.removeEventListener('change', inputChange);
+        };
     }, []);
 
     // Layout
@@ -139,7 +161,7 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
                 onChange={multiple ? handleChange : undefined}
                 renderValue={(selected) => {
                     // The text shows up
-                    return options
+                    return localOptions
                         .filter((option: any) =>
                             Array.isArray(selected)
                                 ? selected.indexOf(option.id) !== -1
@@ -151,7 +173,7 @@ export function SelectEx<T = any>(props: SelectExProps<T>) {
                 sx={{ minWidth: '150px' }}
                 {...rest}
             >
-                {options.map((option: any) => {
+                {localOptions.map((option: any) => {
                     // Option id
                     const id = option[idField];
 

@@ -10,7 +10,7 @@ import { SearchField } from './SearchField';
  * Tiplist props
  */
 export interface TiplistProps<T extends Record<string, any>>
-    extends Omit<AutocompleteExtendedProps<T>, 'options' | 'open'> {
+    extends Omit<AutocompleteExtendedProps<T>, 'open'> {
     /**
      * Load data callback
      */

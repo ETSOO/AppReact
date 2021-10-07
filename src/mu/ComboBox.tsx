@@ -9,7 +9,17 @@ import { SearchField } from './SearchField';
  * ComboBox props
  */
 export interface ComboBoxProps<T extends Record<string, any>>
-    extends AutocompleteExtendedProps<T> {}
+    extends AutocompleteExtendedProps<T> {
+    /**
+     * Load data callback
+     */
+    loadData?: () => PromiseLike<T[] | null | undefined>;
+
+    /**
+     * Array of options.
+     */
+    options?: ReadonlyArray<T>;
+}
 
 /**
  * ComboBox
@@ -29,8 +39,9 @@ export function ComboBox<T extends Record<string, any>>(
         inputVariant,
         defaultValue,
         label,
+        loadData,
         name,
-        options,
+        options = [],
         readOnly = true,
         onChange,
         value,
@@ -41,10 +52,14 @@ export function ComboBox<T extends Record<string, any>>(
     // Value input ref
     const inputRef = React.createRef<HTMLInputElement>();
 
+    // Options state
+    const [localOptions, setOptions] = React.useState(options);
+    const isMounted = React.useRef(true);
+
     // Local default value
     const localValue =
         idValue != null
-            ? options.find((o) => o[idField] === idValue)
+            ? localOptions.find((o) => o[idField] === idValue)
             : defaultValue ?? value;
 
     // Current id value
@@ -63,6 +78,19 @@ export function ComboBox<T extends Record<string, any>>(
 
         return params;
     };
+
+    React.useEffect(() => {
+        if (loadData) {
+            loadData().then((result) => {
+                if (result == null || !isMounted.current) return;
+                setOptions(result);
+            });
+        }
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     // Layout
     return (
@@ -121,7 +149,7 @@ export function ComboBox<T extends Record<string, any>>(
                         />
                     )
                 }
-                options={options}
+                options={localOptions}
                 {...rest}
             />
         </div>
