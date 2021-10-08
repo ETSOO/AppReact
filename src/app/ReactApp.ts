@@ -8,6 +8,7 @@ import {
 import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { NotifierPromptProps } from '../mu/NotifierPromptProps';
+import { NotificationReactCallProps } from '../notifier/Notifier';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
 import { IPageData, PageAction, PageActionType } from '../states/PageState';
@@ -56,11 +57,29 @@ export interface IReactApp<
     S extends IAppSettings,
     D extends IUser,
     P extends IPageData
-> extends ICoreApp<S, React.ReactNode> {
+> extends ICoreApp<S, React.ReactNode, NotificationReactCallProps> {
     /**
      * User state
      */
     readonly userState: UserState<D>;
+
+    /**
+     * Set page data
+     * @param data Page data
+     */
+    setPageData(data: P): void;
+
+    /**
+     * Set page title and data
+     * @param key Page title resource key
+     */
+    setPageKey(key: string): void;
+
+    /**
+     * Set page title and data
+     * @param title Page title
+     */
+    setPageTitle(title: string): void;
 }
 
 /**
@@ -71,7 +90,7 @@ export abstract class ReactApp<
         D extends IUser,
         P extends IPageData
     >
-    extends CoreApp<S, React.ReactNode>
+    extends CoreApp<S, React.ReactNode, NotificationReactCallProps>
     implements IReactApp<S, D, P>
 {
     /**
@@ -190,17 +209,10 @@ export abstract class ReactApp<
     showInputDialog({
         title,
         message,
-        inputs,
         callback,
-        cancelLabel,
-        okLabel
+        ...rest
     }: InputDialogProps): void {
-        const props: NotifierPromptProps = {
-            okLabel,
-            cancelLabel,
-            inputs
-        };
-        this.notifier.prompt<HTMLFormElement>(message, callback, title, props);
+        this.notifier.prompt<HTMLFormElement>(message, callback, title, rest);
     }
 
     /**

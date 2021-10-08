@@ -4,6 +4,7 @@ import {
     INotifier,
     Notification,
     NotificationAlign,
+    NotificationCallProps,
     NotificationContainer,
     NotificationDictionary,
     NotificationRenderProps
@@ -11,13 +12,59 @@ import {
 import { IAction } from '@etsoo/appscript';
 import { State } from '../states/State';
 import { IProviderProps, IUpdate } from '../states/IState';
+import { Breakpoint } from '@mui/material';
+
+/**
+ * React notification call props
+ */
+export interface NotificationReactCallProps extends NotificationCallProps {
+    /**
+     * Full width
+     */
+    fullWidth?: boolean;
+
+    /**
+     * Full screen
+     */
+    fullScreen?: boolean;
+
+    /**
+     * Inputs layout
+     */
+    inputs?: React.ReactNode;
+
+    /**
+     * Max width
+     */
+    maxWidth?: Breakpoint | false;
+
+    /**
+     * OK label
+     */
+    okLabel?: string;
+
+    /**
+     * Cancel label
+     */
+    cancelLabel?: string;
+
+    /**
+     * Type
+     */
+    type?: string;
+}
 
 /**
  * React notification interface
  */
-export interface INotificationReact extends INotification<React.ReactNode> {}
+export interface INotificationReact
+    extends INotification<React.ReactNode, NotificationReactCallProps> {}
 
-interface ReactNotifications extends NotificationDictionary<React.ReactNode> {}
+interface ReactNotifications
+    extends NotificationDictionary<
+        React.ReactNode,
+        NotificationReactCallProps
+    > {}
 
 /**
  * Action to manage the notifier
@@ -37,7 +84,10 @@ interface INotifierAction extends IAction {
 /**
  * React notification
  */
-export abstract class NotificationReact extends Notification<React.ReactNode> {}
+export abstract class NotificationReact extends Notification<
+    React.ReactNode,
+    NotificationReactCallProps
+> {}
 
 /**
  * React notification render props
@@ -49,7 +99,8 @@ export interface NotificationReactRenderProps
 /**
  * Notifier interface
  */
-export interface INotifierReact extends INotifier<React.ReactNode> {
+export interface INotifierReact
+    extends INotifier<React.ReactNode, NotificationReactCallProps> {
     /**
      * Create state provider
      * @param className Style class name
@@ -73,7 +124,7 @@ export interface INotifierOptions {
  * Notifier for React
  */
 export abstract class NotifierReact
-    extends NotificationContainer<React.ReactNode>
+    extends NotificationContainer<React.ReactNode, NotificationReactCallProps>
     implements INotifierReact
 {
     // Instance
@@ -117,17 +168,15 @@ export abstract class NotifierReact
      */
     protected abstract createContainer(
         align: NotificationAlign,
-        children: React.ReactNode[],
-        options: any
+        children: React.ReactNode[]
     ): React.ReactElement;
 
     /**
      * Create state provider
      * @param className Style class name
-     * @param optionGenerator Options generator
      * @returns Provider
      */
-    createProvider(className?: string, optionGenerator?: INotifierOptions) {
+    createProvider(className?: string) {
         // Custom creator
         const creator = (
             state: ReactNotifications,
@@ -137,9 +186,6 @@ export abstract class NotifierReact
             // Hold the current state update
             this.stateUpdate = update;
 
-            // Options
-            const options = optionGenerator ? optionGenerator() : {};
-
             // Aligns collection
             const aligns: React.ReactNode[] = [];
             for (const align in state) {
@@ -148,11 +194,11 @@ export abstract class NotifierReact
 
                 // UI collections
                 const ui = notifications.map((notification) =>
-                    notification.render(props, className + '-item', options)
+                    notification.render(props, className + '-item')
                 );
 
                 // Add to the collection
-                aligns.push(this.createContainer(Number(align), ui, options));
+                aligns.push(this.createContainer(Number(align), ui));
             }
 
             // Generate the component
@@ -162,7 +208,10 @@ export abstract class NotifierReact
         // Create state
         const { provider } = State.create(
             (
-                state: NotificationDictionary<React.ReactNode>,
+                state: NotificationDictionary<
+                    React.ReactNode,
+                    NotificationReactCallProps
+                >,
                 _action: INotifierAction
             ) => {
                 // Collection update is done with NotificationContainer
@@ -170,7 +219,10 @@ export abstract class NotifierReact
             },
             this.notifications,
             {} as IUpdate<
-                NotificationDictionary<React.ReactNode>,
+                NotificationDictionary<
+                    React.ReactNode,
+                    NotificationReactCallProps
+                >,
                 INotifierAction
             >,
             creator

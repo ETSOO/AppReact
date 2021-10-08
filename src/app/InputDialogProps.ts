@@ -1,9 +1,10 @@
 import { NotificationReturn } from '@etsoo/notificationbase';
+import { NotificationReactCallProps } from '../notifier/Notifier';
 
 /**
  * Input dialog props
  */
-export type InputDialogProps = {
+export type InputDialogProps = NotificationReactCallProps & {
     /**
      * Title
      */
@@ -15,22 +16,7 @@ export type InputDialogProps = {
     message: string;
 
     /**
-     * Inputs layout
-     */
-    inputs: React.ReactNode;
-
-    /**
      * Callback
      */
     callback: NotificationReturn<HTMLFormElement>;
-
-    /**
-     * OK label
-     */
-    okLabel?: string;
-
-    /**
-     * Cancel label
-     */
-    cancelLabel?: string;
 };

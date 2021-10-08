@@ -16,7 +16,6 @@ import {
     Button,
     CircularProgress,
     CircularProgressProps,
-    ClassNameMap,
     Dialog,
     DialogActions,
     DialogContent,
@@ -35,10 +34,10 @@ import { Labels } from '../app/Labels';
 import {
     INotificationReact,
     NotificationReact,
+    NotificationReactCallProps,
     NotifierReact
 } from '../notifier/Notifier';
 import { DraggablePaperComponent } from './DraggablePaperComponent';
-import { NotifierPromptProps } from './NotifierPromptProps';
 import { LoadingButton } from './LoadingButton';
 
 // Custom icon dialog title bar
@@ -69,12 +68,15 @@ export class NotificationMU extends NotificationReact {
     }
 
     // Create alert
-    private createAlert(
-        _props: NotificationRenderProps,
-        className: string,
-        classes: ClassNameMap<string>
-    ) {
+    private createAlert(_props: NotificationRenderProps, className: string) {
         const labels = Labels.NotificationMU;
+
+        const {
+            inputs,
+            fullScreen,
+            fullWidth = true,
+            maxWidth
+        } = this.inputProps ?? {};
 
         let title = this.title;
         let icon: React.ReactNode;
@@ -98,16 +100,17 @@ export class NotificationMU extends NotificationReact {
                 open={this.open}
                 PaperComponent={DraggablePaperComponent}
                 className={className}
+                fullWidth={fullWidth}
+                maxWidth={maxWidth}
+                fullScreen={fullScreen}
             >
-                <IconDialogTitle
-                    className={classes.iconTitle}
-                    id="draggable-dialog-title"
-                >
+                <IconDialogTitle id="draggable-dialog-title">
                     {icon}
                     <span className="dialogTitle">{title}</span>
                 </IconDialogTitle>
                 <DialogContent>
                     <DialogContentText>{this.content}</DialogContentText>
+                    {inputs}
                 </DialogContent>
                 <DialogActions>
                     <LoadingButton
@@ -123,16 +126,21 @@ export class NotificationMU extends NotificationReact {
     }
 
     // Create confirm
-    private createConfirm(
-        _props: NotificationRenderProps,
-        className: string,
-        classes: ClassNameMap<string>
-    ) {
+    private createConfirm(_props: NotificationRenderProps, className: string) {
         const labels = Labels.NotificationMU;
         const title = this.title ?? labels.confirmTitle;
 
-        const noLabel = labels.confirmNo;
-        const yesLabel = labels.confirmYes;
+        const {
+            okLabel,
+            cancelLabel,
+            inputs,
+            fullScreen,
+            fullWidth = true,
+            maxWidth
+        } = this.inputProps ?? {};
+
+        const noLabel = cancelLabel ?? labels.confirmNo;
+        const yesLabel = okLabel ?? labels.confirmYes;
 
         return (
             <Dialog
@@ -140,16 +148,17 @@ export class NotificationMU extends NotificationReact {
                 open={this.open}
                 PaperComponent={DraggablePaperComponent}
                 className={className}
+                fullWidth={fullWidth}
+                maxWidth={maxWidth}
+                fullScreen={fullScreen}
             >
-                <IconDialogTitle
-                    className={classes.iconTitle}
-                    id="draggable-dialog-title"
-                >
+                <IconDialogTitle id="draggable-dialog-title">
                     <Help color="action" />
                     <span className="dialogTitle">{title}</span>
                 </IconDialogTitle>
                 <DialogContent>
                     <DialogContentText>{this.content}</DialogContentText>
+                    {inputs}
                 </DialogContent>
                 <DialogActions>
                     <LoadingButton
@@ -178,11 +187,7 @@ export class NotificationMU extends NotificationReact {
     }
 
     // Create message
-    private createMessage(
-        _props: NotificationRenderProps,
-        className: string,
-        _classes: ClassNameMap<string>
-    ) {
+    private createMessage(_props: NotificationRenderProps, className: string) {
         if (!this.open) return <React.Fragment key={this.id}></React.Fragment>;
 
         const setupProps: AlertProps = {
@@ -208,11 +213,7 @@ export class NotificationMU extends NotificationReact {
     }
 
     // Create prompt
-    private createPrompt(
-        _props: NotificationRenderProps,
-        className: string,
-        classes: ClassNameMap<string>
-    ) {
+    private createPrompt(_props: NotificationRenderProps, className: string) {
         const labels = Labels.NotificationMU;
         const title = this.title ?? labels.promptTitle;
 
@@ -221,8 +222,11 @@ export class NotificationMU extends NotificationReact {
             okLabel = labels.promptOK,
             inputs,
             type,
+            fullScreen,
+            fullWidth = true,
+            maxWidth,
             ...rest
-        } = this.inputProps as NotifierPromptProps;
+        } = this.inputProps ?? {};
 
         const handleSubmit = async (
             event: React.MouseEvent<HTMLButtonElement>
@@ -286,6 +290,7 @@ export class NotificationMU extends NotificationReact {
                         {...rest}
                         value="true"
                         autoFocus
+                        required
                     />
                 );
             } else if (type === 'slider') {
@@ -297,6 +302,7 @@ export class NotificationMU extends NotificationReact {
                         autoFocus
                         fullWidth
                         type={type}
+                        required
                         {...rest}
                     />
                 );
@@ -311,12 +317,12 @@ export class NotificationMU extends NotificationReact {
                 open={this.open}
                 PaperComponent={DraggablePaperComponent}
                 className={className}
+                fullWidth={fullWidth}
+                maxWidth={maxWidth}
+                fullScreen={fullScreen}
             >
                 <form>
-                    <IconDialogTitle
-                        className={classes.iconTitle}
-                        id="draggable-dialog-title"
-                    >
+                    <IconDialogTitle id="draggable-dialog-title">
                         <Info color="primary" />
                         <span className="dialogTitle">{title}</span>
                     </IconDialogTitle>
@@ -345,15 +351,14 @@ export class NotificationMU extends NotificationReact {
     }
 
     // Create loading
-    private createLoading(
-        _props: NotificationRenderProps,
-        className: string,
-        _classes: ClassNameMap<string>
-    ) {
+    private createLoading(_props: NotificationRenderProps, className: string) {
         // Properties
         const setupProps: CircularProgressProps = { color: 'primary' };
 
         const labels = Labels.NotificationMU;
+
+        // Input props
+        const { maxWidth = 'xs' } = this.inputProps ?? {};
 
         // Content
         let content = this.content;
@@ -384,7 +389,13 @@ export class NotificationMU extends NotificationReact {
                     }}
                 >
                     <CircularProgress {...setupProps} />
-                    {content && <Box maxWidth={640}>{content}</Box>}
+                    {content && (
+                        <Box
+                            maxWidth={maxWidth === false ? undefined : maxWidth}
+                        >
+                            {content}
+                        </Box>
+                    )}
                 </Box>
             </Backdrop>
         );
@@ -396,26 +407,22 @@ export class NotificationMU extends NotificationReact {
      * @param className Style class name
      * @param classes Style classes
      */
-    render(
-        props: NotificationRenderProps,
-        className: string,
-        classes: ClassNameMap<string>
-    ) {
+    render(props: NotificationRenderProps, className: string) {
         // Loading bar
         if (this.type === NotificationType.Loading) {
-            return this.createLoading(props, className, classes);
+            return this.createLoading(props, className);
         } else if (this.type === NotificationType.Confirm) {
-            return this.createConfirm(props, className, classes);
+            return this.createConfirm(props, className);
         } else if (this.type === NotificationType.Prompt) {
-            return this.createPrompt(props, className, classes);
+            return this.createPrompt(props, className);
         } else if (
             this.type === NotificationType.Error ||
             (this.modal && this.type in NotificationMessageType)
         ) {
             // Alert or modal message
-            return this.createAlert(props, className, classes);
+            return this.createAlert(props, className);
         } else {
-            return this.createMessage(props, className, classes);
+            return this.createMessage(props, className);
         }
     }
 }
@@ -499,8 +506,7 @@ export class NotifierMU extends NotifierReact {
      */
     protected createContainer = (
         align: NotificationAlign,
-        children: React.ReactNode[],
-        _options: ClassNameMap<string>
+        children: React.ReactNode[]
     ) => {
         // Each align group, class equal to something similar to 'align-topleft'
         const alignText = NotificationAlign[align].toLowerCase();
@@ -555,7 +561,7 @@ export class NotifierMU extends NotifierReact {
      * @param modal Show as modal
      */
     protected addRaw(
-        data: INotificaseBase,
+        data: INotificaseBase<NotificationReactCallProps>,
         modal?: boolean
     ): INotificationReact {
         // Destruct

@@ -1,3 +1,5 @@
+import { Breakpoint } from '@mui/material';
+
 /**
  * Notifier prompt props
  */

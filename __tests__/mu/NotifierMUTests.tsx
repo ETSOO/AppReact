@@ -1,4 +1,3 @@
-import Done from '@mui/icons-material/Done';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
@@ -102,7 +101,7 @@ test('Message tests', (done) => {
     // Callback
     const callback = jest.fn(() => done());
 
-    let n: INotification<React.ReactNode> | undefined;
+    let n: INotification<React.ReactNode, any> | undefined;
     act(() => {
         // Add the notification
         n = notifier.message(
