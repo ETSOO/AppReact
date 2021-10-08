@@ -3,14 +3,21 @@ import {
     Button,
     ButtonProps,
     Dialog,
+    DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
     IconButton
 } from '@mui/material';
 import React from 'react';
+import { Labels } from '../app/Labels';
 
 export interface DialogButtonProps extends ButtonProps {
+    /**
+     * Button label
+     */
+    buttonLabel?: string;
+
     /**
      * Dialog content
      */
@@ -38,6 +45,19 @@ export interface DialogButtonProps extends ButtonProps {
     fullScreen?: boolean;
 
     /**
+     * If `true`, the dialog stretches to `maxWidth`.
+     *
+     * Notice that the dialog width grow is limited by the default margin.
+     * @default false
+     */
+    fullWidth?: boolean;
+
+    /**
+     * Other layouts
+     */
+    inputs?: React.ReactNode;
+
+    /**
      * Max width of the dialog
      */
     maxWidth?: Breakpoint | false;
@@ -54,15 +74,21 @@ export interface DialogButtonProps extends ButtonProps {
  * @returns Component
  */
 export function DialogButton(props: DialogButtonProps) {
+    // Labels shared with NotificationMU
+    const labels = Labels.NotificationMU;
+
     // Destruct
     const {
+        buttonLabel = labels.alertOK,
         children,
         content,
         contentPre,
         dialogTitle,
         disableScrollLock,
         fullScreen,
+        fullWidth,
         icon,
+        inputs,
         maxWidth,
         onClick,
         ...rest
@@ -73,10 +99,6 @@ export function DialogButton(props: DialogButtonProps) {
 
     const handleClickOpen = () => {
         setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
     };
 
     // Onclick handler
@@ -112,9 +134,15 @@ export function DialogButton(props: DialogButtonProps) {
             <Dialog
                 disableScrollLock={disableScrollLock}
                 fullScreen={fullScreen}
+                fullWidth={fullWidth}
                 maxWidth={maxWidth}
                 open={open}
-                onClose={handleClose}
+                onClose={() => setOpen(false)}
+                onClick={(event) => {
+                    // The dialog will be embeded and the click event will bubble up
+                    // Stop propatation but will also cancel onClose and onBackdropClick event
+                    event.stopPropagation();
+                }}
             >
                 <DialogTitle>
                     {dialogTitle ? dialogTitle : children}
@@ -123,7 +151,13 @@ export function DialogButton(props: DialogButtonProps) {
                     <DialogContentText component={contentPre ? 'pre' : 'span'}>
                         {content}
                     </DialogContentText>
+                    {inputs}
                 </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)}>
+                        {buttonLabel}
+                    </Button>
+                </DialogActions>
             </Dialog>
         </React.Fragment>
     );
