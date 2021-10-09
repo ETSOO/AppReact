@@ -1,3 +1,4 @@
+import { IdLabelDto } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
@@ -9,7 +10,7 @@ import { SearchField } from './SearchField';
 /**
  * Tiplist props
  */
-export interface TiplistProps<T extends Record<string, any>>
+export interface TiplistProps<T extends Record<string, any> = IdLabelDto>
     extends Omit<AutocompleteExtendedProps<T>, 'open'> {
     /**
      * Load data callback
@@ -33,7 +34,9 @@ interface States<T extends Record<string, any>> {
  * @param props Props
  * @returns Component
  */
-export function Tiplist<T extends Record<string, any>>(props: TiplistProps<T>) {
+export function Tiplist<T extends Record<string, any> = IdLabelDto>(
+    props: TiplistProps<T>
+) {
     // Destruct
     const {
         search = false,

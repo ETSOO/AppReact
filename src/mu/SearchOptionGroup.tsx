@@ -1,3 +1,5 @@
+import { IdLabelDto } from '@etsoo/appscript';
+import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { MUGlobal } from './MUGlobal';
 import { OptionGroup, OptionGroupProps } from './OptionGroup';
@@ -7,7 +9,10 @@ import { OptionGroup, OptionGroupProps } from './OptionGroup';
  * @param props Props
  * @returns Component
  */
-export function SearchOptionGroup<T = any>(props: OptionGroupProps<T>) {
+export function SearchOptionGroup<
+    T extends Record<string, any> = IdLabelDto,
+    D extends DataTypes.IdType = string
+>(props: OptionGroupProps<T, D>) {
     // Destruct
     const {
         row = true,
@@ -17,5 +22,5 @@ export function SearchOptionGroup<T = any>(props: OptionGroupProps<T>) {
     } = props;
 
     // Layout
-    return <OptionGroup<T> row={row} size={size} sx={sx} {...rest} />;
+    return <OptionGroup<T, D> row={row} size={size} sx={sx} {...rest} />;
 }

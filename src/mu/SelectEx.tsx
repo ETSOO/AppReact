@@ -12,11 +12,12 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { MUGlobal } from './MUGlobal';
+import { IdLabelDto } from '@etsoo/appscript';
 
 /**
  * Extended select component props
  */
-export interface SelectExProps<T = any>
+export interface SelectExProps<T extends Record<string, any> = IdLabelDto>
     extends Omit<SelectProps, 'labelId' | 'input' | 'native'> {
     /**
      * Id field, default is id
@@ -49,7 +50,9 @@ export interface SelectExProps<T = any>
  * @param props Props
  * @returns Component
  */
-export function SelectEx<T = any>(props: SelectExProps<T>) {
+export function SelectEx<T extends Record<string, any> = IdLabelDto>(
+    props: SelectExProps<T>
+) {
     // Destruct
     const {
         defaultValue,

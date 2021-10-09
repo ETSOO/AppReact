@@ -1,3 +1,4 @@
+import { IdLabelDto } from '@etsoo/appscript';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
@@ -26,7 +27,7 @@ export interface ComboBoxProps<T extends Record<string, any>>
  * @param props Props
  * @returns Component
  */
-export function ComboBox<T extends Record<string, any>>(
+export function ComboBox<T extends Record<string, any> = IdLabelDto>(
     props: ComboBoxProps<T>
 ) {
     // Destruct

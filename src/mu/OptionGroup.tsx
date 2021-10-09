@@ -1,4 +1,5 @@
-import { DataTypes } from '@etsoo/shared';
+import { IdLabelDto } from '@etsoo/appscript';
+import { DataTypes, Utils } from '@etsoo/shared';
 import {
     Checkbox,
     FormControl,
@@ -14,12 +15,14 @@ import React from 'react';
 /**
  * OptionGroup props
  */
-export interface OptionGroupProps<T extends Record<string, any>>
-    extends Omit<FormControlProps<'fieldset'>, 'defaultValue'> {
+export interface OptionGroupProps<
+    T extends Record<string, any> = IdLabelDto,
+    D extends DataTypes.IdType = string
+> extends Omit<FormControlProps<'fieldset'>, 'defaultValue'> {
     /**
      * Default value
      */
-    defaultValue?: string | number | ReadonlyArray<DataTypes.IdType>;
+    defaultValue?: D | D[];
 
     /**
      * Get option label function
@@ -52,6 +55,11 @@ export interface OptionGroupProps<T extends Record<string, any>>
     name: string;
 
     /**
+     * On value change handler
+     */
+    onValueChange?: (value: D | D[] | undefined) => void;
+
+    /**
      * Array of options.
      */
     options: ReadonlyArray<T>;
@@ -72,9 +80,10 @@ export interface OptionGroupProps<T extends Record<string, any>>
  * @param props Props
  * @returns Component
  */
-export function OptionGroup<T extends Record<string, any>>(
-    props: OptionGroupProps<T>
-) {
+export function OptionGroup<
+    T extends Record<string, any> = IdLabelDto,
+    D extends DataTypes.IdType = string
+>(props: OptionGroupProps<T, D>) {
     // Destruct
     const {
         getOptionLabel,
@@ -84,6 +93,7 @@ export function OptionGroup<T extends Record<string, any>>(
         labelField = 'label',
         multiple = false,
         name,
+        onValueChange,
         options,
         readOnly,
         row,
@@ -92,9 +102,18 @@ export function OptionGroup<T extends Record<string, any>>(
     } = props;
 
     // Get option value
-    const getOptionValue = (option: any) => {
+    const getOptionValue = (option: T): D | undefined => {
         return option[idField];
     };
+
+    // Checkbox values
+    const [values, setValues] = React.useState(
+        defaultValue == null
+            ? []
+            : Array.isArray(defaultValue)
+            ? defaultValue
+            : [defaultValue]
+    );
 
     // Item checked
     const itemChecked = (option: T) => {
@@ -104,7 +123,7 @@ export function OptionGroup<T extends Record<string, any>>(
         const value = getOptionValue(option);
 
         if (Array.isArray(defaultValue)) {
-            return defaultValue.findIndex((d: string) => d === value) != -1;
+            return defaultValue.findIndex((d) => d === value) != -1;
         } else {
             return defaultValue === value;
         }
@@ -119,6 +138,27 @@ export function OptionGroup<T extends Record<string, any>>(
                 readOnly={readOnly}
                 size={size}
                 defaultChecked={itemChecked(option)}
+                onChange={(event) => {
+                    const typeValue = Utils.parseString<D>(
+                        event.target.value,
+                        options[0][idField]
+                    );
+
+                    const changedValues = [...values];
+                    if (event.target.checked) {
+                        if (changedValues.includes(typeValue)) return;
+                        changedValues.push(typeValue);
+                    } else {
+                        const index = changedValues.findIndex(
+                            (v) => v === typeValue
+                        );
+                        if (index === -1) return;
+                        changedValues.splice(index, 1);
+                    }
+
+                    if (onValueChange) onValueChange(changedValues);
+                    setValues(changedValues);
+                }}
             />
         ) : (
             <Radio size={size} readOnly={readOnly} />
@@ -148,7 +188,18 @@ export function OptionGroup<T extends Record<string, any>>(
     const group = multiple ? (
         <FormGroup row={row}>{list}</FormGroup>
     ) : (
-        <RadioGroup row={row} name={name} defaultValue={defaultValue}>
+        <RadioGroup
+            row={row}
+            name={name}
+            defaultValue={defaultValue}
+            onChange={(_event, value) => {
+                const typeValue = Utils.parseString<D>(
+                    value,
+                    options[0][idField]
+                );
+                if (onValueChange) onValueChange(typeValue);
+            }}
+        >
             {list}
         </RadioGroup>
     );
