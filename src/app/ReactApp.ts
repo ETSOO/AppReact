@@ -212,7 +212,12 @@ export abstract class ReactApp<
         callback,
         ...rest
     }: InputDialogProps): void {
-        this.notifier.prompt<HTMLFormElement>(message, callback, title, rest);
+        this.notifier.prompt<HTMLFormElement | undefined>(
+            message,
+            callback,
+            title,
+            rest
+        );
     }
 
     /**

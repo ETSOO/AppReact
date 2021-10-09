@@ -18,5 +18,5 @@ export type InputDialogProps = NotificationReactCallProps & {
     /**
      * Callback
      */
-    callback: NotificationReturn<HTMLFormElement>;
+    callback: NotificationReturn<HTMLFormElement | undefined>;
 };

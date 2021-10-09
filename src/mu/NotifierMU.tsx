@@ -333,7 +333,10 @@ export class NotificationMU extends NotificationReact {
                     <DialogActions>
                         <Button
                             color="secondary"
-                            onClick={() => this.dismiss()}
+                            onClick={() => {
+                                if (this.onReturn) this.onReturn(undefined);
+                                this.dismiss();
+                            }}
                         >
                             {cancelLabel}
                         </Button>
