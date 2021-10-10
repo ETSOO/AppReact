@@ -14,7 +14,7 @@ export interface ComboBoxProps<T extends Record<string, any>>
     /**
      * Label field
      */
-    lableField?: string;
+    labelField?: string;
 
     /**
      * Load data callback
@@ -45,15 +45,15 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         inputVariant,
         defaultValue,
         label,
-        lableField,
+        labelField,
         loadData,
         name,
         options = [],
         readOnly = true,
         onChange,
         value,
-        getOptionLabel = lableField
-            ? (option: T) => option[lableField]
+        getOptionLabel = labelField
+            ? (option: T) => option[labelField]
             : undefined,
         sx = { minWidth: '150px' },
         ...rest
