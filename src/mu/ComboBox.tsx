@@ -12,6 +12,11 @@ import { SearchField } from './SearchField';
 export interface ComboBoxProps<T extends Record<string, any>>
     extends AutocompleteExtendedProps<T> {
     /**
+     * Label field
+     */
+    lableField?: string;
+
+    /**
      * Load data callback
      */
     loadData?: () => PromiseLike<T[] | null | undefined>;
@@ -40,12 +45,16 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         inputVariant,
         defaultValue,
         label,
+        lableField,
         loadData,
         name,
         options = [],
         readOnly = true,
         onChange,
         value,
+        getOptionLabel = lableField
+            ? (option: T) => option[lableField]
+            : undefined,
         sx = { minWidth: '150px' },
         ...rest
     } = props;
@@ -107,6 +116,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
             <Autocomplete
                 defaultValue={localValue}
+                getOptionLabel={getOptionLabel}
                 isOptionEqualToValue={(option: T, value: T) =>
                     option[idField] === value[idField]
                 }

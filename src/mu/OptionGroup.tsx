@@ -117,16 +117,11 @@ export function OptionGroup<
 
     // Item checked
     const itemChecked = (option: T) => {
-        if (defaultValue == null) return false;
-
         // Value
         const value = getOptionValue(option);
+        if (value == null) return false;
 
-        if (Array.isArray(defaultValue)) {
-            return defaultValue.findIndex((d) => d === value) != -1;
-        } else {
-            return defaultValue === value;
-        }
+        return values.includes(value);
     };
 
     // Items
@@ -137,7 +132,7 @@ export function OptionGroup<
                 name={name}
                 readOnly={readOnly}
                 size={size}
-                defaultChecked={itemChecked(option)}
+                checked={itemChecked(option)}
                 onChange={(event) => {
                     const typeValue = Utils.parseString<D>(
                         event.target.value,
