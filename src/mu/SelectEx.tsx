@@ -3,6 +3,7 @@ import {
     Checkbox,
     FormControl,
     InputLabel,
+    ListItemIcon,
     ListItemText,
     MenuItem,
     OutlinedInput,
@@ -10,7 +11,7 @@ import {
     SelectChangeEvent,
     SelectProps
 } from '@mui/material';
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { MUGlobal } from './MUGlobal';
 import { IdLabelDto } from '@etsoo/appscript';
 
@@ -25,6 +26,11 @@ export interface SelectExProps<T extends Record<string, any> = IdLabelDto>
     idField?: string;
 
     /**
+     * Item icon renderer
+     */
+    itemIconRenderer?: (id: unknown) => React.ReactNode;
+
+    /**
      * Label field, default is label
      */
     labelField?: ((option: T) => string) | string;
@@ -33,6 +39,11 @@ export interface SelectExProps<T extends Record<string, any> = IdLabelDto>
      * Load data callback
      */
     loadData?: () => PromiseLike<T[] | null | undefined>;
+
+    /**
+     * Item click handler
+     */
+    onItemClick?: MouseEventHandler;
 
     /**
      * On load data handler
@@ -62,15 +73,18 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
     const {
         defaultValue,
         idField = 'id',
+        itemIconRenderer,
         label,
         labelField = 'label',
         loadData,
+        onItemClick,
         onLoadData,
         multiple = false,
         name,
         options = [],
         search = false,
         value,
+        onChange,
         ...rest
     } = props;
 
@@ -168,7 +182,10 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
                 labelId={labelId}
                 name={name}
                 multiple={multiple}
-                onChange={multiple ? handleChange : undefined}
+                onChange={(event, child) => {
+                    if (onChange) onChange(event, child);
+                    if (multiple) handleChange(event);
+                }}
                 renderValue={(selected) => {
                     // The text shows up
                     return localOptions
@@ -198,12 +215,21 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
                         <MenuItem
                             key={id}
                             value={id}
-                            onClick={
-                                multiple ? undefined : () => setItemValue(id)
-                            }
+                            onClick={(event) => {
+                                if (onItemClick) {
+                                    onItemClick(event);
+                                    if (event.defaultPrevented) return;
+                                }
+                                if (!multiple) setItemValue(id);
+                            }}
                         >
                             {multiple && <Checkbox checked={itemChecked(id)} />}
                             <ListItemText primary={label} />
+                            {itemIconRenderer && (
+                                <ListItemIcon>
+                                    {itemIconRenderer(id)}
+                                </ListItemIcon>
+                            )}
                         </MenuItem>
                     );
                 })}
