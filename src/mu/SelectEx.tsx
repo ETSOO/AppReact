@@ -35,6 +35,11 @@ export interface SelectExProps<T extends Record<string, any> = IdLabelDto>
     loadData?: () => PromiseLike<T[] | null | undefined>;
 
     /**
+     * On load data handler
+     */
+    onLoadData?: (options: T[]) => void;
+
+    /**
      * Array of options.
      */
     options?: ReadonlyArray<T>;
@@ -60,6 +65,7 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
         label,
         labelField = 'label',
         loadData,
+        onLoadData,
         multiple = false,
         name,
         options = [],
@@ -129,6 +135,7 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
         if (loadData) {
             loadData().then((result) => {
                 if (result == null || !isMounted.current) return;
+                if (onLoadData) onLoadData(result);
                 setOptions(result);
             });
         }

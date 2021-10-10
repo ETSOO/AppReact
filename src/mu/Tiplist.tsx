@@ -52,7 +52,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
         name,
         readOnly,
         onChange,
-        sx = { minWidth: '150px' },
+        sx = { minWidth: '180px' },
         ...rest
     } = props;
 

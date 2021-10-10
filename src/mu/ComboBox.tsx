@@ -22,6 +22,11 @@ export interface ComboBoxProps<T extends Record<string, any>>
     loadData?: () => PromiseLike<T[] | null | undefined>;
 
     /**
+     * On load data handler
+     */
+    onLoadData?: (options: T[]) => void;
+
+    /**
      * Array of options.
      */
     options?: ReadonlyArray<T>;
@@ -47,6 +52,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         label,
         labelField,
         loadData,
+        onLoadData,
         name,
         options = [],
         readOnly = true,
@@ -93,6 +99,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         if (loadData) {
             loadData().then((result) => {
                 if (result == null || !isMounted.current) return;
+                if (onLoadData) onLoadData(result);
                 setOptions(result);
             });
         }
@@ -149,6 +156,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
+                            autoComplete="new-password"
                         />
                     ) : (
                         <InputField
@@ -157,6 +165,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
+                            autoComplete="new-password"
                         />
                     )
                 }

@@ -44,6 +44,7 @@ export * from './mu/IconButtonLink';
 export * from './mu/InputField';
 export * from './mu/ItemList';
 export * from './mu/LoadingButton';
+export * from './mu/MaskInput';
 export * from './mu/MoreFab';
 export * from './mu/MUGlobal';
 export * from './mu/NotifierMU';

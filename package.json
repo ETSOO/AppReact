@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.2.21",
+    "version": "1.2.22",
     "description": "TypeScript ReactJs framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -56,6 +56,7 @@
         "@types/react": "^17.0.27",
         "@types/react-avatar-editor": "^10.3.6",
         "@types/react-dom": "^17.0.9",
+        "@types/react-input-mask": "^3.0.1",
         "@types/react-window": "^1.8.5",
         "pica": "^7.1.0",
         "pulltorefreshjs": "^0.1.22",
@@ -63,6 +64,7 @@
         "react-avatar-editor": "^12.0.0",
         "react-dom": "^17.0.2",
         "react-draggable": "^4.4.4",
+        "react-imask": "^6.2.2",
         "react-window": "^1.8.6"
     },
     "devDependencies": {
