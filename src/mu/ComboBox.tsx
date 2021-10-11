@@ -88,10 +88,12 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
             Object.assign(params, { readOnly });
 
             if (readOnly) {
-                if (params.inputProps == null) params.inputProps = {};
                 Object.assign(params.inputProps, { 'data-reset': true });
             }
         }
+
+        // https://stackoverflow.com/questions/15738259/disabling-chrome-autofill
+        Object.assign(params.inputProps, { autocomplete: inputAutoComplete });
 
         return params;
     };
@@ -157,7 +159,6 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
-                            autoComplete={inputAutoComplete}
                         />
                     ) : (
                         <InputField
@@ -166,7 +167,6 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
-                            autoComplete={inputAutoComplete}
                         />
                     )
                 }
