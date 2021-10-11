@@ -11,7 +11,7 @@ import {
     SelectChangeEvent,
     SelectProps
 } from '@mui/material';
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { MUGlobal } from './MUGlobal';
 import { IdLabelDto } from '@etsoo/appscript';
 
@@ -43,7 +43,7 @@ export interface SelectExProps<T extends Record<string, any> = IdLabelDto>
     /**
      * Item click handler
      */
-    onItemClick?: MouseEventHandler;
+    onItemClick?: (event: React.MouseEvent, id: unknown) => void;
 
     /**
      * On load data handler
@@ -217,7 +217,7 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
                             value={id}
                             onClick={(event) => {
                                 if (onItemClick) {
-                                    onItemClick(event);
+                                    onItemClick(event, id);
                                     if (event.defaultPrevented) return;
                                 }
                                 if (!multiple) setItemValue(id);
