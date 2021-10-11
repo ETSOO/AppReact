@@ -3,7 +3,6 @@ import {
     Checkbox,
     FormControl,
     InputLabel,
-    ListItemIcon,
     ListItemText,
     MenuItem,
     OutlinedInput,
@@ -178,7 +177,7 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
             </InputLabel>
             <Select
                 ref={divRef}
-                value={valueState}
+                value={localOptions.length > 0 ? valueState : undefined}
                 input={<OutlinedInput notched label={label} />}
                 labelId={labelId}
                 name={name}

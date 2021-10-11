@@ -93,7 +93,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
         }
 
         // https://stackoverflow.com/questions/15738259/disabling-chrome-autofill
-        Object.assign(params.inputProps, { autocomplete: inputAutoComplete });
+        Object.assign(params.inputProps, { autoComplete: inputAutoComplete });
 
         return params;
     };

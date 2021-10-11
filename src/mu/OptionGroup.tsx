@@ -186,7 +186,7 @@ export function OptionGroup<
         <RadioGroup
             row={row}
             name={name}
-            defaultValue={defaultValue}
+            value={defaultValue}
             onChange={(_event, value) => {
                 const typeValue = Utils.parseString<D>(
                     value,

@@ -88,6 +88,9 @@ export class UserState<D extends IUser> {
                         }
                         return state;
                     case UserActionType.Unauthorized:
+                        // Avoid multiple updates (For example, multiple API calls failed with 405)
+                        if (!state.authorized) return state;
+
                         return {
                             ...state, // Keep other user data and token for refresh
                             authorized: false // Flag as unauthorized
