@@ -42,6 +42,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
         search = false,
         idField = 'id',
         idValue,
+        inputAutoComplete = 'off',
         inputMargin,
         inputRequired,
         inputVariant,
@@ -263,6 +264,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
+                            autoComplete={inputAutoComplete}
                         />
                     ) : (
                         <InputField
@@ -272,6 +274,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
+                            autoComplete={inputAutoComplete}
                         />
                     )
                 }

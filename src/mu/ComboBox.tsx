@@ -45,6 +45,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         search = false,
         idField = 'id',
         idValue,
+        inputAutoComplete = 'new-region',
         inputMargin,
         inputRequired,
         inputVariant,
@@ -156,7 +157,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
-                            autoComplete="off"
+                            autoComplete={inputAutoComplete}
                         />
                     ) : (
                         <InputField
@@ -165,7 +166,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
-                            autoComplete="off"
+                            autoComplete={inputAutoComplete}
                         />
                     )
                 }

@@ -20,6 +20,11 @@ export interface AutocompleteExtendedProps<T extends Record<string, any>>
     idValue?: DataTypes.IdType;
 
     /**
+     * Autocomplete for the input
+     */
+    inputAutoComplete?: string;
+
+    /**
      * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
      * @default 'none'
      */
