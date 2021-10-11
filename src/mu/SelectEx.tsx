@@ -177,7 +177,7 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
             </InputLabel>
             <Select
                 ref={divRef}
-                value={localOptions.length > 0 ? valueState : undefined}
+                value={localOptions.length > 0 ? valueState : ''}
                 input={<OutlinedInput notched label={label} />}
                 labelId={labelId}
                 name={name}

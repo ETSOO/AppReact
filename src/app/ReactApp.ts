@@ -156,11 +156,15 @@ export abstract class ReactApp<
      * Will update user state with UserActionType.Unauthorized
      */
     override tryLogin() {
-        // Dispatch action
-        if (this.userStateDispatch != null)
+        const result = super.tryLogin();
+        if (result && this.userStateDispatch != null) {
+            // There is delay during state update
+            // Not a good idea to try login multiple times with API calls
             this.userStateDispatch({
                 type: UserActionType.Unauthorized
             });
+        }
+        return result;
     }
 
     /**
