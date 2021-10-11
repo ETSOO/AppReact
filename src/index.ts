@@ -43,6 +43,7 @@ export * from './mu/FlexBox';
 export * from './mu/IconButtonLink';
 export * from './mu/InputField';
 export * from './mu/ItemList';
+export * from './mu/ListItemRightIcon';
 export * from './mu/LoadingButton';
 export * from './mu/MaskInput';
 export * from './mu/MoreFab';

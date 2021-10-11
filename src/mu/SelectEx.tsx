@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import { MUGlobal } from './MUGlobal';
 import { IdLabelDto } from '@etsoo/appscript';
+import { ListItemRightIcon } from './ListItemRightIcon';
 
 /**
  * Extended select component props
@@ -226,9 +227,9 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
                             {multiple && <Checkbox checked={itemChecked(id)} />}
                             <ListItemText primary={label} />
                             {itemIconRenderer && (
-                                <ListItemIcon>
+                                <ListItemRightIcon>
                                     {itemIconRenderer(id)}
-                                </ListItemIcon>
+                                </ListItemRightIcon>
                             )}
                         </MenuItem>
                     );
