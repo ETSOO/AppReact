@@ -156,7 +156,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
-                            autoComplete="new-password"
+                            autoComplete="off"
                         />
                     ) : (
                         <InputField
@@ -165,7 +165,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
-                            autoComplete="new-password"
+                            autoComplete="off"
                         />
                     )
                 }
