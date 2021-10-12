@@ -93,6 +93,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         }
 
         // https://stackoverflow.com/questions/15738259/disabling-chrome-autofill
+        // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html
         Object.assign(params.inputProps, { autoComplete: inputAutoComplete });
 
         return params;
