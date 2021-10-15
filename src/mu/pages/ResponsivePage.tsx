@@ -23,13 +23,16 @@ interface LocalStates {
  * @param props Props
  * @returns Component
  */
-export function ResponsivePage<T>(props: ResponsePageProps<T>) {
+export function ResponsivePage<T, F extends {}>(
+    props: ResponsePageProps<T, F>
+) {
     // Destruct
     const {
         adjustHeight,
         columns,
         dataGridMinWidth = DataGridExCalColumns(columns).total,
         fields,
+        fieldTemplate,
         height,
         loadData,
         innerItemRenderer,
@@ -52,9 +55,9 @@ export function ResponsivePage<T>(props: ResponsePageProps<T>) {
         }
     );
 
-    const localLoadData = ({ data, ...rest }: GridLoadDataProps) => {
-        const json = GridDataGet(data);
-        return loadData({ ...json, ...rest });
+    const localLoadData = (props: GridLoadDataProps) => {
+        const data = GridDataGet(props, fieldTemplate);
+        return loadData(data);
     };
 
     const refs = useCombinedRefs(mRef, (ref: GridMethodRef) => {

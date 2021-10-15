@@ -18,9 +18,16 @@ import { ListPageProps } from './ListPageProps';
  * @param props Props
  * @returns Component
  */
-export function ListPage<T>(props: ListPageProps<T>) {
+export function ListPage<T, F extends {}>(props: ListPageProps<T, F>) {
     // Destruct
-    const { fields, loadData, mRef, pageProps = {}, ...rest } = props;
+    const {
+        fields,
+        fieldTemplate,
+        loadData,
+        mRef,
+        pageProps = {},
+        ...rest
+    } = props;
 
     pageProps.paddings ??= MUGlobal.pagePaddings;
 
@@ -51,9 +58,9 @@ export function ListPage<T>(props: ListPageProps<T>) {
         reset();
     };
 
-    const localLoadData = ({ data, ...rest }: GridLoadDataProps) => {
-        const json = GridDataGet(data);
-        return loadData({ ...json, ...rest });
+    const localLoadData = (props: GridLoadDataProps) => {
+        const data = GridDataGet(props, fieldTemplate);
+        return loadData(data);
     };
 
     // Layout

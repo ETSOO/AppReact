@@ -16,7 +16,7 @@ export type IdStateRouterProps<T extends DataTypes.IdType = number> =
 /**
  * State router props, include data in location.state
  */
-export type StateRouterProps<T extends Readonly<Record<string, any>>> =
+export type StateRouterProps<T extends Readonly<DataTypes.StringRecord>> =
     RouteComponentProps<{
         location: { state: T };
     }>;

@@ -16,7 +16,7 @@ export interface CultureCalls extends IUpdate<ICulture, CultureAction> {
      * Key value
      * @param key Item key
      */
-    get<T extends DataTypes.SimpleType = string>(key: string): T | undefined;
+    get<T = string>(key: string): T | undefined;
 }
 
 /**
@@ -30,7 +30,7 @@ const calls = {
      * Key value
      * @param key Item key
      */
-    get<T extends DataTypes.SimpleType = string>(key: string) {
+    get<T = string>(key: string) {
         const value = this.state.resources[key];
         if (value == null) return undefined;
         return value as T;

@@ -4,16 +4,24 @@ import { CommonPageProps } from './CommonPageProps';
 /**
  * Search page props
  */
-export interface SearchPageProps<T> extends Omit<GridLoader<T>, 'loadData'> {
+export interface SearchPageProps<T, F extends {}>
+    extends Omit<GridLoader<T>, 'loadData'> {
     /**
-     * Fields
+     * Search fields
      */
     fields: React.ReactElement[];
 
     /**
+     * Search field template
+     */
+    fieldTemplate?: F;
+
+    /**
      * Load data callback
      */
-    loadData: (data: GridJsonData) => PromiseLike<T[] | null | undefined>;
+    loadData: (
+        data: GridJsonData & Partial<F>
+    ) => PromiseLike<T[] | null | undefined>;
 
     /**
      * Page props

@@ -1,4 +1,4 @@
-import { DomUtils } from '@etsoo/shared';
+import { DataTypes, DomUtils } from '@etsoo/shared';
 
 /**
  * Grid size
@@ -18,31 +18,40 @@ export const GridSizeGet = (size: GridSize, input: number) => {
 /**
  * Grid data type
  */
-export type GridData = FormData | Record<string, any>;
+export type GridData = FormData | DataTypes.StringRecord;
 
 /**
- * Grid data get as Json
+ * Grid data get with format
  * @param data Data
  * @returns Json data
  */
-export const GridDataGet = (data?: GridData) => {
-    if (data instanceof FormData) {
-        // Clear empty value
-        DomUtils.clearFormData(data);
+export function GridDataGet<F extends {}>(
+    props: GridLoadDataProps,
+    template?: F
+): GridJsonData & Partial<F> {
+    // Destruct
+    const { data, ...rest } = props;
 
-        // Transfer to Json
-        return DomUtils.formDataToObject(data);
+    // Conditions
+    let conditions: Partial<F> = {};
+
+    // Cast data
+    if (data != null && template != null) {
+        if (data instanceof FormData) {
+            // Clear empty value
+            DomUtils.clearFormData(data);
+        }
+        conditions = DomUtils.dataAs(data, template);
     }
 
-    return data;
-};
+    // DomUtils.dataAs(data, template);
+    return { ...conditions, ...rest };
+}
 
 /**
  * Grid Json data
  */
-export interface GridJsonData
-    extends Omit<GridLoadDataProps, 'data'>,
-        Record<string, any> {}
+export interface GridJsonData extends Omit<GridLoadDataProps, 'data'> {}
 
 /**
  * Grid data load props

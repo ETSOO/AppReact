@@ -15,8 +15,8 @@ import { ListPageProps } from './ListPageProps';
  * @param props Props
  * @returns Component
  */
-export function FixedListPage<T>(
-    props: ListPageProps<T> & {
+export function FixedListPage<T, F extends {}>(
+    props: ListPageProps<T, F> & {
         /**
          * Height will be deducted
          * @param height Current calcuated height
@@ -28,6 +28,7 @@ export function FixedListPage<T>(
     const {
         adjustHeight,
         fields,
+        fieldTemplate,
         loadData,
         mRef,
         sizeReadyMiliseconds = 100,
@@ -69,9 +70,9 @@ export function FixedListPage<T>(
         reset();
     };
 
-    const localLoadData = ({ data, ...rest }: GridLoadDataProps) => {
-        const json = GridDataGet(data);
-        return loadData({ ...json, ...rest });
+    const localLoadData = (props: GridLoadDataProps) => {
+        const data = GridDataGet(props, fieldTemplate);
+        return loadData(data);
     };
 
     // Watch container

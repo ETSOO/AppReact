@@ -5,7 +5,7 @@ import { GridLoaderStates } from './GridLoader';
 /**
  * Grid data type
  */
-import GridDataType = DataTypes.DataType;
+import GridDataType = DataTypes.CombinedEnum;
 export { GridDataType };
 
 /**

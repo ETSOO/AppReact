@@ -54,9 +54,9 @@ export namespace Labels {
      * setLabelReference key reference
      */
     export interface setLabelsReference {
-        commonPage?: DataTypes.ReadonlyStringDictionary;
-        notificationMU?: DataTypes.ReadonlyStringDictionary;
-        userAvatarEditor?: DataTypes.ReadonlyStringDictionary;
+        commonPage?: DataTypes.StringDictionary;
+        notificationMU?: DataTypes.StringDictionary;
+        userAvatarEditor?: DataTypes.StringDictionary;
     }
 
     /**
@@ -65,7 +65,7 @@ export namespace Labels {
      * @param reference Key reference
      */
     export const setLabels = (
-        labels: DataTypes.ReadonlySimpleObject,
+        labels: {},
         reference: setLabelsReference = {}
     ) => {
         Utils.setLabels(CommonPage, labels, reference.commonPage);

@@ -4,9 +4,9 @@
  * @returns Callback
  */
 export default function useCombinedRefs(
-    ...refs: (React.Ref<any> | undefined)[]
+    ...refs: (React.Ref<unknown> | undefined)[]
 ) {
-    return (target: any) => {
+    return (target: unknown) => {
         // Ignore null reference
         if (target == null) return;
 
@@ -20,7 +20,7 @@ export default function useCombinedRefs(
                 ref(target);
             } else {
                 // as any to update readonly property
-                (ref as any).current = target;
+                Reflect.set(ref, 'current', target);
             }
         });
     };

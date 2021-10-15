@@ -7,7 +7,6 @@ import {
 } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import React from 'react';
-import { NotifierPromptProps } from '../mu/NotifierPromptProps';
 import { NotificationReactCallProps } from '../notifier/Notifier';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';

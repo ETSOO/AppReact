@@ -2,17 +2,15 @@ import { ListChildComponentProps } from 'react-window';
 import { GridMethodRef } from '../GridMethodRef';
 import { ScrollerListExInnerItemRendererProps } from '../ScrollerListEx';
 import { DataGridPageProps } from './DataGridPageProps';
-import { SearchPageProps } from './SearchPageProps';
 
 /**
  * Response page props
  */
-export interface ResponsePageProps<T>
-    extends SearchPageProps<T>,
-        Omit<
-            DataGridPageProps<T>,
-            'mRef' | 'itemKey' | 'onScroll' | 'onItemsRendered'
-        > {
+export interface ResponsePageProps<T, F extends {}>
+    extends Omit<
+        DataGridPageProps<T, F>,
+        'mRef' | 'itemKey' | 'onScroll' | 'onItemsRendered'
+    > {
     /**
      * Min width to show Datagrid
      */

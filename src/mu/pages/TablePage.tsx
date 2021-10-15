@@ -18,11 +18,12 @@ import { TablePageProps } from './TablePageProps';
  * @param props Props
  * @returns Component
  */
-export function TablePage<T>(props: TablePageProps<T>) {
+export function TablePage<T, F extends {}>(props: TablePageProps<T, F>) {
     // Destruct
     const {
         columns,
         fields,
+        fieldTemplate,
         loadData,
         mRef,
         sizeReadyMiliseconds = 100,
@@ -59,9 +60,9 @@ export function TablePage<T>(props: TablePageProps<T>) {
         reset();
     };
 
-    const localLoadData = ({ data, ...rest }: GridLoadDataProps) => {
-        const json = GridDataGet(data);
-        return loadData({ ...json, ...rest });
+    const localLoadData = (props: GridLoadDataProps) => {
+        const data = GridDataGet(props, fieldTemplate);
+        return loadData(data);
     };
 
     // Total width

@@ -22,11 +22,12 @@ interface LocalStates {
  * @param props Props
  * @returns Component
  */
-export function DataGridPage<T>(props: DataGridPageProps<T>) {
+export function DataGridPage<T, F extends {}>(props: DataGridPageProps<T, F>) {
     // Destruct
     const {
         adjustHeight,
         fields,
+        fieldTemplate,
         height,
         loadData,
         mRef,
@@ -58,9 +59,9 @@ export function DataGridPage<T>(props: DataGridPageProps<T>) {
         setStates({ data });
     };
 
-    const localLoadData = ({ data, ...rest }: GridLoadDataProps) => {
-        const json = GridDataGet(data);
-        return loadData({ ...json, ...rest });
+    const localLoadData = (props: GridLoadDataProps) => {
+        const data = GridDataGet(props, fieldTemplate);
+        return loadData(data);
     };
 
     // Watch container
