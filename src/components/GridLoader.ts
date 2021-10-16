@@ -25,15 +25,15 @@ export type GridData = FormData | DataTypes.StringRecord;
  * @param data Data
  * @returns Json data
  */
-export function GridDataGet<F extends {}>(
+export function GridDataGet<F extends DataTypes.BasicTemplate>(
     props: GridLoadDataProps,
     template?: F
-): GridJsonData & Partial<F> {
+): GridJsonData & DataTypes.BasicTemplateType<F> {
     // Destruct
     const { data, ...rest } = props;
 
     // Conditions
-    let conditions: Partial<F> = {};
+    let conditions: DataTypes.BasicTemplateType<F> = {};
 
     // Cast data
     if (data != null && template != null) {
@@ -41,7 +41,9 @@ export function GridDataGet<F extends {}>(
             // Clear empty value
             DomUtils.clearFormData(data);
         }
-        conditions = DomUtils.dataAs(data, template);
+
+        // Set keepSource to true to hold form data, even they are invisible from the conditions
+        conditions = DomUtils.dataAs(data, template, true);
     }
 
     // DomUtils.dataAs(data, template);

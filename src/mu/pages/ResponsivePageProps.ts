@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import { ListChildComponentProps } from 'react-window';
 import { GridMethodRef } from '../GridMethodRef';
 import { ScrollerListExInnerItemRendererProps } from '../ScrollerListEx';
@@ -6,7 +7,7 @@ import { DataGridPageProps } from './DataGridPageProps';
 /**
  * Response page props
  */
-export interface ResponsePageProps<T, F extends {}>
+export interface ResponsePageProps<T, F extends DataTypes.BasicTemplate>
     extends Omit<
         DataGridPageProps<T, F>,
         'mRef' | 'itemKey' | 'onScroll' | 'onItemsRendered'

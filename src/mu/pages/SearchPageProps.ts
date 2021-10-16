@@ -1,10 +1,11 @@
+import { DataTypes } from '@etsoo/shared';
 import { GridJsonData, GridLoader } from '../../components/GridLoader';
 import { CommonPageProps } from './CommonPageProps';
 
 /**
  * Search page props
  */
-export interface SearchPageProps<T, F extends {}>
+export interface SearchPageProps<T, F extends DataTypes.BasicTemplate>
     extends Omit<GridLoader<T>, 'loadData'> {
     /**
      * Search fields
@@ -20,7 +21,7 @@ export interface SearchPageProps<T, F extends {}>
      * Load data callback
      */
     loadData: (
-        data: GridJsonData & Partial<F>
+        data: GridJsonData & DataTypes.BasicTemplateType<F>
     ) => PromiseLike<T[] | null | undefined>;
 
     /**

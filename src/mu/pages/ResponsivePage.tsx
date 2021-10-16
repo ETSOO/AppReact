@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
@@ -23,7 +24,7 @@ interface LocalStates {
  * @param props Props
  * @returns Component
  */
-export function ResponsivePage<T, F extends {}>(
+export function ResponsivePage<T, F extends DataTypes.BasicTemplate>(
     props: ResponsePageProps<T, F>
 ) {
     // Destruct

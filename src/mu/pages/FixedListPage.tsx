@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
@@ -15,7 +16,7 @@ import { ListPageProps } from './ListPageProps';
  * @param props Props
  * @returns Component
  */
-export function FixedListPage<T, F extends {}>(
+export function FixedListPage<T, F extends DataTypes.BasicTemplate>(
     props: ListPageProps<T, F> & {
         /**
          * Height will be deducted
