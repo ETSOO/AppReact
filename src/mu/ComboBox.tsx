@@ -157,6 +157,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                         <SearchField
                             {...addReadOnly(params)}
                             label={label}
+                            name={name + 'Input'}
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
@@ -165,6 +166,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                         <InputField
                             {...addReadOnly(params)}
                             label={label}
+                            name={name + 'Input'}
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}

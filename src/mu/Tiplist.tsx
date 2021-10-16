@@ -265,6 +265,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                             {...params}
                             readOnly={readOnly}
                             label={label}
+                            name={name + 'Input'}
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
@@ -275,6 +276,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                             onChange={changeHandle}
                             {...addReadOnly(params)}
                             label={label}
+                            name={name + 'Input'}
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
