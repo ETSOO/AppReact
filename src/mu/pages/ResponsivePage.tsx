@@ -24,9 +24,10 @@ interface LocalStates {
  * @param props Props
  * @returns Component
  */
-export function ResponsivePage<T, F extends DataTypes.BasicTemplate>(
-    props: ResponsePageProps<T, F>
-) {
+export function ResponsivePage<
+    T,
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
+>(props: ResponsePageProps<T, F>) {
     // Destruct
     const {
         adjustHeight,

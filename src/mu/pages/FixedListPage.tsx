@@ -16,7 +16,10 @@ import { ListPageProps } from './ListPageProps';
  * @param props Props
  * @returns Component
  */
-export function FixedListPage<T, F extends DataTypes.BasicTemplate>(
+export function FixedListPage<
+    T,
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
+>(
     props: ListPageProps<T, F> & {
         /**
          * Height will be deducted

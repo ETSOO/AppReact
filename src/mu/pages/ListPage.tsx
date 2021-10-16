@@ -19,9 +19,10 @@ import { ListPageProps } from './ListPageProps';
  * @param props Props
  * @returns Component
  */
-export function ListPage<T, F extends DataTypes.BasicTemplate>(
-    props: ListPageProps<T, F>
-) {
+export function ListPage<
+    T,
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
+>(props: ListPageProps<T, F>) {
     // Destruct
     const {
         fields,

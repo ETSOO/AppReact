@@ -19,9 +19,10 @@ import { TablePageProps } from './TablePageProps';
  * @param props Props
  * @returns Component
  */
-export function TablePage<T, F extends DataTypes.BasicTemplate>(
-    props: TablePageProps<T, F>
-) {
+export function TablePage<
+    T,
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
+>(props: TablePageProps<T, F>) {
     // Destruct
     const {
         columns,
