@@ -38,7 +38,7 @@ import {
     NotifierReact
 } from '../notifier/Notifier';
 import { DraggablePaperComponent } from './DraggablePaperComponent';
-import { LoadingButton } from './LoadingButton';
+import { LoadingButton, LoadingButtonProps } from './LoadingButton';
 
 // Custom icon dialog title bar
 const IconDialogTitle = styled(DialogTitle)`
@@ -75,7 +75,8 @@ export class NotificationMU extends NotificationReact {
             inputs,
             fullScreen,
             fullWidth = true,
-            maxWidth
+            maxWidth,
+            okLabel = labels.alertOK
         } = this.inputProps ?? {};
 
         let title = this.title;
@@ -93,6 +94,13 @@ export class NotificationMU extends NotificationReact {
             icon = <Error color="error" />;
             title ??= labels.alertTitle;
         }
+
+        const setupProps: LoadingButtonProps = {
+            color: 'primary'
+        };
+
+        // Setup callback
+        if (this.renderSetup) this.renderSetup(setupProps);
 
         return (
             <Dialog
@@ -114,11 +122,11 @@ export class NotificationMU extends NotificationReact {
                 </DialogContent>
                 <DialogActions>
                     <LoadingButton
-                        color="primary"
+                        {...setupProps}
                         onClick={async () => await this.returnValue(undefined)}
                         autoFocus
                     >
-                        {labels.alertOK}
+                        {okLabel}
                     </LoadingButton>
                 </DialogActions>
             </Dialog>
@@ -131,16 +139,13 @@ export class NotificationMU extends NotificationReact {
         const title = this.title ?? labels.confirmTitle;
 
         const {
-            okLabel,
-            cancelLabel,
+            okLabel = labels.confirmYes,
+            cancelLabel = labels.confirmNo,
             inputs,
             fullScreen,
             fullWidth = true,
             maxWidth
         } = this.inputProps ?? {};
-
-        const noLabel = cancelLabel ?? labels.confirmNo;
-        const yesLabel = okLabel ?? labels.confirmYes;
 
         return (
             <Dialog
@@ -165,14 +170,14 @@ export class NotificationMU extends NotificationReact {
                         color="secondary"
                         onClick={async () => await this.returnValue(false)}
                     >
-                        {noLabel}
+                        {cancelLabel}
                     </LoadingButton>
                     <LoadingButton
                         color="primary"
                         onClick={async () => await this.returnValue(true)}
                         autoFocus
                     >
-                        {yesLabel}
+                        {okLabel}
                     </LoadingButton>
                 </DialogActions>
             </Dialog>
