@@ -70,6 +70,11 @@ export function ProgressCount(props: ProgressCountProps) {
     // Progress value
     const [value, setValue] = React.useState(countdown ? seconds : 0);
 
+    // Variant
+    const [variant, setVariant] = React.useState<
+        'determinate' | 'indeterminate'
+    >('determinate');
+
     // Progress value
     const progressValue = (100.0 * value) / seconds;
 
@@ -89,7 +94,10 @@ export function ProgressCount(props: ProgressCountProps) {
                         if (onComplete) {
                             const result = onComplete();
                             // Finish
-                            if (result === false) clearInterval(timer);
+                            if (result === false) {
+                                clearInterval(timer);
+                                setVariant('indeterminate');
+                            }
                         }
                     }
                 } else {
@@ -97,7 +105,10 @@ export function ProgressCount(props: ProgressCountProps) {
                         if (onComplete) {
                             const result = onComplete();
                             // Finish
-                            if (result === false) clearInterval(timer);
+                            if (result === false) {
+                                clearInterval(timer);
+                                setVariant('indeterminate');
+                            }
                         }
                     }
                 }
@@ -116,10 +127,7 @@ export function ProgressCount(props: ProgressCountProps) {
         return (
             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <Box sx={{ width: '100%', mr: 1 }}>
-                    <LinearProgress
-                        variant="determinate"
-                        value={progressValue}
-                    />
+                    <LinearProgress variant={variant} value={progressValue} />
                 </Box>
                 <Box sx={{ minWidth }}>
                     <Typography
@@ -132,7 +140,7 @@ export function ProgressCount(props: ProgressCountProps) {
 
     return (
         <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-            <CircularProgress variant="determinate" value={progressValue} />
+            <CircularProgress variant={variant} value={progressValue} />
             <Box
                 sx={{
                     top: 0,
