@@ -76,7 +76,8 @@ export class NotificationMU extends NotificationReact {
             fullScreen,
             fullWidth = true,
             maxWidth,
-            okLabel = labels.alertOK
+            okLabel = labels.alertOK,
+            primaryButton
         } = this.inputProps ?? {};
 
         let title = this.title;
@@ -125,6 +126,7 @@ export class NotificationMU extends NotificationReact {
                         {...setupProps}
                         onClick={async () => await this.returnValue(undefined)}
                         autoFocus
+                        {...primaryButton}
                     >
                         {okLabel}
                     </LoadingButton>
@@ -144,7 +146,8 @@ export class NotificationMU extends NotificationReact {
             inputs,
             fullScreen,
             fullWidth = true,
-            maxWidth
+            maxWidth,
+            primaryButton
         } = this.inputProps ?? {};
 
         return (
@@ -176,6 +179,7 @@ export class NotificationMU extends NotificationReact {
                         color="primary"
                         onClick={async () => await this.returnValue(true)}
                         autoFocus
+                        {...primaryButton}
                     >
                         {okLabel}
                     </LoadingButton>
@@ -230,6 +234,7 @@ export class NotificationMU extends NotificationReact {
             fullScreen,
             fullWidth = true,
             maxWidth,
+            primaryButton,
             ...rest
         } = this.inputProps ?? {};
 
@@ -349,6 +354,7 @@ export class NotificationMU extends NotificationReact {
                             color="primary"
                             autoFocus
                             onClick={handleSubmit}
+                            {...primaryButton}
                         >
                             {okLabel}
                         </LoadingButton>

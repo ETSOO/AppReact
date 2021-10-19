@@ -23,6 +23,12 @@ export interface ProgressCountProps {
     linear?: boolean;
 
     /**
+     * Min width
+     * @default 36
+     */
+    minWidth?: number;
+
+    /**
      * On complete callback, return false will stop it
      */
     onComplete?: () => boolean;
@@ -33,9 +39,9 @@ export interface ProgressCountProps {
     onProgress?: (value: number) => void;
 
     /**
-     * Value for count
+     * Seconds for count
      */
-    value: number;
+    seconds: number;
 
     /**
      * Value unit, like 's' or '%'
@@ -54,21 +60,23 @@ export function ProgressCount(props: ProgressCountProps) {
     const {
         countdown = true,
         linear = true,
+        minWidth = 36,
         onComplete,
         onProgress,
-        value,
+        seconds,
         valueUnit = ''
     } = props;
 
     // Progress value
-    const [progressValue, setProgressValue] = React.useState(
-        countdown ? value : 0
-    );
+    const [value, setValue] = React.useState(countdown ? seconds : 0);
+
+    // Progress value
+    const progressValue = value / seconds;
 
     React.useEffect(() => {
         const timer = setInterval(() => {
-            setProgressValue((prevProgress) => {
-                let newValue = prevProgress + (countdown ? -1 : 1);
+            setValue((prev) => {
+                let newValue = prev + (countdown ? -1 : 1);
 
                 if (countdown) {
                     if (newValue === 0) {
@@ -102,18 +110,18 @@ export function ProgressCount(props: ProgressCountProps) {
 
     if (linear)
         return (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <Box sx={{ width: '100%', mr: 1 }}>
                     <LinearProgress
                         variant="determinate"
                         value={progressValue}
                     />
                 </Box>
-                <Box sx={{ minWidth: 35 }}>
+                <Box sx={{ minWidth }}>
                     <Typography
                         variant="body2"
                         color="text.secondary"
-                    >{`${progressValue}${valueUnit}`}</Typography>
+                    >{`${value}${valueUnit}`}</Typography>
                 </Box>
             </Box>
         );
@@ -138,7 +146,7 @@ export function ProgressCount(props: ProgressCountProps) {
                     component="div"
                     color="text.secondary"
                 >
-                    {`${progressValue}${valueUnit}`}
+                    {`${value}${valueUnit}`}
                 </Typography>
             </Box>
         </Box>

@@ -12,7 +12,7 @@ import {
 import { IAction } from '@etsoo/appscript';
 import { State } from '../states/State';
 import { IProviderProps, IUpdate } from '../states/IState';
-import { Breakpoint } from '@mui/material';
+import { Breakpoint, ButtonProps } from '@mui/material';
 
 /**
  * React notification call props
@@ -52,6 +52,11 @@ export interface NotificationReactCallProps extends NotificationCallProps {
      * Type
      */
     type?: string;
+
+    /**
+     * Primary button props
+     */
+    primaryButton?: ButtonProps;
 }
 
 /**
