@@ -78,12 +78,12 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
 
     // Local default value
     const localValue =
-        idValue != null
+        (idValue != null
             ? localOptions.find((o) => o[idField] === idValue)
-            : defaultValue ?? value;
+            : defaultValue ?? value) ?? ({ [idField]: '' } as T);
 
     // Current id value
-    const localIdValue = localValue == null ? undefined : localValue[idField];
+    const localIdValue = localValue[idField];
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {

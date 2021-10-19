@@ -64,9 +64,8 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Local value
-    const localValue = value ?? defaultValue;
-    const localIdValue =
-        idValue ?? (localValue == null ? undefined : localValue[idField]);
+    const localValue = value ?? defaultValue ?? ({ [idField]: '' } as T);
+    const localIdValue = idValue ?? localValue[idField];
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
@@ -77,7 +76,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
             // Loading unknown
             open: false,
             options: [],
-            value: localValue ?? null
+            value: localValue
         }
     );
 
@@ -180,7 +179,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
         }
     };
 
-    if (localIdValue != null) {
+    if (localIdValue != null && localIdValue !== '') {
         if (state.idLoaded) {
             // Set default
             if (!state.idSet && states.options.length == 1) {
