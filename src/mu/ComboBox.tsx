@@ -1,4 +1,5 @@
 import { IdLabelDto } from '@etsoo/appscript';
+import { DataTypes } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
@@ -9,7 +10,7 @@ import { SearchField } from './SearchField';
 /**
  * ComboBox props
  */
-export interface ComboBoxProps<T extends Record<string, any>>
+export interface ComboBoxProps<T extends DataTypes.StringRecord>
     extends AutocompleteExtendedProps<T> {
     /**
      * Label field
@@ -37,7 +38,7 @@ export interface ComboBoxProps<T extends Record<string, any>>
  * @param props Props
  * @returns Component
  */
-export function ComboBox<T extends Record<string, any> = IdLabelDto>(
+export function ComboBox<T extends DataTypes.StringRecord = IdLabelDto>(
     props: ComboBoxProps<T>
 ) {
     // Destruct
@@ -54,7 +55,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         inputVariant,
         defaultValue,
         label,
-        labelField,
+        labelField = 'label',
         loadData,
         onLoadData,
         name,
@@ -62,9 +63,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         readOnly = true,
         onChange,
         value,
-        getOptionLabel = labelField
-            ? (option: T) => option[labelField]
-            : undefined,
+        getOptionLabel = (option: T) => String(option[labelField]),
         sx = { minWidth: '150px' },
         ...rest
     } = props;
@@ -80,7 +79,8 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
     const localValue =
         (idValue != null
             ? localOptions.find((o) => o[idField] === idValue)
-            : defaultValue ?? value) ?? ({ [idField]: '' } as T);
+            : defaultValue ?? value) ??
+        ({ [idField]: '', [labelField]: '' } as T);
 
     // Current id value
     const localIdValue = localValue[idField];
@@ -125,7 +125,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                value={localIdValue ?? ''}
+                value={Utils.formatInputValue(localIdValue) ?? ''}
                 onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}

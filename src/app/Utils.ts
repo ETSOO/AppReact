@@ -3,6 +3,23 @@
  */
 export namespace Utils {
     /**
+     * Format input value
+     * @param value Input value
+     * @returns Formatted value
+     */
+    export function formatInputValue(value: unknown) {
+        if (value === null) return undefined;
+
+        if (typeof value === 'number') return value;
+
+        if (typeof value === 'string') return value;
+
+        if (Array.isArray(value)) return value;
+
+        return String(value);
+    }
+
+    /**
      * Trigger input change event
      * @param input Form input
      * @param value New value

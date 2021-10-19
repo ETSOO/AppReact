@@ -10,7 +10,7 @@ import { SearchField } from './SearchField';
 /**
  * Tiplist props
  */
-export interface TiplistProps<T extends Record<string, any> = IdLabelDto>
+export interface TiplistProps<T extends DataTypes.StringRecord>
     extends Omit<AutocompleteExtendedProps<T>, 'open'> {
     /**
      * Load data callback
@@ -22,7 +22,7 @@ export interface TiplistProps<T extends Record<string, any> = IdLabelDto>
 }
 
 // Multiple states
-interface States<T extends Record<string, any>> {
+interface States<T extends DataTypes.StringRecord> {
     open: boolean;
     options: T[];
     value?: T | null;
@@ -34,7 +34,7 @@ interface States<T extends Record<string, any>> {
  * @param props Props
  * @returns Component
  */
-export function Tiplist<T extends Record<string, any> = IdLabelDto>(
+export function Tiplist<T extends DataTypes.StringRecord = IdLabelDto>(
     props: TiplistProps<T>
 ) {
     // Destruct
@@ -64,8 +64,9 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Local value
-    const localValue = value ?? defaultValue ?? ({ [idField]: '' } as T);
-    const localIdValue = idValue ?? localValue[idField];
+    const localValue =
+        value ?? defaultValue ?? ({ [idField]: '', label: '' } as unknown as T);
+    const localIdValue = idValue ?? (localValue[idField] as DataTypes.IdType);
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
@@ -250,7 +251,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                             undefined,
                             states.value == null
                                 ? undefined
-                                : states.value[idField]
+                                : (states.value[idField] as DataTypes.IdType)
                         );
                 }}
                 onClose={() => {
