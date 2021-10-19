@@ -1,5 +1,6 @@
 import { DataTypes } from '@etsoo/shared';
 import { AutocompleteProps } from '@mui/material';
+import { ChangeEventHandler } from 'react';
 
 /**
  * Autocomplete extended props
@@ -25,10 +26,26 @@ export interface AutocompleteExtendedProps<T extends Record<string, any>>
     inputAutoComplete?: string;
 
     /**
+     * If `true`, the label is displayed in an error state.
+     * @default false
+     */
+    inputError?: boolean;
+
+    /**
+     * The helper text content.
+     */
+    inputHelperText?: React.ReactNode;
+
+    /**
      * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
      * @default 'none'
      */
     inputMargin?: 'dense' | 'normal' | 'none';
+
+    /**
+     * Input onChange hanlder
+     */
+    inputOnChange?: ChangeEventHandler<HTMLInputElement> | undefined;
 
     /**
      * If `true`, the label will indicate that the `input` is required.

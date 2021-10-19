@@ -43,7 +43,10 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
         idField = 'id',
         idValue,
         inputAutoComplete = 'off',
+        inputError,
+        inputHelperText,
         inputMargin,
+        inputOnChange,
         inputRequired,
         inputVariant,
         label,
@@ -212,6 +215,7 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                 style={{ display: 'none' }}
                 name={name}
                 defaultValue={localIdValue}
+                onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
             <Autocomplete
@@ -270,6 +274,8 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                             variant={inputVariant}
                             required={inputRequired}
                             autoComplete={inputAutoComplete}
+                            error={inputError}
+                            helperText={inputHelperText}
                         />
                     ) : (
                         <InputField
@@ -281,6 +287,8 @@ export function Tiplist<T extends Record<string, any> = IdLabelDto>(
                             variant={inputVariant}
                             required={inputRequired}
                             autoComplete={inputAutoComplete}
+                            error={inputError}
+                            helperText={inputHelperText}
                         />
                     )
                 }

@@ -46,7 +46,10 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
         idField = 'id',
         idValue,
         inputAutoComplete = 'new-region',
+        inputError,
+        inputHelperText,
         inputMargin,
+        inputOnChange,
         inputRequired,
         inputVariant,
         defaultValue,
@@ -123,10 +126,11 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                 style={{ display: 'none' }}
                 name={name}
                 defaultValue={localIdValue}
+                onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
             <Autocomplete
-                defaultValue={localValue}
+                value={localValue}
                 getOptionLabel={getOptionLabel}
                 isOptionEqualToValue={(option: T, value: T) =>
                     option[idField] === value[idField]
@@ -161,6 +165,8 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
+                            error={inputError}
+                            helperText={inputHelperText}
                         />
                     ) : (
                         <InputField
@@ -170,6 +176,8 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                             margin={inputMargin}
                             variant={inputVariant}
                             required={inputRequired}
+                            error={inputError}
+                            helperText={inputHelperText}
                         />
                     )
                 }
