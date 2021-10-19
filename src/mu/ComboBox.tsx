@@ -125,7 +125,7 @@ export function ComboBox<T extends Record<string, any> = IdLabelDto>(
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                defaultValue={localIdValue}
+                value={localIdValue ?? ''}
                 onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
