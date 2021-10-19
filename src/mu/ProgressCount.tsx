@@ -76,7 +76,13 @@ export function ProgressCount(props: ProgressCountProps) {
     React.useEffect(() => {
         const timer = setInterval(() => {
             setValue((prev) => {
-                let newValue = prev + (countdown ? -1 : 1);
+                const newValue = countdown
+                    ? prev === 0
+                        ? seconds
+                        : prev - 1
+                    : prev === seconds
+                    ? 0
+                    : prev + 1;
 
                 if (countdown) {
                     if (newValue === 0) {
@@ -85,16 +91,14 @@ export function ProgressCount(props: ProgressCountProps) {
                             // Finish
                             if (result === false) clearInterval(timer);
                         }
-                        newValue = value;
                     }
                 } else {
-                    if (newValue === value) {
+                    if (newValue === seconds) {
                         if (onComplete) {
                             const result = onComplete();
                             // Finish
                             if (result === false) clearInterval(timer);
                         }
-                        newValue = 0;
                     }
                 }
 
