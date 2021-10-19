@@ -71,7 +71,7 @@ export function ProgressCount(props: ProgressCountProps) {
     const [value, setValue] = React.useState(countdown ? seconds : 0);
 
     // Progress value
-    const progressValue = value / seconds;
+    const progressValue = (100.0 * value) / seconds;
 
     React.useEffect(() => {
         const timer = setInterval(() => {
