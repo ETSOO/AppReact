@@ -1,5 +1,4 @@
 import { IdLabelDto } from '@etsoo/appscript';
-import { DataTypes } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
@@ -10,7 +9,7 @@ import { SearchField } from './SearchField';
 /**
  * ComboBox props
  */
-export interface ComboBoxProps<T extends DataTypes.StringRecord>
+export interface ComboBoxProps<T extends {}>
     extends AutocompleteExtendedProps<T> {
     /**
      * Label field
@@ -38,9 +37,7 @@ export interface ComboBoxProps<T extends DataTypes.StringRecord>
  * @param props Props
  * @returns Component
  */
-export function ComboBox<T extends DataTypes.StringRecord = IdLabelDto>(
-    props: ComboBoxProps<T>
-) {
+export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
     // Destruct
     const {
         search = false,
@@ -63,7 +60,7 @@ export function ComboBox<T extends DataTypes.StringRecord = IdLabelDto>(
         readOnly = true,
         onChange,
         value,
-        getOptionLabel = (option: T) => String(option[labelField]),
+        getOptionLabel = (option: T) => String(Reflect.get(option, labelField)),
         sx = { minWidth: '150px' },
         ...rest
     } = props;
@@ -78,12 +75,12 @@ export function ComboBox<T extends DataTypes.StringRecord = IdLabelDto>(
     // Local default value
     const localValue =
         (idValue != null
-            ? localOptions.find((o) => o[idField] === idValue)
+            ? localOptions.find((o) => Reflect.get(o, idField) === idValue)
             : defaultValue ?? value) ??
         ({ [idField]: '', [labelField]: '' } as T);
 
     // Current id value
-    const localIdValue = localValue[idField];
+    const localIdValue = Reflect.get(localValue, idField);
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
@@ -133,7 +130,7 @@ export function ComboBox<T extends DataTypes.StringRecord = IdLabelDto>(
                 value={localValue}
                 getOptionLabel={getOptionLabel}
                 isOptionEqualToValue={(option: T, value: T) =>
-                    option[idField] === value[idField]
+                    Reflect.get(option, idField) === Reflect.get(value, idField)
                 }
                 onChange={(event, value, reason, details) => {
                     // Input value
@@ -142,7 +139,7 @@ export function ComboBox<T extends DataTypes.StringRecord = IdLabelDto>(
                         // Update value
                         const newValue =
                             value != null && idField in value
-                                ? `${value[idField]}`
+                                ? `${Reflect.get(value, idField)}`
                                 : '';
 
                         if (newValue !== input.value) {

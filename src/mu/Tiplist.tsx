@@ -10,7 +10,7 @@ import { SearchField } from './SearchField';
 /**
  * Tiplist props
  */
-export interface TiplistProps<T extends DataTypes.StringRecord>
+export interface TiplistProps<T extends {}>
     extends Omit<AutocompleteExtendedProps<T>, 'open'> {
     /**
      * Load data callback
@@ -22,7 +22,7 @@ export interface TiplistProps<T extends DataTypes.StringRecord>
 }
 
 // Multiple states
-interface States<T extends DataTypes.StringRecord> {
+interface States<T extends {}> {
     open: boolean;
     options: T[];
     value?: T | null;
@@ -34,9 +34,7 @@ interface States<T extends DataTypes.StringRecord> {
  * @param props Props
  * @returns Component
  */
-export function Tiplist<T extends DataTypes.StringRecord = IdLabelDto>(
-    props: TiplistProps<T>
-) {
+export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
     // Destruct
     const {
         search = false,
@@ -66,7 +64,7 @@ export function Tiplist<T extends DataTypes.StringRecord = IdLabelDto>(
     // Local value
     const localValue =
         value ?? defaultValue ?? ({ [idField]: '', label: '' } as unknown as T);
-    const localIdValue = idValue ?? (localValue[idField] as DataTypes.IdType);
+    const localIdValue = idValue ?? Reflect.get(localValue, idField);
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
@@ -172,7 +170,9 @@ export function Tiplist<T extends DataTypes.StringRecord = IdLabelDto>(
         if (input) {
             // Update value
             const newValue =
-                value != null && idField in value ? `${value[idField]}` : '';
+                value != null && idField in value
+                    ? `${Reflect.get(value, idField)}`
+                    : '';
             if (newValue !== input.value) {
                 // Different value, trigger change event
                 Utils.triggerChange(input, newValue, false);
@@ -251,7 +251,7 @@ export function Tiplist<T extends DataTypes.StringRecord = IdLabelDto>(
                             undefined,
                             states.value == null
                                 ? undefined
-                                : (states.value[idField] as DataTypes.IdType)
+                                : Reflect.get(states.value, idField)
                         );
                 }}
                 onClose={() => {
