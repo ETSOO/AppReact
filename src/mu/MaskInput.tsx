@@ -32,19 +32,22 @@ export type MaskInputProps = TextFieldProps & {
 export function MaskInput(props: MaskInputProps) {
     // Destruct
     const {
+        defaultValue,
         mask,
         InputLabelProps = {},
         InputProps = {},
         readOnly,
         search = false,
         size = search ? MUGlobal.searchFieldSize : MUGlobal.inputFieldSize,
+        value,
         variant = search
             ? MUGlobal.searchFieldVariant
             : MUGlobal.inputFieldVariant,
         ...rest
     } = props;
 
-    const { ref } = useIMask(mask);
+    const { ref, maskRef } = useIMask(mask);
+    const localValue = defaultValue ?? value ?? '';
 
     // Shrink
     InputLabelProps.shrink = search
@@ -54,6 +57,10 @@ export function MaskInput(props: MaskInputProps) {
     // Read only
     if (readOnly != null) InputProps.readOnly = readOnly;
     InputProps.inputRef = ref;
+
+    React.useEffect(() => {
+        maskRef.current.value = String(localValue);
+    }, [localValue]);
 
     // Layout
     return (
