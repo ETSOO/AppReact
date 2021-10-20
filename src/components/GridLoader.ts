@@ -39,9 +39,7 @@ export function GridDataGet<F extends DataTypes.BasicTemplate>(
 
     // Conditions
     const conditions: DataTypes.BasicTemplateType<F> =
-        data == null || template == null
-            ? {}
-            : DomUtils.dataAs(data, template, true); // Set keepSource to true to hold form data, even they are invisible from the conditions
+        data == null ? {} : DomUtils.dataAs(data, template ?? {}, true); // Set keepSource to true to hold form data, even they are invisible from the conditions
 
     // DomUtils.dataAs(data, template);
     return { ...conditions, ...rest };
