@@ -6,22 +6,41 @@ import { useIMask } from 'react-imask';
 /**
  * Mask input props
  */
-export type MaskInputProps = TextFieldProps & {
-    /**
-     * Mask props
-     */
-    mask: IMask.AnyMaskedOptions;
+export type MaskInputProps<T extends IMask.AnyMaskedOptions> =
+    TextFieldProps & {
+        /**
+         * Mask props
+         */
+        mask: T;
 
-    /**
-     * Is the field read only?
-     */
-    readOnly?: boolean;
+        /**
+         * Accept hanlder
+         */
+        onAccept?: (
+            value: unknown,
+            maskRef: IMask.InputMask<T>,
+            e?: InputEvent
+        ) => void;
 
-    /**
-     * Search case
-     */
-    search?: boolean;
-};
+        /**
+         * Complete handler
+         */
+        onComplete?: (
+            value: unknown,
+            maskRef: IMask.InputMask<T>,
+            e?: InputEvent
+        ) => void;
+
+        /**
+         * Is the field read only?
+         */
+        readOnly?: boolean;
+
+        /**
+         * Search case
+         */
+        search?: boolean;
+    };
 
 /**
  * Mask input
@@ -29,13 +48,17 @@ export type MaskInputProps = TextFieldProps & {
  * @param props Props
  * @returns Component
  */
-export function MaskInput(props: MaskInputProps) {
+export function MaskInput<
+    T extends IMask.AnyMaskedOptions = IMask.AnyMaskedOptions
+>(props: MaskInputProps<T>) {
     // Destruct
     const {
         defaultValue,
         mask,
         InputLabelProps = {},
         InputProps = {},
+        onAccept,
+        onComplete,
         readOnly,
         search = false,
         size = search ? MUGlobal.searchFieldSize : MUGlobal.inputFieldSize,
@@ -46,7 +69,14 @@ export function MaskInput(props: MaskInputProps) {
         ...rest
     } = props;
 
-    const { ref, maskRef } = useIMask(mask);
+    const { ref, maskRef } = useIMask(mask, {
+        onAccept: (value, maskRef, event) => {
+            if (onAccept) onAccept(value, maskRef, event);
+        },
+        onComplete: (value, maskRef, event) => {
+            if (onComplete) onComplete(value, maskRef, event);
+        }
+    });
     const localValue = defaultValue ?? value;
 
     // Shrink
