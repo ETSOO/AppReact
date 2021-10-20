@@ -47,8 +47,7 @@ export function MaskInput(props: MaskInputProps) {
     } = props;
 
     const { ref, maskRef } = useIMask(mask);
-    const localValue = defaultValue ?? value ?? '';
-    const maskObj = maskRef.current;
+    const localValue = defaultValue ?? value;
 
     // Shrink
     InputLabelProps.shrink = search
@@ -60,8 +59,10 @@ export function MaskInput(props: MaskInputProps) {
     InputProps.inputRef = ref;
 
     React.useEffect(() => {
-        if (maskObj != null) maskObj.value = String(localValue);
-    }, [maskObj, localValue]);
+        if (maskRef.current == null) return;
+        maskRef.current.value = String(localValue);
+        maskRef.current.updateValue();
+    }, [maskRef.current, localValue]);
 
     // Layout
     return (

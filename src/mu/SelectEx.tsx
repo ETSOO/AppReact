@@ -101,7 +101,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
     }
 
     // Value state
-    const [valueState, setValueState] = React.useState<unknown | null>(null);
+    const [valueState, setValueState] = React.useState<unknown>();
 
     React.useEffect(() => {
         if (localValue != null) setValueState(localValue);
@@ -179,7 +179,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
             </InputLabel>
             <Select
                 ref={divRef}
-                value={localOptions.length > 0 ? valueState : ''}
+                value={localOptions.length > 0 ? valueState ?? '' : ''}
                 input={<OutlinedInput notched label={label} />}
                 labelId={labelId}
                 name={name}
