@@ -43,7 +43,6 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         search = false,
         idField = 'id',
         idValue,
-        inputAutoComplete = 'new-region',
         inputError,
         inputHelperText,
         inputMargin,
@@ -56,6 +55,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         loadData,
         onLoadData,
         name,
+        inputAutoComplete = 'off',
         options = [],
         readOnly = true,
         onChange,
@@ -86,7 +86,11 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
 
     // State
     // null for controlled
-    const [stateValue, setStateValue] = React.useState(localValue);
+    const [stateValue, setStateValue] = React.useState<T | null>(null);
+
+    React.useEffect(() => {
+        if (localValue != null) setStateValue(localValue);
+    }, [localValue]);
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {

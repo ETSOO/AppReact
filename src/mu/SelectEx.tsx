@@ -18,7 +18,7 @@ import { ListItemRightIcon } from './ListItemRightIcon';
 /**
  * Extended select component props
  */
-export interface SelectExProps<T extends Record<string, any> = IdLabelDto>
+export interface SelectExProps<T extends {}>
     extends Omit<SelectProps, 'labelId' | 'input' | 'native'> {
     /**
      * Id field, default is id
@@ -66,9 +66,7 @@ export interface SelectExProps<T extends Record<string, any> = IdLabelDto>
  * @param props Props
  * @returns Component
  */
-export function SelectEx<T extends Record<string, any> = IdLabelDto>(
-    props: SelectExProps<T>
-) {
+export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
     // Destruct
     const {
         defaultValue,
@@ -103,7 +101,11 @@ export function SelectEx<T extends Record<string, any> = IdLabelDto>(
     }
 
     // Value state
-    const [valueState, setValueState] = React.useState(localValue);
+    const [valueState, setValueState] = React.useState<unknown | null>(null);
+
+    React.useEffect(() => {
+        if (localValue != null) setValueState(localValue);
+    }, [localValue]);
 
     // Label id
     const labelId = `selectex-label-${name}`;

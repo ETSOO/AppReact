@@ -78,9 +78,13 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
             // Loading unknown
             open: false,
             options: [],
-            value: localValue
+            value: null
         }
     );
+
+    React.useEffect(() => {
+        if (localValue != null) stateUpdate({ value: localValue });
+    }, [localValue]);
 
     // State
     const [state] = React.useState<{
