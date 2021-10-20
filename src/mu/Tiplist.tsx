@@ -62,9 +62,11 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Local value
-    const localValue =
-        value ?? defaultValue ?? ({ [idField]: '', label: '' } as unknown as T);
-    const localIdValue = idValue ?? Reflect.get(localValue, idField);
+    const localValue = value ?? defaultValue;
+
+    // One time calculation for input's default value (uncontrolled)
+    const localIdValue =
+        idValue ?? (localValue && Reflect.get(localValue, idField));
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
@@ -214,7 +216,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                value={localIdValue}
+                defaultValue={localIdValue}
                 onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}

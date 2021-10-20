@@ -74,13 +74,16 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
 
     // Local default value
     const localValue =
-        (idValue != null
+        idValue != null
             ? localOptions.find((o) => Reflect.get(o, idField) === idValue)
-            : defaultValue ?? value) ??
-        ({ [idField]: '', [labelField]: '' } as T);
+            : defaultValue ?? value;
 
     // Current id value
-    const localIdValue = Reflect.get(localValue, idField);
+    // One time calculation for input's default value (uncontrolled)
+    const localIdValue = localValue && Reflect.get(localValue, idField);
+
+    // State
+    const [stateValue, setStateValue] = React.useState(localValue);
 
     // Add readOnly
     const addReadOnly = (params: AutocompleteRenderInputParams) => {
@@ -97,6 +100,26 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         Object.assign(params.inputProps, { autoComplete: inputAutoComplete });
 
         return params;
+    };
+
+    const setInputValue = (value: T | null) => {
+        // Set state
+        setStateValue(value);
+
+        // Input value
+        const input = inputRef.current;
+        if (input) {
+            // Update value
+            const newValue =
+                value != null && idField in value
+                    ? `${Reflect.get(value, idField)}`
+                    : '';
+
+            if (newValue !== input.value) {
+                // Different value, trigger change event
+                Utils.triggerChange(input, newValue, false);
+            }
+        }
     };
 
     React.useEffect(() => {
@@ -122,31 +145,19 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                value={Utils.formatInputValue(localIdValue) ?? ''}
+                defaultValue={localIdValue}
                 onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
             <Autocomplete
-                value={localValue}
+                value={stateValue}
                 getOptionLabel={getOptionLabel}
                 isOptionEqualToValue={(option: T, value: T) =>
                     Reflect.get(option, idField) === Reflect.get(value, idField)
                 }
                 onChange={(event, value, reason, details) => {
-                    // Input value
-                    const input = inputRef.current;
-                    if (input) {
-                        // Update value
-                        const newValue =
-                            value != null && idField in value
-                                ? `${Reflect.get(value, idField)}`
-                                : '';
-
-                        if (newValue !== input.value) {
-                            // Different value, trigger change event
-                            Utils.triggerChange(input, newValue, false);
-                        }
-                    }
+                    // Set value
+                    setInputValue(value);
 
                     // Custom
                     if (onChange != null)
