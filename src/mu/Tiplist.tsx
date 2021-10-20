@@ -62,7 +62,8 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Local value
-    const localValue = value ?? defaultValue;
+    let localValue = value ?? defaultValue;
+    if (localValue === undefined) localValue = null;
 
     // One time calculation for input's default value (uncontrolled)
     const localIdValue =
