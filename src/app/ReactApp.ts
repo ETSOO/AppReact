@@ -5,7 +5,7 @@ import {
     IUser,
     IUserData
 } from '@etsoo/appscript';
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
 import { NotificationReactCallProps } from '../notifier/Notifier';
 import { CultureAction } from '../states/CultureState';
@@ -234,7 +234,13 @@ export abstract class ReactApp<
         super.userLogin(user, refreshToken, keep);
 
         // Dispatch action
-        if (this.userStateDispatch != null)
+        // Only when unauthorized or with changes except 'token' and 'seconds'
+        if (
+            this.userStateDispatch != null &&
+            (!this.authorized ||
+                this.userData == null ||
+                !Utils.objectEqual(this.userData, user, ['seconds', 'token']))
+        )
             this.userStateDispatch({
                 type: UserActionType.Login,
                 user
