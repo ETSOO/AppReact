@@ -230,15 +230,15 @@ export abstract class ReactApp<
      * @param keep Keep in local storage or not
      */
     userLogin(user: IUserData, refreshToken?: string, keep?: boolean): void {
+        // Super call, set token
+        super.userLogin(user, refreshToken, keep);
+
         // Dispatch action
         if (this.userStateDispatch != null)
             this.userStateDispatch({
                 type: UserActionType.Login,
                 user
             });
-
-        // Super call
-        super.userLogin(user, refreshToken, keep);
     }
 
     /**
