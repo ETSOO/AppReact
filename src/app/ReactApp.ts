@@ -151,22 +151,6 @@ export abstract class ReactApp<
     }
 
     /**
-     * Try login
-     * Will update user state with UserActionType.Unauthorized
-     */
-    override async tryLogin() {
-        const result = await super.tryLogin();
-        if (result && this.userStateDispatch != null) {
-            // There is delay during state update
-            // Not a good idea to try login multiple times with API calls
-            this.userStateDispatch({
-                type: UserActionType.Unauthorized
-            });
-        }
-        return result;
-    }
-
-    /**
      * Set page data
      * @param data Page data
      */
@@ -229,7 +213,11 @@ export abstract class ReactApp<
      * @param refreshToken Refresh token
      * @param keep Keep in local storage or not
      */
-    userLogin(user: IUserData, refreshToken?: string, keep?: boolean): void {
+    override userLogin(
+        user: IUserData,
+        refreshToken?: string,
+        keep?: boolean
+    ): void {
         // Changed
         const dataChanged =
             !this.authorized ||
@@ -251,14 +239,30 @@ export abstract class ReactApp<
     /**
      * User logout extended
      */
-    userLogout(): void {
+    override userLogout(): void {
+        // Super call
+        super.userLogout();
+
         // Dispatch action
         if (this.userStateDispatch != null)
             this.userStateDispatch({
                 type: UserActionType.Logout
             });
+    }
 
+    /**
+     * User unauthorized
+     */
+    override userUnauthorized() {
         // Super call
-        super.userLogout();
+        super.userUnauthorized();
+
+        if (this.userStateDispatch != null) {
+            // There is delay during state update
+            // Not a good idea to try login multiple times with API calls
+            this.userStateDispatch({
+                type: UserActionType.Unauthorized
+            });
+        }
     }
 }
