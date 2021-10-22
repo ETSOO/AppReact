@@ -230,17 +230,18 @@ export abstract class ReactApp<
      * @param keep Keep in local storage or not
      */
     userLogin(user: IUserData, refreshToken?: string, keep?: boolean): void {
+        // Changed
+        const dataChanged =
+            !this.authorized ||
+            this.userData == null ||
+            !Utils.objectEqual(this.userData, user, ['seconds', 'token']);
+
         // Super call, set token
         super.userLogin(user, refreshToken, keep);
 
         // Dispatch action
         // Only when unauthorized or with changes except 'token' and 'seconds'
-        if (
-            this.userStateDispatch != null &&
-            (!this.authorized ||
-                this.userData == null ||
-                !Utils.objectEqual(this.userData, user, ['seconds', 'token']))
-        )
+        if (this.userStateDispatch != null && dataChanged)
             this.userStateDispatch({
                 type: UserActionType.Login,
                 user
