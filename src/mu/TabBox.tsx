@@ -21,14 +21,19 @@ export interface TabBoxPanel extends Omit<TabProps, 'value' | 'children'> {
  */
 export interface TabBoxPros extends BoxProps {
     /**
-     * Root props
-     */
-    root?: BoxProps;
-
-    /**
      * Container props
      */
     container?: Omit<TabsProps, 'value'>;
+
+    /**
+     * Add a hidden input and its name
+     */
+    inputName?: string;
+
+    /**
+     * Root props
+     */
+    root?: BoxProps;
 
     /**
      * Tabs
@@ -43,7 +48,7 @@ export interface TabBoxPros extends BoxProps {
  */
 export function TabBox(props: TabBoxPros) {
     // Destruct
-    const { root, container = {}, tabs } = props;
+    const { inputName, root, container = {}, tabs } = props;
     const { onChange, ...rest } = container;
 
     // State
@@ -52,6 +57,9 @@ export function TabBox(props: TabBoxPros) {
     // Layout
     return (
         <React.Fragment>
+            {inputName && (
+                <input type="hidden" name={inputName} value={value} />
+            )}
             <Box {...root}>
                 <Tabs
                     value={value}
@@ -62,12 +70,12 @@ export function TabBox(props: TabBoxPros) {
                     {...rest}
                 >
                     {tabs.map(({ children, panel, ...tabRest }, index) => (
-                        <Tab value={index} {...tabRest} />
+                        <Tab key={index} value={index} {...tabRest} />
                     ))}
                 </Tabs>
             </Box>
             {tabs.map(({ children, panel }, index) => (
-                <Box hidden={value !== index} {...panel}>
+                <Box key={index} hidden={value !== index} {...panel}>
                     {children}
                 </Box>
             ))}
