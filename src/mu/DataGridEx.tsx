@@ -458,10 +458,15 @@ export function DataGridEx<T extends Record<string, any>>(
         }
     };
 
-    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
         const div = event.currentTarget;
         const row = div.dataset['row'];
         if (div.parentElement == null || row == null) return;
+
+        const rowIndex = parseFloat(row);
+
+        // No change
+        if (isNaN(rowIndex) || rowIndex === state.selectedRowIndex) return;
 
         if (state.selectedRowIndex != null) {
             doRowItems(div.parentElement, state.selectedRowIndex, (preDiv) => {
@@ -472,7 +477,7 @@ export function DataGridEx<T extends Record<string, any>>(
         rowItems(div, (currentDiv) => {
             currentDiv.classList.add('DataGridEx-Selected');
         });
-        state.selectedRowIndex = parseFloat(row);
+        state.selectedRowIndex = rowIndex;
 
         state.ref?.select(state.selectedRowIndex);
     };
@@ -565,7 +570,9 @@ export function DataGridEx<T extends Record<string, any>>(
                 style={style}
                 data-row={rowIndex}
                 data-column={columnIndex}
-                onClick={selectable && !checkable ? handleClick : undefined}
+                onMouseDown={
+                    selectable && !checkable ? handleMouseDown : undefined
+                }
                 onMouseOver={selectable ? handleMouseOver : undefined}
                 onMouseOut={selectable ? handleMouseOut : undefined}
             >
