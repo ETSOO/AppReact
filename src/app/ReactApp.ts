@@ -237,11 +237,12 @@ export abstract class ReactApp<
     }
 
     /**
-     * User logout extended
+     * User logout
+     * @param clearToken Clear refresh token or not
      */
-    override userLogout(): void {
+    override userLogout(clearToken: boolean = true): void {
         // Super call
-        super.userLogout();
+        super.userLogout(clearToken);
 
         // Dispatch action
         if (this.userStateDispatch != null)
