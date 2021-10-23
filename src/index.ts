@@ -64,6 +64,7 @@ export * from './mu/TabBox';
 export * from './mu/TableEx';
 export * from './mu/TextFieldEx';
 export * from './mu/Tiplist';
+export * from './mu/TooltipClick';
 export * from './mu/UserAvatar';
 export * from './mu/UserAvatarEditor';
 
