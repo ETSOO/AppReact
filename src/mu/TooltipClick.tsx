@@ -25,17 +25,40 @@ export interface TooltipClickProps
  */
 export function TooltipClick(props: TooltipClickProps) {
     // Destruct
-    const { children, onClose, title, ...rest } = props;
+    // leaveDelay set to 5 seconds to hide the tooltip automatically
+    const { children, leaveDelay = 5000, onClose, title, ...rest } = props;
 
     // State
     const [localTitle, setTitle] = React.useState(title);
     const [open, setOpen] = React.useState(false);
+    const leaveSeed = React.useRef(0);
 
     // Callback for open the tooltip
     const openTooltip = (newTitle?: string) => {
         setOpen(true);
         if (newTitle) setTitle(newTitle);
+
+        if (leaveDelay > 0) {
+            clearLeaveSeed();
+            leaveSeed.current = window.setTimeout(
+                () => setOpen(false),
+                leaveDelay
+            );
+        }
     };
+
+    const clearLeaveSeed = () => {
+        if (leaveSeed.current > 0) {
+            window.clearTimeout(leaveSeed.current);
+            leaveSeed.current = 0;
+        }
+    };
+
+    React.useEffect(() => {
+        return () => {
+            clearLeaveSeed();
+        };
+    }, []);
 
     // Layout
     return (
