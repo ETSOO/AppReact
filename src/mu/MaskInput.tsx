@@ -89,7 +89,7 @@ export function MaskInput<
     InputProps.inputRef = ref;
 
     React.useEffect(() => {
-        if (maskRef.current == null) return;
+        if (maskRef.current == null || localValue == null) return;
         maskRef.current.value = String(localValue);
         maskRef.current.updateValue();
     }, [maskRef.current, localValue]);

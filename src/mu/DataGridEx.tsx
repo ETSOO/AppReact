@@ -478,8 +478,6 @@ export function DataGridEx<T extends Record<string, any>>(
             currentDiv.classList.add('DataGridEx-Selected');
         });
         state.selectedRowIndex = rowIndex;
-
-        state.ref?.select(state.selectedRowIndex);
     };
 
     const handleMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
