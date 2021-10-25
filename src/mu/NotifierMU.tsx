@@ -1,5 +1,4 @@
 import {
-    INotificaseBase,
     NotificationAlign,
     NotificationMessageType,
     NotificationRenderProps,
@@ -32,9 +31,9 @@ import { Error, Info, Help, Warning, Done } from '@mui/icons-material';
 import React from 'react';
 import { Labels } from '../app/Labels';
 import {
+    INotificationBaseReact,
     INotificationReact,
     NotificationReact,
-    NotificationReactCallProps,
     NotifierReact
 } from '../notifier/Notifier';
 import { DraggablePaperComponent } from './DraggablePaperComponent';
@@ -575,7 +574,7 @@ export class NotifierMU extends NotifierReact {
      * @param modal Show as modal
      */
     protected addRaw(
-        data: INotificaseBase<NotificationReactCallProps>,
+        data: INotificationBaseReact,
         modal?: boolean
     ): INotificationReact {
         // Destruct

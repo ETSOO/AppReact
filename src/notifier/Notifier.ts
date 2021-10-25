@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    INotificaseBase,
     INotification,
     INotifier,
     Notification,
@@ -64,6 +65,12 @@ export interface NotificationReactCallProps extends NotificationCallProps {
  */
 export interface INotificationReact
     extends INotification<React.ReactNode, NotificationReactCallProps> {}
+
+/**
+ * React notification base interface
+ */
+export interface INotificationBaseReact
+    extends INotificaseBase<React.ReactNode, NotificationReactCallProps> {}
 
 interface ReactNotifications
     extends NotificationDictionary<
