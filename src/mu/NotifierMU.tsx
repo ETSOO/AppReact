@@ -42,6 +42,7 @@ import { LoadingButton, LoadingButtonProps } from './LoadingButton';
 // Custom icon dialog title bar
 const IconDialogTitle = styled(DialogTitle)`
     ${({ theme }) => `
+        cursor: move;
         display: flex;
         align-items: center;
         & .dialogTitle {
@@ -112,7 +113,7 @@ export class NotificationMU extends NotificationReact {
                 maxWidth={maxWidth}
                 fullScreen={fullScreen}
             >
-                <IconDialogTitle id="draggable-dialog-title">
+                <IconDialogTitle className="draggable-dialog-title">
                     {icon}
                     <span className="dialogTitle">{title}</span>
                 </IconDialogTitle>
@@ -159,7 +160,7 @@ export class NotificationMU extends NotificationReact {
                 maxWidth={maxWidth}
                 fullScreen={fullScreen}
             >
-                <IconDialogTitle id="draggable-dialog-title">
+                <IconDialogTitle className="draggable-dialog-title">
                     <Help color="action" />
                     <span className="dialogTitle">{title}</span>
                 </IconDialogTitle>
@@ -331,7 +332,7 @@ export class NotificationMU extends NotificationReact {
                 fullScreen={fullScreen}
             >
                 <form>
-                    <IconDialogTitle id="draggable-dialog-title">
+                    <IconDialogTitle className="draggable-dialog-title">
                         <Info color="primary" />
                         <span className="dialogTitle">{title}</span>
                     </IconDialogTitle>

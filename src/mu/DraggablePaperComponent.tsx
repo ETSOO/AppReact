@@ -10,7 +10,7 @@ import Draggable from 'react-draggable';
 export function DraggablePaperComponent(props: PaperProps) {
     return (
         <Draggable
-            handle="#draggable-dialog-title"
+            handle=".draggable-dialog-title"
             cancel={'[class*="MuiDialogContent-root"]'}
         >
             <Paper {...props} />
