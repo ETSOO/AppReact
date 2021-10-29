@@ -14,6 +14,11 @@ import useCombinedRefs from '../uses/useCombinedRefs';
  */
 export type TextFieldExProps = TextFieldProps & {
     /**
+     * Change delay (ms) to avoid repeatly dispatch onChange
+     */
+    changeDelay?: number;
+
+    /**
      * On enter click
      */
     onEnter?: React.KeyboardEventHandler<HTMLDivElement>;
@@ -51,6 +56,7 @@ export const TextFieldEx = React.forwardRef<
 >((props, ref) => {
     // Destructure
     const {
+        changeDelay,
         error,
         fullWidth = true,
         helperText,
@@ -144,26 +150,6 @@ export const TextFieldEx = React.forwardRef<
         );
     }
 
-    // Extend change
-    const onChangeEx = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (errorText != null) {
-            // Reset
-            updateErrorText(undefined);
-        }
-
-        if (showClear || showPassword) {
-            if (e.target.value === '') {
-                updateEmpty(true);
-            } else if (empty) {
-                updateEmpty(false);
-            }
-        }
-
-        if (onChange != null) {
-            onChange(e);
-        }
-    };
-
     // Extend key precess
     const onKeyPressEx =
         onEnter == null
@@ -193,6 +179,45 @@ export const TextFieldEx = React.forwardRef<
         }),
         []
     );
+
+    const isMounted = React.useRef(true);
+    const delaySeed = React.useRef(0);
+
+    const onChangeEx = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        if (errorText != null) {
+            // Reset
+            updateErrorText(undefined);
+        }
+
+        if (showClear || showPassword) {
+            if (event.target.value === '') {
+                updateEmpty(true);
+            } else if (empty) {
+                updateEmpty(false);
+            }
+        }
+
+        if (onChange == null) return;
+
+        if (changeDelay == null || changeDelay < 1) {
+            onChange(event);
+            return;
+        }
+
+        if (delaySeed.current > 0) window.clearTimeout(delaySeed.current);
+        delaySeed.current = window.setTimeout(() => {
+            if (isMounted.current) onChange(event);
+        }, changeDelay);
+    };
+
+    React.useEffect(() => {
+        return () => {
+            isMounted.current = false;
+            window.clearTimeout(delaySeed.current);
+        };
+    }, []);
 
     // Textfield
     return (
