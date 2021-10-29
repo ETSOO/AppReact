@@ -42,6 +42,8 @@ export const CountdownButton = React.forwardRef<
     // Countdown length
     const [shared] = React.useState({ maxLength: 0 });
 
+    const isMounted = React.useRef(true);
+
     // endIcon
     let endIcon: React.ReactNode;
     if (state === 0) {
@@ -70,6 +72,9 @@ export const CountdownButton = React.forwardRef<
             shared.maxLength = result.toString().length;
 
             const seed = setInterval(() => {
+                // Mounted?
+                if (!isMounted.current) return;
+
                 // Last 1 second and then complete
                 if (result > seconds + 1) {
                     result--;
@@ -95,6 +100,12 @@ export const CountdownButton = React.forwardRef<
         // Return any countdown
         onAction().then(doAction);
     };
+
+    React.useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     return (
         <Button
