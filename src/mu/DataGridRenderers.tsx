@@ -41,9 +41,11 @@ export namespace DataGridRenderers {
         if (value == null) return undefined;
 
         // For date time
-        if (value instanceof Date) {
+        // Conversion if necessary
+        if (type === GridDataType.Date || type === GridDataType.DateTime) {
+            const dateValue = value instanceof Date ? value : new Date(value);
             return DateUtils.format(
-                value,
+                dateValue,
                 renderProps?.culture,
                 type === GridDataType.DateTime ? 'ds' : 'd',
                 renderProps?.timeZone
