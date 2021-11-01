@@ -158,7 +158,7 @@ export function ResponsivePage<
                 />
             </Box>
         );
-    }, [states.height, showDataGrid]);
+    }, [states.height, showDataGrid, localLoadData]);
 
     const { ref, data } = states;
     React.useEffect(() => {
