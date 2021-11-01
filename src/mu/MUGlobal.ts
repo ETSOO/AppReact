@@ -46,11 +46,12 @@ export class MUGlobal {
      * @returns Updated object
      */
     static increase(input: {}, adjust: number) {
-        Object.entries(input).forEach(([key, value]) => {
+        const newObj = { ...input };
+        Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number')
-                Reflect.set(input, key, value + adjust);
+                Reflect.set(newObj, key, value + adjust);
         });
-        return input;
+        return newObj;
     }
 
     /**
@@ -60,10 +61,11 @@ export class MUGlobal {
      * @returns Updated object
      */
     static updateWithTheme(input: {}, updateFunc: (value: number) => string) {
-        Object.entries(input).forEach(([key, value]) => {
+        const newObj = { ...input };
+        Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number')
-                Reflect.set(input, key, updateFunc(value));
+                Reflect.set(newObj, key, updateFunc(value));
         });
-        return input;
+        return newObj;
     }
 }

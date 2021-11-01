@@ -31,7 +31,7 @@ export function CommonPage(props: CommonPageProps) {
         disableGutters = true,
         fabButtons,
         fabColumnDirection,
-        fabSize = 'medium',
+        fabSize = 'small',
         maxWidth = false,
         moreActions,
         onRefresh,
