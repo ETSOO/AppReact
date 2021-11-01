@@ -40,17 +40,29 @@ export class MUGlobal {
     static pagePaddings = { xs: 2, sm: 3 };
 
     /**
+     * Update object number properties with adjustment
+     * @param input Input object
+     * @param adjust Adjust value
+     * @returns Updated object
+     */
+    static increase(input: {}, adjust: number) {
+        Object.entries(input).forEach(([key, value]) => {
+            if (typeof value === 'number')
+                Reflect.set(input, key, value + adjust);
+        });
+        return input;
+    }
+
+    /**
      * Update object number properties with theme
      * @param input Input object
      * @param updateFunc Theme update function
      * @returns Updated object
      */
-    static updateWithTheme(
-        input: Record<string, any>,
-        updateFunc: (value: number) => string
-    ) {
+    static updateWithTheme(input: {}, updateFunc: (value: number) => string) {
         Object.entries(input).forEach(([key, value]) => {
-            if (typeof value === 'number') input[key] = updateFunc(value);
+            if (typeof value === 'number')
+                Reflect.set(input, key, updateFunc(value));
         });
         return input;
     }

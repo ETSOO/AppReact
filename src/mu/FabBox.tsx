@@ -4,7 +4,17 @@ import React from 'react';
 /**
  * Fabs container box props
  */
-export type FabBoxProps = BoxProps;
+export type FabBoxProps = BoxProps & {
+    /**
+     * Item gap
+     */
+    itemGap?: number;
+
+    /**
+     * Flex direction, row or column
+     */
+    columnDirection?: boolean;
+};
 
 /**
  * Fabs container box
@@ -13,24 +23,23 @@ export type FabBoxProps = BoxProps;
  */
 export function FabBox(props: FabBoxProps) {
     // Destruct
-    const { sx = {}, ...rest } = props;
+    const { columnDirection = true, itemGap = 1, sx = {}, ...rest } = props;
 
     // Theme
     const theme = useTheme();
-    const spaceGap = theme.spacing(1);
-    const spaceMobile = theme.spacing(4);
-    const spaceOther = theme.spacing(5);
+    const spaceGap = theme.spacing(itemGap);
+
+    // margin
+    const margin = columnDirection
+        ? { marginTop: spaceGap }
+        : { marginLeft: spaceGap };
 
     // Default style
     Object.assign(sx, {
         position: 'fixed',
         display: 'flex',
-        flexDirection: 'column',
-        '& > :not(style) + :not(style)': {
-            marginTop: spaceGap
-        },
-        bottom: { xs: spaceMobile, sm: spaceOther },
-        right: { xs: spaceMobile, sm: spaceOther }
+        flexDirection: columnDirection ? 'column' : 'row',
+        '& > :not(style) + :not(style)': margin
     });
 
     return <Box sx={sx} {...rest} />;

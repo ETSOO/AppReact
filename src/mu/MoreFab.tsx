@@ -8,33 +8,10 @@ import {
     ListItemIcon,
     ListItemText,
     Menu,
-    MenuItem
+    MenuItem,
+    PopoverOrigin
 } from '@mui/material';
-
-/**
- * More action interface
- */
-export interface MoreAction {
-    /**
-     * Label, - for divider
-     */
-    label: string;
-
-    /**
-     * Icon
-     */
-    icon?: React.ReactNode;
-
-    /**
-     * Url
-     */
-    url?: string;
-
-    /**
-     * Action
-     */
-    action?: (() => PromiseLike<void>) | (() => void);
-}
+import { ListItemReact } from '../components/ListItemReact';
 
 /**
  * More fab props
@@ -43,7 +20,24 @@ export interface MoreFabProps extends CustomFabProps {
     /**
      * Actions
      */
-    actions?: MoreAction[];
+    actions?: ListItemReact[];
+
+    /**
+     * Main icon
+     */
+    icon?: React.ReactNode;
+
+    /**
+     * This is the point on the anchor where the popover's
+     * `anchorEl` will attach to
+     */
+    anchorOrigin?: PopoverOrigin;
+
+    /**
+     * This is the point on the popover which
+     * will attach to the anchor's origin
+     */
+    transformOrigin?: PopoverOrigin;
 }
 
 /**
@@ -52,7 +46,20 @@ export interface MoreFabProps extends CustomFabProps {
  */
 export function MoreFab(props: MoreFabProps) {
     // Destruct
-    const { actions, size, title } = props;
+    const {
+        actions,
+        anchorOrigin = {
+            vertical: 'top',
+            horizontal: 'right'
+        },
+        icon = <MoreHorizIcon />,
+        size,
+        title,
+        transformOrigin = {
+            vertical: 'bottom',
+            horizontal: 'right'
+        }
+    } = props;
 
     // State
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement>();
@@ -84,44 +91,38 @@ export function MoreFab(props: MoreFabProps) {
                 title={title}
                 onClick={handleClick}
             >
-                <MoreHorizIcon />
+                {icon}
             </Fab>
             <Menu
                 disableScrollLock={true}
                 anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                }}
+                anchorOrigin={anchorOrigin}
                 keepMounted
-                transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right'
-                }}
+                transformOrigin={transformOrigin}
                 open={open}
                 onClose={handleClose}
             >
-                {actions.map((action, index) =>
-                    action.label === '-' ? (
+                {actions.map(({ label, icon, action }, index) =>
+                    label === '-' ? (
                         <Divider key={index} />
                     ) : (
                         <MenuItem
-                            key={action.label}
-                            {...(action.url
-                                ? { component: Link, to: action.url }
+                            key={label}
+                            {...(typeof action === 'string'
+                                ? { component: Link, to: action }
                                 : {
                                       onClick: () => {
                                           handleClose();
-                                          if (action.action != null)
-                                              action.action();
+                                          if (typeof action === 'function')
+                                              action();
                                       }
                                   })}
                         >
-                            {action.icon != null && (
-                                <ListItemIcon>{action.icon}</ListItemIcon>
+                            {icon != null && (
+                                <ListItemIcon>{icon}</ListItemIcon>
                             )}
-                            <ListItemText inset={hasIcon}>
-                                {action.label}
+                            <ListItemText inset={icon == null && hasIcon}>
+                                {label}
                             </ListItemText>
                         </MenuItem>
                     )

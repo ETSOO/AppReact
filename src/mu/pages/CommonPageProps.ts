@@ -1,7 +1,7 @@
 import { ContainerProps } from '@mui/material';
+import { ListItemReact } from '../../components/ListItemReact';
 import { IStateUpdate } from '../../states/IState';
 import { CustomFabSize } from '../CustomFabProps';
-import { MoreAction } from '../MoreFab';
 
 /**
  * Common page props
@@ -19,9 +19,14 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     fabSize?: CustomFabSize;
 
     /**
+     * Fab flex column direction?
+     */
+    fabColumnDirection?: boolean;
+
+    /**
      * More actions
      */
-    moreActions?: MoreAction[];
+    moreActions?: ListItemReact[];
 
     /**
      * On refresh callback, only when authorized = true

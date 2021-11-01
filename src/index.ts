@@ -6,6 +6,7 @@ export * from './app/Utils';
 // components
 export * from './components/GridColumn';
 export * from './components/GridLoader';
+export * from './components/ListItemReact';
 export * from './components/ScrollerGrid';
 export * from './components/ScrollerList';
 

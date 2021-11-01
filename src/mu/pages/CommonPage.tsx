@@ -30,6 +30,7 @@ export function CommonPage(props: CommonPageProps) {
         children,
         disableGutters = true,
         fabButtons,
+        fabColumnDirection,
         fabSize = 'medium',
         maxWidth = false,
         moreActions,
@@ -47,6 +48,9 @@ export function CommonPage(props: CommonPageProps) {
     Object.assign(sx, {
         padding: paddings
     });
+
+    // Fab padding
+    const fabPadding = MUGlobal.increase(paddings, 2);
 
     // Labels
     const labels = Labels.CommonPage;
@@ -75,7 +79,16 @@ export function CommonPage(props: CommonPageProps) {
                 id="page-container"
                 {...rest}
             >
-                <FabBox sx={{ zIndex: 1 }}>
+                <FabBox
+                    sx={{
+                        zIndex: 1,
+                        bottom: (theme) =>
+                            MUGlobal.updateWithTheme(fabPadding, theme.spacing),
+                        right: (theme) =>
+                            MUGlobal.updateWithTheme(fabPadding, theme.spacing)
+                    }}
+                    columnDirection={fabColumnDirection}
+                >
                     {scrollContainer && (
                         <ScrollTopFab
                             size={fabSize}

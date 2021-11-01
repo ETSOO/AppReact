@@ -166,6 +166,9 @@ export function ResponsivePage<
         ref.reset({ data });
     });
 
+    // Show in a row when under DataGrid
+    pageProps.fabColumnDirection = !showDataGrid;
+
     // Pull container id
     const pullContainer = states.element
         ? showDataGrid
