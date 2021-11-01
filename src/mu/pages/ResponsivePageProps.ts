@@ -37,5 +37,5 @@ export interface ResponsePageProps<T, F extends DataTypes.BasicTemplate>
     /**
      * Methods
      */
-    mRef?: React.Ref<GridMethodRef>;
+    mRef?: React.MutableRefObject<GridMethodRef | undefined>;
 }

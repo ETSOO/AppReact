@@ -164,7 +164,7 @@ export function ResponsivePage<
     React.useEffect(() => {
         if (ref == null || data == null) return;
         ref.reset({ data });
-    }, [ref, data]);
+    });
 
     // Pull container id
     const pullContainer = states.element
