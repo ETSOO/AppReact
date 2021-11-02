@@ -4,6 +4,7 @@ import React from 'react';
 import {
     Divider,
     Fab,
+    IconButton,
     Link,
     ListItemIcon,
     ListItemText,
@@ -26,6 +27,11 @@ export interface MoreFabProps extends CustomFabProps {
      * Main icon
      */
     icon?: React.ReactNode;
+
+    /**
+     * Show as icon button
+     */
+    iconButton?: boolean;
 
     /**
      * This is the point on the anchor where the popover's
@@ -52,7 +58,9 @@ export function MoreFab(props: MoreFabProps) {
             vertical: 'top',
             horizontal: 'right'
         },
+        color = 'primary',
         icon = <MoreHorizIcon />,
+        iconButton = false,
         size,
         title,
         transformOrigin = {
@@ -83,16 +91,25 @@ export function MoreFab(props: MoreFabProps) {
     // Has any icon
     const hasIcon = actions.some((action) => action.icon != null);
 
+    // Main
+    const main = iconButton ? (
+        <IconButton
+            color={color}
+            size={size}
+            title={title}
+            onClick={handleClick}
+        >
+            {icon}
+        </IconButton>
+    ) : (
+        <Fab color={color} size={size} title={title} onClick={handleClick}>
+            {icon}
+        </Fab>
+    );
+
     return (
         <React.Fragment>
-            <Fab
-                color="primary"
-                size={size}
-                title={title}
-                onClick={handleClick}
-            >
-                {icon}
-            </Fab>
+            {main}
             <Menu
                 disableScrollLock={true}
                 anchorEl={anchorEl}

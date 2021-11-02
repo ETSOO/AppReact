@@ -9,7 +9,7 @@ import { CustomFabProps } from './CustomFabProps';
  */
 export function ScrollTopFab(props: CustomFabProps) {
     // Destruct
-    const { size, target, title } = props;
+    const { color, size, target, title } = props;
 
     // Scroll trigger
     const trigger = useScrollTrigger({
@@ -26,7 +26,7 @@ export function ScrollTopFab(props: CustomFabProps) {
 
     return (
         <Zoom in={trigger}>
-            <Fab size={size} title={title} onClick={handleClick}>
+            <Fab color={color} size={size} title={title} onClick={handleClick}>
                 <VerticalAlignTopIcon />
             </Fab>
         </Zoom>
