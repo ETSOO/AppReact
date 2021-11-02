@@ -1,3 +1,5 @@
+import { NumberUtils } from '@etsoo/shared';
+
 export class MUGlobal {
     /**
      * Search field shrink
@@ -50,6 +52,34 @@ export class MUGlobal {
         Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number') {
                 Reflect.set(newObj, key, value + adjust);
+            }
+        });
+        return newObj;
+    }
+
+    /**
+     * Adjust size with theme update
+     * @param size Base size
+     * @param adjust Adjustment
+     * @param updateFunc Theme update function
+     * @returns Updated object
+     */
+    static adjustWithTheme(
+        size: number,
+        adjust: {},
+        updateFunc: (value: number) => string
+    ) {
+        const newObj = { ...adjust };
+        Object.entries(newObj).forEach(([key, value]) => {
+            if (typeof value === 'number') {
+                const newValue = NumberUtils.parseWithUnit(updateFunc(value));
+                if (newValue != null) {
+                    Reflect.set(
+                        newObj,
+                        key,
+                        `${size - newValue[0]}${newValue[1]}`
+                    );
+                }
             }
         });
         return newObj;

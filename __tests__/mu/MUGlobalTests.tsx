@@ -1,9 +1,12 @@
 import { MUGlobal } from '../../src/mu/MUGlobal';
 
-test('increase tests', () => {
-    // Arrange
-    const paddings = { sx: 2, sm: 3, key: 'a' };
+// Theme update function
+const updateFunc = (value: number) => `${value * 8}px`;
 
+// Arrange
+const paddings = { sx: 2, sm: 3, key: 'a' };
+
+test('increase tests', () => {
     // Act
     const result = MUGlobal.increase(paddings, 2);
 
@@ -11,4 +14,24 @@ test('increase tests', () => {
     expect(paddings).toHaveProperty('sx', 2);
     expect(result).toHaveProperty('sx', 4);
     expect(result).toHaveProperty('sm', 5);
+});
+
+test('adjustWithTheme tests', () => {
+    // Act
+    const result = MUGlobal.adjustWithTheme(160, paddings, updateFunc);
+
+    // Assert
+    expect(paddings).toHaveProperty('sx', 2);
+    expect(result).toHaveProperty('sx', '144px');
+    expect(result).toHaveProperty('sm', '136px');
+});
+
+test('updateWithTheme tests', () => {
+    // Act
+    const result = MUGlobal.updateWithTheme(paddings, updateFunc);
+
+    // Assert
+    expect(paddings).toHaveProperty('sx', 2);
+    expect(result).toHaveProperty('sx', '16px');
+    expect(result).toHaveProperty('sm', '24px');
 });
