@@ -23,11 +23,13 @@ export type FabBoxProps = BoxProps & {
  */
 export function FabBox(props: FabBoxProps) {
     // Destruct
-    const { columnDirection = true, itemGap = 1, sx = {}, ...rest } = props;
+    const { columnDirection, itemGap = 1, sx = {}, ...rest } = props;
 
     // Theme
     const theme = useTheme();
     const spaceGap = theme.spacing(itemGap);
+
+    if (columnDirection == null) return <React.Fragment />;
 
     // margin
     const margin = columnDirection
@@ -38,6 +40,7 @@ export function FabBox(props: FabBoxProps) {
     Object.assign(sx, {
         position: 'fixed',
         display: 'flex',
+        alignItems: 'center',
         flexDirection: columnDirection ? 'column' : 'row',
         '& > :not(style) + :not(style)': margin
     });

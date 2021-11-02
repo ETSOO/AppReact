@@ -101,6 +101,9 @@ export function ResponsivePage<
         const gridHeight = states.height;
         if (gridHeight == null) return;
 
+        // Show in a row when under DataGrid
+        pageProps.fabColumnDirection = !showDataGrid;
+
         if (showDataGrid) {
             // Delete
             delete rest.itemRenderer;
@@ -165,9 +168,6 @@ export function ResponsivePage<
         if (ref == null || data == null) return;
         ref.reset({ data });
     });
-
-    // Show in a row when under DataGrid
-    pageProps.fabColumnDirection = !showDataGrid;
 
     // Pull container id
     const pullContainer = states.element
