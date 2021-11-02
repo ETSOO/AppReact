@@ -24,6 +24,11 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     fabColumnDirection?: boolean;
 
     /**
+     * Fab padding adjust
+     */
+    fabPaddingAdjust?: number;
+
+    /**
      * More actions
      */
     moreActions?: ListItemReact[];

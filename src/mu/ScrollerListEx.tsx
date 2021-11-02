@@ -53,6 +53,11 @@ export interface ScrollerListExInnerItemRendererProps<T>
      * Item selected
      */
     selected: boolean;
+
+    /**
+     * Item height
+     */
+    itemHeight: number;
 }
 
 /**
@@ -95,9 +100,9 @@ export interface ScrollerListExProps<T>
 
 interface defaultItemRendererProps<T> extends ListChildComponentProps<T> {
     /**
-     * Click callback
+     * onMouseDown callback
      */
-    onClick: (div: HTMLDivElement, data: T) => void;
+    onMouseDown: (div: HTMLDivElement, data: T) => void;
 
     /**
      * Inner item renderer
@@ -105,6 +110,11 @@ interface defaultItemRendererProps<T> extends ListChildComponentProps<T> {
     innerItemRenderer: (
         props: ScrollerListExInnerItemRendererProps<T>
     ) => React.ReactNode;
+
+    /**
+     * Item height
+     */
+    itemHeight: number;
 
     /**
      * Item selected
@@ -117,12 +127,19 @@ function defaultItemRenderer<T>({
     index,
     innerItemRenderer,
     data,
-    onClick,
+    onMouseDown,
     selected,
-    style
+    style,
+    itemHeight
 }: defaultItemRendererProps<T>) {
     // Child
-    const child = innerItemRenderer({ index, data, style, selected });
+    const child = innerItemRenderer({
+        index,
+        data,
+        style,
+        selected,
+        itemHeight
+    });
 
     let rowClass = `ScrollerListEx-Row${index % 2}`;
     if (selected) rowClass += ` ${selectedClassName}`;
@@ -132,7 +149,7 @@ function defaultItemRenderer<T>({
         <div
             className={rowClass}
             style={style}
-            onClick={(event) => onClick(event.currentTarget, data)}
+            onMouseDown={(event) => onMouseDown(event.currentTarget, data)}
         >
             {child}
         </div>
@@ -147,15 +164,14 @@ function defaultItemRenderer<T>({
 export function ScrollerListEx<T extends Record<string, any>>(
     props: ScrollerListExProps<T>
 ) {
-    // Selected item state
-    const [state, setState] = React.useState<{
-        selectedDiv?: HTMLDivElement;
-        selectedItem?: T;
-    }>({});
+    // Selected item ref
+    const selectedItem = React.useRef<[HTMLDivElement, T]>();
 
-    const onClick = (div: HTMLDivElement, data: T) => {
-        const { selectedDiv, selectedItem } = state;
-        if (selectedItem != null && selectedItem[idField] === data[idField])
+    const onMouseDown = (div: HTMLDivElement, data: T) => {
+        // Destruct
+        const [selectedDiv, selectedData] = selectedItem.current ?? [];
+
+        if (selectedData != null && selectedData[idField] === data[idField])
             return;
 
         if (selectedDiv != null)
@@ -163,18 +179,15 @@ export function ScrollerListEx<T extends Record<string, any>>(
 
         div.classList.add(selectedClassName);
 
-        setState({
-            selectedDiv: div,
-            selectedItem: data
-        });
+        selectedItem.current = [div, data];
 
         if (onSelectChange) onSelectChange([data]);
     };
 
     const isSelected = (data?: T) => {
-        const { selectedItem } = state;
+        const [_, selectedData] = selectedItem.current ?? [];
         const selected =
-            selectedItem && data && selectedItem[idField] === data[idField]
+            selectedData && data && selectedData[idField] === data[idField]
                 ? true
                 : false;
         return selected;
@@ -186,15 +199,22 @@ export function ScrollerListEx<T extends Record<string, any>>(
         className,
         idField = 'id',
         innerItemRenderer,
+        itemSize,
         itemKey = (index: number, data: T) =>
             data != null && idField in data ? data[idField] : index,
-        itemRenderer = (itemProps) =>
-            defaultItemRenderer({
+        itemRenderer = (itemProps) => {
+            const itemHeight =
+                typeof itemSize === 'function'
+                    ? itemSize(itemProps.index)
+                    : itemSize;
+            return defaultItemRenderer({
+                itemHeight,
                 innerItemRenderer,
-                onClick,
+                onMouseDown,
                 selected: isSelected(itemProps.data),
                 ...itemProps
-            }),
+            });
+        },
         onSelectChange,
         selectedColor = '#edf4fb',
         ...rest
@@ -210,6 +230,7 @@ export function ScrollerListEx<T extends Record<string, any>>(
             )}
             itemKey={itemKey}
             itemRenderer={itemRenderer}
+            itemSize={itemSize}
             {...rest}
         />
     );

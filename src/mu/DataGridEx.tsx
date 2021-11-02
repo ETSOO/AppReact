@@ -155,7 +155,6 @@ const createGridStyle = (
 interface States {
     gridWidth?: number;
     ref?: ScrollerGridForwardRef;
-    selectedRowIndex?: number;
 }
 
 const rowItems = (
@@ -458,6 +457,9 @@ export function DataGridEx<T extends Record<string, any>>(
         }
     };
 
+    // selectedRowIndex state
+    const selectedRowIndex = React.useRef(-1);
+
     const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
         const div = event.currentTarget;
         const row = div.dataset['row'];
@@ -466,18 +468,23 @@ export function DataGridEx<T extends Record<string, any>>(
         const rowIndex = parseFloat(row);
 
         // No change
-        if (isNaN(rowIndex) || rowIndex === state.selectedRowIndex) return;
+        if (isNaN(rowIndex) || rowIndex === selectedRowIndex.current) return;
 
-        if (state.selectedRowIndex != null) {
-            doRowItems(div.parentElement, state.selectedRowIndex, (preDiv) => {
-                preDiv.classList.remove('DataGridEx-Selected');
-            });
+        if (selectedRowIndex.current != -1) {
+            doRowItems(
+                div.parentElement,
+                selectedRowIndex.current,
+                (preDiv) => {
+                    preDiv.classList.remove('DataGridEx-Selected');
+                }
+            );
         }
 
         rowItems(div, (currentDiv) => {
             currentDiv.classList.add('DataGridEx-Selected');
         });
-        state.selectedRowIndex = rowIndex;
+
+        selectedRowIndex.current = rowIndex;
     };
 
     const handleMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -533,11 +540,12 @@ export function DataGridEx<T extends Record<string, any>>(
         const selected =
             data != null &&
             idField in data &&
-            selectedItems.some(
-                (selectedItem) =>
-                    selectedItem != null &&
-                    selectedItem[idField] === data[idField]
-            );
+            (selectedRowIndex.current === rowIndex ||
+                selectedItems.some(
+                    (selectedItem) =>
+                        selectedItem != null &&
+                        selectedItem[idField] === data[idField]
+                ));
 
         if (selected) {
             rowClass += ` DataGridEx-Selected`;

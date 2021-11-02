@@ -31,6 +31,7 @@ export function CommonPage(props: CommonPageProps) {
         disableGutters = true,
         fabButtons,
         fabColumnDirection,
+        fabPaddingAdjust = 1.5,
         fabSize = 'small',
         maxWidth = false,
         moreActions,
@@ -50,7 +51,10 @@ export function CommonPage(props: CommonPageProps) {
     });
 
     // Fab padding
-    const fabPadding = MUGlobal.increase(MUGlobal.pagePaddings, 1);
+    const fabPadding = MUGlobal.increase(
+        MUGlobal.pagePaddings,
+        fabPaddingAdjust
+    );
 
     // Labels
     const labels = Labels.CommonPage;
