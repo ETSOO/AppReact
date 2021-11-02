@@ -50,7 +50,7 @@ export function CommonPage(props: CommonPageProps) {
     });
 
     // Fab padding
-    const fabPadding = MUGlobal.increase(paddings, 2);
+    const fabPadding = MUGlobal.increase(MUGlobal.pagePaddings, 2);
 
     // Labels
     const labels = Labels.CommonPage;
