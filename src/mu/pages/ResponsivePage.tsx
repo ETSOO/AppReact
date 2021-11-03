@@ -84,10 +84,8 @@ export function ResponsivePage<
                 window.innerHeight - Math.round(rect.top + rect.height + 1);
 
             const style = window.getComputedStyle(dimensions[0][1]!);
-            const paddingTop = parseFloat(style.paddingTop);
-            if (!isNaN(paddingTop)) gridHeight -= paddingTop;
-            const paddingBottom = parseFloat(style.paddingBottom);
-            if (!isNaN(paddingBottom)) gridHeight -= paddingBottom;
+            const boxPadding = parseFloat(style.paddingLeft);
+            if (!isNaN(boxPadding)) gridHeight -= 2 * boxPadding;
 
             if (adjustHeight != null) {
                 gridHeight -= adjustHeight(gridHeight);
