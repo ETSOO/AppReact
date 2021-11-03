@@ -36,7 +36,7 @@ export function MoneyText(props: MoneyTextProps) {
 
     // Layout
     return (
-        <Typography noWrap {...rest}>
+        <Typography component="span" fontSize="inherit" {...rest}>
             {NumberUtils.formatMoney(
                 value,
                 currency,

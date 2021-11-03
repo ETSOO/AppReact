@@ -44,7 +44,7 @@ export function DateText(props: DateTextProps) {
 
     // Layout
     return (
-        <Typography noWrap {...rest}>
+        <Typography component="span" fontSize="inherit" {...rest}>
             {localValue}
         </Typography>
     );

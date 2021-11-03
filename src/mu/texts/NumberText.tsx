@@ -33,7 +33,7 @@ export function NumberText(props: NumberTextProps) {
 
     // Layout
     return (
-        <Typography noWrap {...rest}>
+        <Typography component="span" fontSize="inherit" {...rest}>
             {NumberUtils.format(value, locale, options)}
         </Typography>
     );
