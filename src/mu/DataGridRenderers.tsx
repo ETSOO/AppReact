@@ -5,6 +5,7 @@ import { DateUtils, NumberUtils } from '@etsoo/shared';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { DataGridExFooterItemRendererProps } from './DataGridEx';
+import { DateText } from './texts/DateText';
 
 /**
  * Data grid renderers
@@ -44,10 +45,33 @@ export namespace DataGridRenderers {
         // Conversion if necessary
         if (type === GridDataType.Date || type === GridDataType.DateTime) {
             const dateValue = value instanceof Date ? value : new Date(value);
+
+            const option = type === GridDataType.DateTime ? 'ds' : 'd';
+
+            const nearDays = renderProps?.nearDays;
+            if (nearDays != null) {
+                const showError =
+                    Math.abs(new Date().substract(dateValue).totalDays) <=
+                    nearDays;
+                return (
+                    <DateText
+                        color={
+                            showError
+                                ? (theme) => theme.palette.error.main
+                                : undefined
+                        }
+                        value={dateValue}
+                        locale={renderProps?.culture}
+                        timeZone={renderProps?.timeZone}
+                        options={option}
+                    />
+                );
+            }
+
             return DateUtils.format(
                 dateValue,
                 renderProps?.culture,
-                type === GridDataType.DateTime ? 'ds' : 'd',
+                option,
                 renderProps?.timeZone
             );
         }

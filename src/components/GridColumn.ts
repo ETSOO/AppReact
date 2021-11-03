@@ -143,6 +143,11 @@ export interface GridColumnRenderProps {
     readonly numberFormatOptions?: Intl.NumberFormatOptions;
 
     /**
+     * Near days to show alert
+     */
+    readonly nearDays?: number;
+
+    /**
      * Additional data
      */
     readonly data?: Readonly<Record<string, any>>;
