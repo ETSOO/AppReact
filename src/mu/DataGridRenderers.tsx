@@ -50,20 +50,13 @@ export namespace DataGridRenderers {
 
             const nearDays = renderProps?.nearDays;
             if (nearDays != null) {
-                const showError =
-                    Math.abs(new Date().substract(dateValue).totalDays) <=
-                    nearDays;
                 return (
                     <DateText
-                        color={
-                            showError
-                                ? (theme) => theme.palette.error.main
-                                : undefined
-                        }
                         value={dateValue}
                         locale={renderProps?.culture}
                         timeZone={renderProps?.timeZone}
                         options={option}
+                        nearDays={nearDays}
                     />
                 );
             }

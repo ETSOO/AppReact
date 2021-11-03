@@ -12,6 +12,11 @@ export interface DateTextProps extends TypographyProps {
     locale?: string;
 
     /**
+     * Near days to show in error color
+     */
+    nearDays?: number;
+
+    /**
      * Options
      */
     options?: DateUtils.FormatOptions;
@@ -34,13 +39,31 @@ export interface DateTextProps extends TypographyProps {
  */
 export function DateText(props: DateTextProps) {
     // Destruct
-    const { locale = 'lookup', options, timeZone, value, ...rest } = props;
+    const {
+        nearDays,
+        locale = 'lookup',
+        options,
+        timeZone,
+        value,
+        ...rest
+    } = props;
+
+    // Format date
+    const date = DateUtils.parse(value);
 
     // Formatted value
     const localValue =
-        value == null
+        date == null
             ? undefined
             : DateUtils.format(value, locale, options, timeZone);
+
+    if (
+        nearDays != null &&
+        date != null &&
+        Math.abs(new Date().substract(date).totalDays) <= nearDays
+    ) {
+        rest.color = (theme) => theme.palette.error.main;
+    }
 
     // Layout
     return (
