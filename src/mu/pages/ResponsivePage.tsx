@@ -111,9 +111,7 @@ export function ResponsivePage<
             return (
                 <Box
                     sx={{
-                        paddingLeft: paddings,
-                        paddingRight: paddings,
-                        paddingBottom: paddings
+                        padding: paddings
                     }}
                 >
                     <DataGridEx<T>
@@ -199,7 +197,14 @@ export function ResponsivePage<
             pullContainer={pullContainer}
         >
             <Stack>
-                <Box ref={dimensions[0][0]} sx={{ padding: paddings }}>
+                <Box
+                    ref={dimensions[0][0]}
+                    sx={{
+                        paddingLeft: paddings,
+                        paddingTop: MUGlobal.increase(paddings, 0.5, 'xs'),
+                        paddingRight: paddings
+                    }}
+                >
                     <SearchBar fields={fields} onSubmit={onSubmit} />
                 </Box>
                 {list}

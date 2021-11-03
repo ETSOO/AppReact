@@ -42,16 +42,33 @@ export class MUGlobal {
     static pagePaddings = { xs: 2, sm: 3 };
 
     /**
-     * Update object number properties with adjustment
+     * Update object number properties with half of it
      * @param input Input object
-     * @param adjust Adjust value
      * @returns Updated object
      */
-    static increase(input: {}, adjust: number) {
+    static half(input: {}) {
         const newObj = { ...input };
         Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number') {
-                Reflect.set(newObj, key, value + adjust);
+                Reflect.set(newObj, key, value / 2.0);
+            }
+        });
+        return newObj;
+    }
+
+    /**
+     * Update object number properties with adjustment
+     * @param input Input object
+     * @param adjust Adjust value
+     * @param field Specific field
+     * @returns Updated object
+     */
+    static increase(input: {}, adjust: number, field?: string) {
+        const newObj = { ...input };
+        Object.entries(newObj).forEach(([key, value]) => {
+            if (typeof value === 'number') {
+                if (field == null || field === key)
+                    Reflect.set(newObj, key, value + adjust);
             }
         });
         return newObj;
