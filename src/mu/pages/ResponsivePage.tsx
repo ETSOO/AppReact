@@ -163,9 +163,23 @@ export function ResponsivePage<
         );
     }, [states.height, showDataGrid, localLoadData]);
 
+    const sizeRef = React.useRef<[number, number]>();
+
     const { ref, data } = states;
     React.useEffect(() => {
-        if (ref == null || data == null) return;
+        if (ref == null || data == null || rect == null) return;
+
+        // Resize without reset
+        if (sizeRef.current == null) {
+            sizeRef.current = [rect.width, rect.height];
+        } else if (
+            sizeRef.current[0] !== rect.width ||
+            sizeRef.current[1] !== rect.height
+        ) {
+            sizeRef.current = [rect.width, rect.height];
+            return;
+        }
+
         ref.reset({ data });
     });
 

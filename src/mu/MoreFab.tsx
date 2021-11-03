@@ -5,14 +5,15 @@ import {
     Divider,
     Fab,
     IconButton,
-    Link,
     ListItemIcon,
     ListItemText,
     Menu,
     MenuItem,
+    PaperProps,
     PopoverOrigin
 } from '@mui/material';
 import { ListItemReact } from '../components/ListItemReact';
+import { Link } from '@reach/router';
 
 /**
  * More fab props
@@ -40,6 +41,12 @@ export interface MoreFabProps extends CustomFabProps {
     anchorOrigin?: PopoverOrigin;
 
     /**
+     * Props applied to the [`Paper`](/api/paper/) element.
+     * @default {}
+     */
+    PaperProps?: Partial<PaperProps>;
+
+    /**
      * This is the point on the popover which
      * will attach to the anchor's origin
      */
@@ -61,6 +68,7 @@ export function MoreFab(props: MoreFabProps) {
         color = 'primary',
         icon = <MoreHorizIcon />,
         iconButton = false,
+        PaperProps,
         size,
         title,
         transformOrigin = {
@@ -118,6 +126,7 @@ export function MoreFab(props: MoreFabProps) {
                 transformOrigin={transformOrigin}
                 open={open}
                 onClose={handleClose}
+                PaperProps={PaperProps}
             >
                 {actions.map(({ label, icon, action }, index) =>
                     label === '-' ? (
