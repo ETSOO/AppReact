@@ -139,10 +139,15 @@ export function ResponsivePage<
         delete rest.hoverColor;
         delete rest.selectable;
 
+        // Half
+        const halfPadding = MUGlobal.half(paddings);
+
         return (
             <Box
                 sx={{
-                    height: gridHeight
+                    height: gridHeight,
+                    paddingTop: halfPadding,
+                    paddingBottom: halfPadding
                 }}
             >
                 <ScrollerListEx<T>
