@@ -1,4 +1,7 @@
-import { NotificationReturn } from '@etsoo/notificationbase';
+import {
+    NotificationContent,
+    NotificationReturn
+} from '@etsoo/notificationbase';
 import { NotificationReactCallProps } from '../notifier/Notifier';
 
 /**
@@ -8,12 +11,12 @@ export type InputDialogProps = NotificationReactCallProps & {
     /**
      * Title
      */
-    title: string;
+    title: NotificationContent<React.ReactNode>;
 
     /**
      * Message
      */
-    message: string;
+    message: NotificationContent<React.ReactNode>;
 
     /**
      * Callback
