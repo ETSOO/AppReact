@@ -75,7 +75,6 @@ export const TextFieldEx = React.forwardRef<
 
     // State
     const [errorText, updateErrorText] = React.useState<React.ReactNode>();
-    const [passwordVisible, updatePasswordVisible] = React.useState<boolean>();
     const [empty, updateEmpty] = React.useState<boolean>(true);
 
     // Read only
@@ -89,10 +88,7 @@ export const TextFieldEx = React.forwardRef<
         helperTextEx = errorText;
     }
 
-    let typeEx = type;
-    if (showPassword) {
-        typeEx = passwordVisible ? 'text' : 'password';
-    }
+    let typeEx = showPassword ? 'password' : type;
 
     let input: HTMLInputElement | undefined;
     const localRef = (ref: HTMLInputElement) => {
@@ -117,22 +113,26 @@ export const TextFieldEx = React.forwardRef<
         updateEmpty(true);
     };
 
-    const touchStart = (e: React.TouchEvent) => {
-        // Show the password
-        updatePasswordVisible(true);
-
+    const preventDefault = (e: React.TouchEvent | React.MouseEvent) => {
         // Prevent long press
-        e.stopPropagation();
-        e.preventDefault();
+        if (e.isPropagationStopped()) e.stopPropagation();
+
+        if (e.isDefaultPrevented()) e.preventDefault();
     };
 
-    const touchEnd = (e: React.TouchEvent) => {
+    const touchStart = (e: React.TouchEvent | React.MouseEvent) => {
         // Show the password
-        updatePasswordVisible(false);
+        if (input) {
+            input.blur();
+            input.type = 'text';
+        }
+        preventDefault(e);
+    };
 
-        // Prevent long press
-        e.stopPropagation();
-        e.preventDefault();
+    const touchEnd = (e: React.TouchEvent | React.MouseEvent) => {
+        // Show the password
+        if (input) input.type = 'password';
+        preventDefault(e);
     };
 
     // Show password and/or clear button
@@ -142,8 +142,9 @@ export const TextFieldEx = React.forwardRef<
                 {showPassword && (
                     <IconButton
                         tabIndex={-1}
-                        onMouseDown={() => updatePasswordVisible(true)}
-                        onMouseUp={() => updatePasswordVisible(false)}
+                        onContextMenu={(event) => event.preventDefault()}
+                        onMouseDown={touchStart}
+                        onMouseUp={touchEnd}
                         onTouchStart={touchStart}
                         onTouchCancel={touchEnd}
                         onTouchEnd={touchEnd}
