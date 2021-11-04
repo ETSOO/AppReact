@@ -118,11 +118,21 @@ export const TextFieldEx = React.forwardRef<
     };
 
     const touchStart = (e: React.TouchEvent) => {
-        // Avoid focus case selecting all text
-        input?.blur();
-
         // Show the password
         updatePasswordVisible(true);
+
+        // Prevent long press
+        e.stopPropagation();
+        e.preventDefault();
+    };
+
+    const touchEnd = (e: React.TouchEvent) => {
+        // Show the password
+        updatePasswordVisible(false);
+
+        // Prevent long press
+        e.stopPropagation();
+        e.preventDefault();
     };
 
     // Show password and/or clear button
@@ -135,8 +145,8 @@ export const TextFieldEx = React.forwardRef<
                         onMouseDown={() => updatePasswordVisible(true)}
                         onMouseUp={() => updatePasswordVisible(false)}
                         onTouchStart={touchStart}
-                        onTouchCancel={() => updatePasswordVisible(false)}
-                        onTouchEnd={() => updatePasswordVisible(false)}
+                        onTouchCancel={touchEnd}
+                        onTouchEnd={touchEnd}
                     >
                         <Visibility />
                     </IconButton>
