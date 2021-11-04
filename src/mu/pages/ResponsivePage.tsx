@@ -141,11 +141,13 @@ export function ResponsivePage<
 
         // Half
         const halfPadding = MUGlobal.half(paddings);
+        const style = window.getComputedStyle(dimensions[0][1]!);
+        const boxPadding = parseFloat(style.paddingLeft);
 
         return (
             <Box
                 sx={{
-                    height: gridHeight,
+                    height: gridHeight + (isNaN(boxPadding) ? 0 : boxPadding),
                     paddingTop: halfPadding,
                     paddingBottom: halfPadding
                 }}
