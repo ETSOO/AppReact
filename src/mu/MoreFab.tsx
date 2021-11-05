@@ -137,7 +137,11 @@ export function MoreFab(props: MoreFabProps) {
                             key={label}
                             {...(typeof action === 'string'
                                 ? action.includes('://')
-                                    ? { component: MLink, to: action }
+                                    ? {
+                                          component: 'a',
+                                          href: action,
+                                          target: '_blank'
+                                      }
                                     : { component: Link, to: action }
                                 : {
                                       onClick: () => {
