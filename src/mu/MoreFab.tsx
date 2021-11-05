@@ -5,6 +5,7 @@ import {
     Divider,
     Fab,
     IconButton,
+    Link as MLink,
     ListItemIcon,
     ListItemText,
     Menu,
@@ -135,7 +136,9 @@ export function MoreFab(props: MoreFabProps) {
                         <MenuItem
                             key={label}
                             {...(typeof action === 'string'
-                                ? { component: Link, to: action }
+                                ? action.includes('://')
+                                    ? { component: MLink, to: action }
+                                    : { component: Link, to: action }
                                 : {
                                       onClick: () => {
                                           handleClose();

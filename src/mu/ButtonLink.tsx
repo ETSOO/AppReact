@@ -23,7 +23,10 @@ export function ButtonLink(props: ButtonLinkProps) {
 
     // Navigate
     const navigate = useNavigate();
+    const onClick = href.includes('://')
+        ? () => window.open(href, '_blank')
+        : () => navigate(href);
 
     // Layout
-    return <Button {...rest} onClick={() => navigate(href)} />;
+    return <Button {...rest} onClick={onClick} />;
 }
