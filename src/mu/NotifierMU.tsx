@@ -249,28 +249,29 @@ export class NotificationMU extends NotificationReact {
                 // Inputs case, no HTMLForm set to value, set the current form
                 if (inputs && value == null) value = event.currentTarget.form;
 
-                if (inputRef.current) {
+                const input = inputRef.current;
+                if (input) {
                     if (type === 'date') {
-                        const dateValue = inputRef.current.valueAsDate;
-                        if (dateValue == null) {
-                            inputRef.current.focus();
+                        const dateValue = input.valueAsDate;
+                        if (dateValue == null && input.required) {
+                            input.focus();
                             return;
                         }
                         result = this.onReturn(dateValue);
                     } else if (type === 'number') {
-                        const numberValue = inputRef.current.valueAsNumber;
-                        if (isNaN(numberValue)) {
-                            inputRef.current.focus();
+                        const numberValue = input.valueAsNumber;
+                        if (isNaN(numberValue) && input.required) {
+                            input.focus();
                             return;
                         }
                         result = this.onReturn(numberValue);
                     } else if (type === 'switch') {
-                        const boolValue = inputRef.current.value === 'true';
+                        const boolValue = input.value === 'true';
                         result = this.onReturn(boolValue);
                     } else {
-                        const textValue = inputRef.current.value.trim();
-                        if (textValue === '') {
-                            inputRef.current.focus();
+                        const textValue = input.value.trim();
+                        if (textValue === '' && input.required) {
+                            input.focus();
                             return;
                         }
                         result = this.onReturn(textValue);
