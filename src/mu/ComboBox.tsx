@@ -80,13 +80,13 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
 
     if (localValue === undefined) localValue = null;
 
-    // Current id value
-    // One time calculation for input's default value (uncontrolled)
-    const localIdValue = localValue && Reflect.get(localValue, idField);
-
     // State
     // null for controlled
     const [stateValue, setStateValue] = React.useState<T | null>(null);
+
+    // Current id value
+    // One time calculation for input's default value (uncontrolled)
+    const localIdValue = stateValue && Reflect.get(stateValue, idField);
 
     React.useEffect(() => {
         if (localValue != null) setStateValue(localValue);

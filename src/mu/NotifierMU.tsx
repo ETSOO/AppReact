@@ -311,6 +311,7 @@ export class NotificationMU extends NotificationReact {
                     <TextField
                         inputRef={inputRef}
                         autoFocus
+                        margin="dense"
                         fullWidth
                         type={type}
                         required
