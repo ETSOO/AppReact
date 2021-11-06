@@ -40,7 +40,7 @@ export function ResponsivePage<
         innerItemRenderer,
         itemSize,
         mRef,
-        sizeReadyMiliseconds = 100,
+        sizeReadyMiliseconds = 0,
         pageProps = {},
         ...rest
     } = props;

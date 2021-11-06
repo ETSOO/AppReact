@@ -30,7 +30,7 @@ export function TablePage<
         fieldTemplate,
         loadData,
         mRef,
-        sizeReadyMiliseconds = 100,
+        sizeReadyMiliseconds = 0,
         pageProps = {},
         ...rest
     } = props;
