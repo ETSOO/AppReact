@@ -5,10 +5,12 @@ import {
     IUser,
     IUserData
 } from '@etsoo/appscript';
+import { NotificationRenderProps } from '@etsoo/notificationbase';
 import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
+import { ProgressCount } from '../mu/ProgressCount';
 import { NotificationReactCallProps } from '../notifier/Notifier';
-import { CultureAction } from '../states/CultureState';
+import { CultureAction, CultureState } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
 import { IPageData, PageAction, PageActionType } from '../states/PageState';
 import {
@@ -98,6 +100,48 @@ export abstract class ReactApp<
      */
     readonly userState = new UserState<D>();
 
+    private static _notifierProvider: React.FunctionComponent<NotificationRenderProps>;
+
+    /**
+     * Get notifier provider
+     */
+    static get notifierProvider() {
+        return ReactApp._notifierProvider;
+    }
+
+    /**
+     * Set notifier provider
+     */
+    protected static set notifierProvider(value) {
+        ReactApp._notifierProvider = value;
+    }
+
+    private static _cultureState: CultureState;
+
+    /**
+     * Get culture state
+     */
+    static get cultureState() {
+        return ReactApp._cultureState;
+    }
+
+    /**
+     * Set culture state
+     */
+    protected static set cultureState(value) {
+        ReactApp._cultureState = value;
+    }
+
+    /**
+     * Is screen size down 'sm'
+     */
+    smDown?: boolean;
+
+    /**
+     * Is screen size up 'md'
+     */
+    mdUp?: boolean;
+
     /**
      * Page state dispatch
      */
@@ -175,6 +219,39 @@ export abstract class ReactApp<
      */
     getMoneyFormatProps() {
         return { culture: this.culture, currency: this.currency };
+    }
+
+    /**
+     * Fresh countdown UI
+     * @param callback Callback
+     */
+    freshCountdownUI(callback?: () => PromiseLike<unknown>) {
+        // Labels
+        const labels = this.getLabels('cancel', 'tokenExpiry');
+
+        // Progress
+        const progress = React.createElement(ProgressCount, {
+            seconds: 30,
+            valueUnit: 's',
+            onComplete: () => {
+                // Stop the progress
+                return false;
+            }
+        });
+
+        // Popup
+        this.notifier.alert(
+            labels.tokenExpiry,
+            async () => {
+                if (callback) await callback();
+                else await this.tryLogin();
+            },
+            {
+                okLabel: labels.cancel,
+                primaryButton: { fullWidth: true, autoFocus: false },
+                inputs: progress
+            }
+        );
     }
 
     /**
