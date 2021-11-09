@@ -5,17 +5,9 @@ import {
     IUser,
     IUserData
 } from '@etsoo/appscript';
-import {
-    NotificationAlign,
-    NotificationContent,
-    NotificationMessageType
-} from '@etsoo/notificationbase';
 import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
-import {
-    INotificationReact,
-    NotificationReactCallProps
-} from '../notifier/Notifier';
+import { NotificationReactCallProps } from '../notifier/Notifier';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
 import { IPageData, PageAction, PageActionType } from '../states/PageState';
@@ -125,16 +117,12 @@ export abstract class ReactApp<
     }
 
     /**
-     * Change culture extended
-     * @param dispatch Dispatch method
+     * Change culture
      * @param culture New culture definition
      */
-    changeCultureEx(
-        dispatch: React.Dispatch<CultureAction>,
-        culture: DataTypes.CultureDefinition
-    ): void {
-        // Same?
-        if (culture.name === this.culture) return;
+    override changeCulture(culture: DataTypes.CultureDefinition) {
+        // Super call to update cultrue
+        super.changeCulture(culture);
 
         // Update component labels
         Labels.setLabels(culture.resources, {
@@ -152,12 +140,25 @@ export abstract class ReactApp<
 
         // Document title
         document.title = this.get(this.name) ?? this.name;
+    }
+
+    /**
+     * Change culture extended
+     * @param dispatch Dispatch method
+     * @param culture New culture definition
+     */
+    changeCultureEx(
+        dispatch: React.Dispatch<CultureAction>,
+        culture: DataTypes.CultureDefinition
+    ): void {
+        // Same?
+        if (culture.name === this.culture) return;
 
         // Dispatch action
         dispatch(culture);
 
         // Super call
-        super.changeCulture(culture);
+        this.changeCulture(culture);
     }
 
     /**
