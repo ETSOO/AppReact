@@ -5,9 +5,17 @@ import {
     IUser,
     IUserData
 } from '@etsoo/appscript';
+import {
+    NotificationAlign,
+    NotificationContent,
+    NotificationMessageType
+} from '@etsoo/notificationbase';
 import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
-import { NotificationReactCallProps } from '../notifier/Notifier';
+import {
+    INotificationReact,
+    NotificationReactCallProps
+} from '../notifier/Notifier';
 import { CultureAction } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
 import { IPageData, PageAction, PageActionType } from '../states/PageState';
@@ -18,6 +26,7 @@ import {
     UserState
 } from '../states/UserState';
 import { InputDialogProps } from './InputDialogProps';
+import { Labels } from './Labels';
 
 let app: IReactApp<IAppSettings, any, any>;
 
@@ -126,6 +135,20 @@ export abstract class ReactApp<
     ): void {
         // Same?
         if (culture.name === this.culture) return;
+
+        // Update component labels
+        Labels.setLabels(culture.resources, {
+            notificationMU: {
+                alertTitle: 'warning',
+                alertOK: 'ok',
+                confirmTitle: 'confirm',
+                confirmYes: 'ok',
+                confirmNo: 'cancel',
+                promptTitle: 'prompt',
+                promptCancel: 'cancel',
+                promptOK: 'ok'
+            }
+        });
 
         // Dispatch action
         dispatch(culture);

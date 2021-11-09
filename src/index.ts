@@ -1,6 +1,7 @@
 // app
 export * from './app/Labels';
 export * from './app/ReactApp';
+export * from './app/ServiceApp';
 export * from './app/Utils';
 
 // components
