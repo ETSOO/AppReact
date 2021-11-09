@@ -150,6 +150,9 @@ export abstract class ReactApp<
             }
         });
 
+        // Document title
+        document.title = this.get(this.name) ?? this.name;
+
         // Dispatch action
         dispatch(culture);
 
