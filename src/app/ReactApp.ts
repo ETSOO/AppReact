@@ -114,47 +114,33 @@ export class ReactApp<
         return this._notifierProvider;
     }
 
-    /**
-     * Set notifier provider
-     */
-    protected static set notifierProvider(value) {
-        this._notifierProvider = value;
-    }
-
-    static setup<S extends IAppSettings, D extends IUser, P extends IPageData>(
-        settings: S,
-        name: string
-    ) {
-        // Avoid repeat setup
-        if (ReactApp.notifierProvider != null) return;
-
-        // Notifier
-        ReactApp.notifierProvider = NotifierMU.setup();
-
+    private static createApi(settings: IAppSettings) {
         // API
-        // Suggest to replace {hostname} with current hostname
+        // Support to replace {hostname} with current hostname
         const api = createClient();
         api.baseUrl = settings.endpoint.replace(
             '{hostname}',
             window.location.hostname
         );
-
-        // App
-        const app = new ReactApp<S, D, P>(
-            settings,
-            api,
-            NotifierMU.instance,
-            name
-        );
-
-        // Global reference
-        globalApp = app;
-
-        app.cultureState = new CultureState(settings.currentCulture);
-        app.pageState = new PageState<P>();
-
-        return app;
+        return api;
     }
+
+    private static createNotifier() {
+        // Notifier
+        ReactApp._notifierProvider = NotifierMU.setup();
+
+        return NotifierMU.instance;
+    }
+
+    /**
+     * Culture state
+     */
+    readonly cultureState: CultureState;
+
+    /**
+     * Page state
+     */
+    readonly pageState: PageState<P>;
 
     /**
      * User state
@@ -171,38 +157,6 @@ export class ReactApp<
      */
     mdUp?: boolean;
 
-    private _cultureState?: CultureState;
-
-    /**
-     * Get culture state
-     */
-    get cultureState() {
-        return this._cultureState;
-    }
-
-    /**
-     * Set culture state
-     */
-    protected set cultureState(value) {
-        this._cultureState = value;
-    }
-
-    private _pageState?: PageState<P>;
-
-    /**
-     * Get page state
-     */
-    get pageState() {
-        return this._pageState;
-    }
-
-    /**
-     * Set page state
-     */
-    protected set pageState(value) {
-        this._pageState = value;
-    }
-
     /**
      * Page state dispatch
      */
@@ -212,6 +166,23 @@ export class ReactApp<
      * User state dispatch
      */
     userStateDispatch?: React.Dispatch<UserAction<D>>;
+
+    /**
+     * Constructor
+     * @param settings Settings
+     * @param name Application name
+     */
+    constructor(settings: S, name: string) {
+        super(
+            settings,
+            ReactApp.createApi(settings),
+            ReactApp.createNotifier(),
+            name
+        );
+
+        this.cultureState = new CultureState(settings.currentCulture);
+        this.pageState = new PageState<P>();
+    }
 
     /**
      * Change culture
