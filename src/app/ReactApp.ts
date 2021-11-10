@@ -1,12 +1,12 @@
 import {
     CoreApp,
+    createClient,
     IAppSettings,
     ICoreApp,
     IUser,
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
-import { createClient } from '@etsoo/restclient';
 import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
