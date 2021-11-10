@@ -6,13 +6,20 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
+import { createClient } from '@etsoo/restclient';
 import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
+import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
 import { NotificationReactCallProps } from '../notifier/Notifier';
 import { CultureAction, CultureState } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
-import { IPageData, PageAction, PageActionType } from '../states/PageState';
+import {
+    IPageData,
+    PageAction,
+    PageActionType,
+    PageState
+} from '../states/PageState';
 import {
     UserAction,
     UserActionType,
@@ -22,7 +29,8 @@ import {
 import { InputDialogProps } from './InputDialogProps';
 import { Labels } from './Labels';
 
-let app: IReactApp<IAppSettings, any, any>;
+// Global application
+let globalApp: IReactApp<IAppSettings, any, IPageData>;
 
 /**
  * React app state detector
@@ -38,9 +46,11 @@ export function ReactAppStateDetector(props: IStateProps) {
 
     // Context
     const { state } =
-        app == null
+        globalApp == null
             ? ({ state: {} } as UserCalls<IUser>)
-            : React.useContext((app.userState as UserState<IUser>).context);
+            : React.useContext(
+                  (globalApp.userState as UserState<IUser>).context
+              );
 
     // Ready
     React.useEffect(() => {
@@ -87,7 +97,7 @@ export interface IReactApp<
 /**
  * React application
  */
-export abstract class ReactApp<
+export class ReactApp<
         S extends IAppSettings,
         D extends IUser,
         P extends IPageData
@@ -95,42 +105,61 @@ export abstract class ReactApp<
     extends CoreApp<S, React.ReactNode, NotificationReactCallProps>
     implements IReactApp<S, D, P>
 {
-    /**
-     * User state
-     */
-    readonly userState = new UserState<D>();
-
     private static _notifierProvider: React.FunctionComponent<NotificationRenderProps>;
 
     /**
      * Get notifier provider
      */
     static get notifierProvider() {
-        return ReactApp._notifierProvider;
+        return this._notifierProvider;
     }
 
     /**
      * Set notifier provider
      */
     protected static set notifierProvider(value) {
-        ReactApp._notifierProvider = value;
+        this._notifierProvider = value;
     }
 
-    private static _cultureState: CultureState;
+    static setup<S extends IAppSettings, D extends IUser, P extends IPageData>(
+        settings: S,
+        name: string
+    ) {
+        // Avoid repeat setup
+        if (ReactApp.notifierProvider != null) return;
+
+        // Notifier
+        ReactApp.notifierProvider = NotifierMU.setup();
+
+        // API
+        // Suggest to replace {hostname} with current hostname
+        const api = createClient();
+        api.baseUrl = settings.endpoint.replace(
+            '{hostname}',
+            window.location.hostname
+        );
+
+        // App
+        const app = new ReactApp<S, D, P>(
+            settings,
+            api,
+            NotifierMU.instance,
+            name
+        );
+
+        // Global reference
+        globalApp = app;
+
+        app.cultureState = new CultureState(settings.currentCulture);
+        app.pageState = new PageState<P>();
+
+        return app;
+    }
 
     /**
-     * Get culture state
+     * User state
      */
-    static get cultureState() {
-        return ReactApp._cultureState;
-    }
-
-    /**
-     * Set culture state
-     */
-    protected static set cultureState(value) {
-        ReactApp._cultureState = value;
-    }
+    readonly userState = new UserState<D>();
 
     /**
      * Is screen size down 'sm'
@@ -142,6 +171,38 @@ export abstract class ReactApp<
      */
     mdUp?: boolean;
 
+    private _cultureState?: CultureState;
+
+    /**
+     * Get culture state
+     */
+    get cultureState() {
+        return this._cultureState;
+    }
+
+    /**
+     * Set culture state
+     */
+    protected set cultureState(value) {
+        this._cultureState = value;
+    }
+
+    private _pageState?: PageState<P>;
+
+    /**
+     * Get page state
+     */
+    get pageState() {
+        return this._pageState;
+    }
+
+    /**
+     * Set page state
+     */
+    protected set pageState(value) {
+        this._pageState = value;
+    }
+
     /**
      * Page state dispatch
      */
@@ -151,14 +212,6 @@ export abstract class ReactApp<
      * User state dispatch
      */
     userStateDispatch?: React.Dispatch<UserAction<D>>;
-
-    /**
-     * Override setup to hold userState
-     */
-    override setup() {
-        super.setup();
-        app = this;
-    }
 
     /**
      * Change culture
