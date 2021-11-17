@@ -179,7 +179,6 @@ export class ReactApp<
             ReactApp.createNotifier(),
             name
         );
-
         this.cultureState = new CultureState(settings.currentCulture);
         this.pageState = new PageState<P>();
     }
