@@ -1,5 +1,6 @@
-import { createClient, IApi, IAppSettings, IUser } from '@etsoo/appscript';
+import { createClient, IApi, IUser } from '@etsoo/appscript';
 import { IPageData } from '../states/PageState';
+import { IServiceAppSettings } from './IServiceAppSettings';
 import { ReactApp } from './ReactApp';
 
 /**
@@ -9,24 +10,10 @@ import { ReactApp } from './ReactApp';
  * Use the new acess token and refresh token to login
  */
 export class ServiceApp<
-    S extends IAppSettings,
+    P extends IPageData,
     U extends IUser,
-    P extends IPageData
+    S extends IServiceAppSettings = IServiceAppSettings
 > extends ReactApp<S, U, P> {
-    // Create core api
-    private static createCoreApi(settings: IAppSettings) {
-        // Check
-        if (settings.serviceId == null || settings.coreApi == null) {
-            throw new Error('No service settings');
-        }
-
-        // Core API
-        const api = createClient();
-        api.baseUrl = settings.coreApi;
-
-        return api;
-    }
-
     /**
      * Core system API
      */
@@ -40,7 +27,16 @@ export class ServiceApp<
     constructor(settings: S, name: string) {
         super(settings, name);
 
-        this.coreApi = ServiceApp.createCoreApi(settings);
-        this.setApi(this.coreApi);
+        // Check
+        if (settings.serviceId == null || settings.coreApi == null) {
+            throw new Error('No service settings');
+        }
+
+        // Core API
+        const api = createClient();
+        api.baseUrl = settings.coreApi;
+
+        this.setApi(api);
+        this.coreApi = api;
     }
 }
