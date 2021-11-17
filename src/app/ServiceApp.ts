@@ -1,6 +1,7 @@
-import { createClient, IApi, IUser } from '@etsoo/appscript';
-import { IPageData } from '../states/PageState';
+import { createClient, IApi } from '@etsoo/appscript';
 import { IServiceAppSettings } from './IServiceAppSettings';
+import { IServicePageData } from './IServicePage';
+import { IServiceUser } from './IServiceUser';
 import { ReactApp } from './ReactApp';
 
 /**
@@ -10,8 +11,8 @@ import { ReactApp } from './ReactApp';
  * Use the new acess token and refresh token to login
  */
 export class ServiceApp<
-    P extends IPageData,
-    U extends IUser,
+    P extends IServicePageData = IServicePageData,
+    U extends IServiceUser = IServiceUser,
     S extends IServiceAppSettings = IServiceAppSettings
 > extends ReactApp<S, U, P> {
     /**
