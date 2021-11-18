@@ -118,10 +118,7 @@ export class ReactApp<
         // API
         // Support to replace {hostname} with current hostname
         const api = createClient();
-        api.baseUrl = settings.endpoint.replace(
-            '{hostname}',
-            window.location.hostname
-        );
+        api.baseUrl = settings.endpoint;
         return api;
     }
 
