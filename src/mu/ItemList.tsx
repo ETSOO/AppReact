@@ -48,7 +48,7 @@ export interface ItemListProps {
     /**
      * Close event
      */
-    onClose?(item?: any): void;
+    onClose?(item: any, changed: boolean): void;
 
     /**
      * Current selected language
@@ -133,12 +133,14 @@ export function ItemList(props: ItemListProps) {
 
     // Close handler
     const closeHandler = () => {
+        if (!open) return;
+
         // Close the dialog
         setOpen(false);
 
         // Emit close event
         if (onClose) {
-            onClose(currentItem);
+            onClose(currentItem, false);
         }
     };
 
@@ -152,7 +154,7 @@ export function ItemList(props: ItemListProps) {
 
         // Emit close event
         if (onClose) {
-            onClose(item);
+            onClose(item, true);
         }
     };
 
