@@ -1,4 +1,5 @@
 import { createClient, IApi } from '@etsoo/appscript';
+import { ISmartERPUser } from '..';
 import { IServiceAppSettings } from './IServiceAppSettings';
 import { IServicePageData } from './IServicePage';
 import { IServiceUser } from './IServiceUser';
@@ -21,6 +22,11 @@ export class ServiceApp<
     readonly coreApi: IApi;
 
     /**
+     * Core system user
+     */
+    coreUser?: ISmartERPUser;
+
+    /**
      * Constructor
      * @param settings Settings
      * @param name Application name
@@ -39,5 +45,20 @@ export class ServiceApp<
 
         this.setApi(api);
         this.coreApi = api;
+    }
+
+    /**
+     * User login extended
+     * @param user New user
+     * @param refreshToken Refresh token
+     * @param coreUser Core system user
+     */
+    userLoginEx(
+        user: IServiceUser,
+        refreshToken: string,
+        coreUser: ISmartERPUser
+    ): void {
+        super.userLogin(user, refreshToken, false);
+        this.coreUser = coreUser;
     }
 }

@@ -339,7 +339,7 @@ export class ReactApp<
      */
     override userLogin(
         user: IUserData,
-        refreshToken?: string,
+        refreshToken: string,
         keep?: boolean
     ): void {
         // Changed

@@ -3,8 +3,10 @@ export * from './app/InputDialogProps';
 export * from './app/IServiceAppSettings';
 export * from './app/IServicePage';
 export * from './app/IServiceUser';
+export * from './app/ISmartERPUser';
 export * from './app/Labels';
 export * from './app/ReactApp';
+export * from './app/RefreshTokenRQ';
 export * from './app/ServiceApp';
 export * from './app/Utils';
 
