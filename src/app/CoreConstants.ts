@@ -1,7 +1,7 @@
 /**
- * Constants
+ * Core constants
  */
-export namespace Constants {
+export namespace CoreConstants {
     /**
      * Rresh token cache field
      */
