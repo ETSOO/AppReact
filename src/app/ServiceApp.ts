@@ -58,7 +58,13 @@ export class ServiceApp<
         refreshToken: string,
         coreUser: ISmartERPUser
     ): void {
+        // Service user login
         super.userLogin(user, refreshToken, false);
+
+        // Core system user
         this.coreUser = coreUser;
+
+        // Core system API token
+        this.api.authorize(this.settings.authScheme, coreUser.token);
     }
 }
