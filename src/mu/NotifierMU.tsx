@@ -581,7 +581,14 @@ export class NotifierMU extends NotifierReact {
         modal?: boolean
     ): INotificationReact {
         // Destruct
-        const { type, content, title, align, timespan, ...rest } = data;
+        const {
+            type,
+            content,
+            title,
+            align,
+            timespan = modal ? 0 : undefined,
+            ...rest
+        } = data;
 
         // Setup
         const n = new NotificationMU(type, content, title, align, timespan);
