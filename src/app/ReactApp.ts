@@ -266,6 +266,7 @@ export class ReactApp<
                 if (callback) await callback();
                 else await this.tryLogin();
             },
+            undefined,
             {
                 okLabel: labels.cancel,
                 primaryButton: { fullWidth: true, autoFocus: false },
