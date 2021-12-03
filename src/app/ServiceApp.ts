@@ -1,4 +1,5 @@
 import { createClient, IApi } from '@etsoo/appscript';
+import { DomUtils } from '@etsoo/shared';
 import { ISmartERPUser } from '..';
 import { IServiceAppSettings } from './IServiceAppSettings';
 import { IServicePageData } from './IServicePage';
@@ -48,6 +49,21 @@ export class ServiceApp<
     }
 
     /**
+     * Go to the login page
+     */
+    override toLoginPage() {
+        const coreUrl = this.settings.coreApi;
+        window.location.href =
+            coreUrl +
+            '?serviceId=' +
+            this.settings.serviceId +
+            '&' +
+            DomUtils.Culture +
+            '=' +
+            this.culture;
+    }
+
+    /**
      * User login extended
      * @param user New user
      * @param refreshToken Refresh token
@@ -65,6 +81,6 @@ export class ServiceApp<
         this.coreUser = coreUser;
 
         // Core system API token
-        this.api.authorize(this.settings.authScheme, coreUser.token);
+        this.coreApi.authorize(this.settings.authScheme, coreUser.token);
     }
 }
