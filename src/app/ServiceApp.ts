@@ -60,7 +60,7 @@ export class ServiceApp<
      * Go to the login page
      */
     override toLoginPage() {
-        const coreUrl = this.settings.coreApi;
+        const coreUrl = this.settings.coreUrl;
         window.location.href =
             coreUrl +
             '?serviceId=' +
