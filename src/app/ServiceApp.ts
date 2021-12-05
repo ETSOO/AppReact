@@ -1,9 +1,11 @@
 import {
+    ActionResultError,
     createClient,
     IApi,
     IApiPayload,
     RefreshTokenProps
 } from '@etsoo/appscript';
+import { ApiDataError } from '@etsoo/restclient';
 import { DomUtils } from '@etsoo/shared';
 import { CoreConstants } from './CoreConstants';
 import { IServiceAppSettings } from './IServiceAppSettings';
@@ -173,9 +175,24 @@ export class ServiceApp<
 
         // Refresh token
         return await this.refreshToken({
-            callback: (_result) => {
-                this.toLoginPage();
-            }
+            callback: (result) => {
+                if (typeof result === 'boolean') {
+                    this.toLoginPage();
+                    return;
+                }
+
+                const message =
+                    result instanceof ApiDataError
+                        ? this.formatError(result)
+                        : typeof result !== 'string'
+                        ? ActionResultError.format(result)
+                        : result;
+
+                this.notifier.alert(message, () => {
+                    this.toLoginPage();
+                });
+            },
+            showLoading: true
         });
     }
 
