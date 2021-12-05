@@ -1,10 +1,9 @@
 import {
     createClient,
-    IActionResult,
     IApi,
-    IApiPayload
+    IApiPayload,
+    RefreshTokenProps
 } from '@etsoo/appscript';
-import { ApiDataError } from '@etsoo/restclient';
 import { DomUtils } from '@etsoo/shared';
 import { CoreConstants } from './CoreConstants';
 import { IServiceAppSettings } from './IServiceAppSettings';
@@ -72,32 +71,35 @@ export class ServiceApp<
     }
 
     /**
-     * Try login result processing
-     * @param result Result
+     * Refresh token
+     * @param props Props
      */
-    protected tryLoginResult(result: string | ApiDataError | IActionResult) {}
+    override async refreshToken<D = RefreshTokenRQ>(
+        props?: RefreshTokenProps<D>
+    ) {
+        // Destruct
+        const { callback, data, showLoading = false } = props ?? {};
 
-    /**
-     * Try login
-     */
-    override async tryLogin() {
         // Token
         const token = this.getCacheToken();
         if (token == null || token === '') {
-            this.tryLoginResult('');
+            if (callback) callback(false);
             return false;
         }
 
         // Reqest data
-        const data: RefreshTokenRQ = {
-            timezone: this.getTimeZone()
+        // Merge additional data passed
+        const rq: RefreshTokenRQ = {
+            timezone: this.getTimeZone(),
+            ...data
         };
 
         // Payload
         const payload: IApiPayload<SmartERPLoginResult, any> = {
+            showLoading,
             config: { headers: { [CoreConstants.TokenHeaderRefresh]: token } },
             onError: (error) => {
-                this.tryLoginResult(error);
+                if (callback) callback(error);
 
                 // Prevent further processing
                 return false;
@@ -107,20 +109,20 @@ export class ServiceApp<
         // Call API
         const result = await this.coreApi.put<SmartERPLoginResult>(
             'Auth/RefreshToken',
-            data,
+            rq,
             payload
         );
         if (result == null) return false;
 
         if (!result.ok) {
-            this.tryLoginResult(result);
+            if (callback) callback(result);
             return false;
         }
 
         // Token
         const refreshToken = this.getResponseToken(payload.response);
         if (refreshToken == null || result.data == null) {
-            this.tryLoginResult(this.get('noData')!);
+            if (callback) callback(this.get('noData')!);
             return false;
         }
 
@@ -134,9 +136,9 @@ export class ServiceApp<
                 token: userData.token
             },
             {
+                showLoading,
                 onError: (error) => {
-                    // Set message
-                    this.tryLoginResult(error);
+                    if (callback) callback(error);
 
                     // Prevent further processing
                     return false;
@@ -147,18 +149,34 @@ export class ServiceApp<
         if (serviceResult == null) return false;
 
         if (!serviceResult.ok) {
-            this.tryLoginResult(result);
+            if (callback) callback(serviceResult);
             return false;
         }
 
         if (serviceResult.data == null) {
-            this.tryLoginResult(this.get('noData')!);
+            if (callback) callback(this.get('noData')!);
             return false;
         }
 
         this.userLoginEx(serviceResult.data, refreshToken, userData);
 
         return true;
+    }
+
+    /**
+     * Try login
+     */
+    override async tryLogin() {
+        // Reset user state
+        const result = await super.tryLogin();
+        if (!result) return false;
+
+        // Refresh token
+        return await this.refreshToken({
+            callback: (_result) => {
+                this.toLoginPage();
+            }
+        });
     }
 
     /**
