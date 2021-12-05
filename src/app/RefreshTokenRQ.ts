@@ -8,6 +8,11 @@ export type RefreshTokenRQ = {
     serviceId?: number;
 
     /**
+     * Service Uid
+     */
+    serviceUid?: string;
+
+    /**
      * Time zone
      */
     timezone?: string;
