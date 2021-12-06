@@ -1,11 +1,10 @@
 import {
-    ActionResultError,
     createClient,
     IApi,
     IApiPayload,
-    RefreshTokenProps
+    RefreshTokenProps,
+    RefreshTokenResult
 } from '@etsoo/appscript';
-import { ApiDataError } from '@etsoo/restclient';
 import { DomUtils } from '@etsoo/shared';
 import { CoreConstants } from './CoreConstants';
 import { IServiceAppSettings } from './IServiceAppSettings';
@@ -80,7 +79,12 @@ export class ServiceApp<
         props?: RefreshTokenProps<D>
     ) {
         // Destruct
-        const { callback, data, showLoading = false } = props ?? {};
+        const {
+            callback,
+            data,
+            relogin = false,
+            showLoading = false
+        } = props ?? {};
 
         // Token
         const token = this.getCacheToken();
@@ -108,6 +112,55 @@ export class ServiceApp<
             }
         };
 
+        // Success callback
+        const success = async (
+            result: SmartERPLoginResult,
+            failCallback?: (result: RefreshTokenResult) => void
+        ) => {
+            // Token
+            const refreshToken = this.getResponseToken(payload.response);
+            if (refreshToken == null || result.data == null) {
+                if (failCallback) failCallback(this.get('noData')!);
+                return false;
+            }
+
+            // User data
+            const userData = result.data;
+
+            // Use core system access token to service api to exchange service access token
+            const serviceResult = await this.api.put<ServiceLoginResult>(
+                'Auth/ExchangeToken',
+                {
+                    token: userData.token
+                },
+                {
+                    showLoading,
+                    onError: (error) => {
+                        if (failCallback) failCallback(error);
+
+                        // Prevent further processing
+                        return false;
+                    }
+                }
+            );
+
+            if (serviceResult == null) return false;
+
+            if (!serviceResult.ok) {
+                if (failCallback) failCallback(serviceResult);
+                return false;
+            }
+
+            if (serviceResult.data == null) {
+                if (failCallback) failCallback(this.get('noData')!);
+                return false;
+            }
+
+            this.userLoginEx(serviceResult.data, refreshToken, userData);
+
+            return true;
+        };
+
         // Call API
         const result = await this.coreApi.put<SmartERPLoginResult>(
             'Auth/RefreshToken',
@@ -117,82 +170,86 @@ export class ServiceApp<
         if (result == null) return false;
 
         if (!result.ok) {
+            if (result.type === 'TokenExpired' && relogin) {
+                // Try login
+                // Dialog to receive password
+                var labels = this.getLabels('reloginTip', 'login');
+                this.notifier.prompt(
+                    labels.reloginTip,
+                    async (pwd) => {
+                        if (pwd == null) {
+                            this.toLoginPage();
+                            return;
+                        }
+
+                        // Set password for the action
+                        rq.pwd = pwd;
+
+                        // Submit again
+                        const result = await this.api.put<SmartERPLoginResult>(
+                            'Auth/RefreshToken',
+                            data,
+                            payload
+                        );
+
+                        if (result == null) return;
+
+                        if (result.ok) {
+                            await success(
+                                result,
+                                (loginResult: RefreshTokenResult) => {
+                                    const message =
+                                        this.formatRefreshTokenResult(
+                                            loginResult
+                                        );
+                                    if (message) this.notifier.alert(message);
+                                }
+                            );
+                            return;
+                        }
+
+                        // Popup message
+                        this.alertResult(result);
+                        return false;
+                    },
+                    labels.login,
+                    { type: 'password' }
+                );
+
+                // Fake truth to avoid reloading
+                return true;
+            }
+
             if (callback) callback(result);
             return false;
         }
 
-        // Token
-        const refreshToken = this.getResponseToken(payload.response);
-        if (refreshToken == null || result.data == null) {
-            if (callback) callback(this.get('noData')!);
-            return false;
-        }
-
-        // User data
-        const userData = result.data;
-
-        // Use core system access token to service api to exchange service access token
-        const serviceResult = await this.api.put<ServiceLoginResult>(
-            'Auth/ExchangeToken',
-            {
-                token: userData.token
-            },
-            {
-                showLoading,
-                onError: (error) => {
-                    if (callback) callback(error);
-
-                    // Prevent further processing
-                    return false;
-                }
-            }
-        );
-
-        if (serviceResult == null) return false;
-
-        if (!serviceResult.ok) {
-            if (callback) callback(serviceResult);
-            return false;
-        }
-
-        if (serviceResult.data == null) {
-            if (callback) callback(this.get('noData')!);
-            return false;
-        }
-
-        this.userLoginEx(serviceResult.data, refreshToken, userData);
-
-        return true;
+        return await success(result, callback);
     }
 
     /**
      * Try login
      */
-    override async tryLogin() {
+    override async tryLogin<D extends {} = {}>(data?: D) {
         // Reset user state
-        const result = await super.tryLogin();
+        const result = await super.tryLogin(data);
         if (!result) return false;
 
         // Refresh token
         return await this.refreshToken({
             callback: (result) => {
-                if (typeof result === 'boolean') {
+                const message = this.formatRefreshTokenResult(result);
+                if (message == null) {
                     this.toLoginPage();
                     return;
+                } else {
+                    this.notifier.alert(message, () => {
+                        this.toLoginPage();
+                    });
                 }
-
-                const message =
-                    result instanceof ApiDataError
-                        ? this.formatError(result)
-                        : typeof result !== 'string'
-                        ? ActionResultError.format(result)
-                        : result;
-
-                this.notifier.alert(message, () => {
-                    this.toLoginPage();
-                });
             },
-            showLoading: true
+            data,
+            relogin: true
         });
     }
 
