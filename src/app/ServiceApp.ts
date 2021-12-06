@@ -183,7 +183,10 @@ export class ServiceApp<
                         }
 
                         // Set password for the action
-                        rq.pwd = pwd;
+                        rq.pwd = this.encrypt(
+                            pwd,
+                            this.settings.serviceId.toString()
+                        );
 
                         // Submit again
                         const result = await this.api.put<SmartERPLoginResult>(
@@ -227,6 +230,11 @@ export class ServiceApp<
         return await success(result, callback);
     }
 
+    private loginFailed() {
+        this.userUnauthorized();
+        this.toLoginPage();
+    }
+
     /**
      * Try login
      */
@@ -240,13 +248,13 @@ export class ServiceApp<
             callback: (result) => {
                 const message = this.formatRefreshTokenResult(result);
                 if (message == null) {
-                    this.toLoginPage();
+                    this.loginFailed();
                     return;
-                } else {
-                    this.notifier.alert(message, () => {
-                        this.toLoginPage();
-                    });
                 }
+
+                this.notifier.alert(message, () => {
+                    this.loginFailed();
+                });
             },
             data,
             relogin: true
