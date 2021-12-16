@@ -50,7 +50,7 @@ export function CommonPage(props: CommonPageProps) {
         padding: paddings
     });
 
-    const [state] = React.useState<{
+    const ref = React.useRef<{
         firstLoaded?: boolean;
         loading?: boolean;
     }>({});
@@ -67,9 +67,9 @@ export function CommonPage(props: CommonPageProps) {
     // Update
     const update = onUpdateAll
         ? async (authorized?: boolean) => {
-              state.loading = true;
+              ref.current.loading = true;
               await onUpdateAll(authorized);
-              state.firstLoaded = true;
+              ref.current.firstLoaded = true;
           }
         : onUpdate
         ? (authorized?: boolean) => {
@@ -83,19 +83,19 @@ export function CommonPage(props: CommonPageProps) {
 
     React.useEffect(() => {
         return () => {
-            state.loading = false;
-            state.firstLoaded = false;
+            ref.current.loading = false;
+            ref.current.firstLoaded = false;
         };
     }, []);
 
     React.useEffect(() => {
-        if (state.loading) {
-            state.loading = false;
+        if (ref.current.loading) {
+            ref.current.loading = false;
             return;
         }
 
         // onUpdateAll support to load after page loaded
-        if (onUpdateAll != null && state.firstLoaded) {
+        if (onUpdateAll != null && ref.current.firstLoaded) {
             onUpdateAll();
         }
     });
