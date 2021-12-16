@@ -50,6 +50,8 @@ export function CommonPage(props: CommonPageProps) {
         padding: paddings
     });
 
+    const isMounted = React.useRef<boolean>();
+
     // Fab padding
     const fabPadding = MUGlobal.increase(
         MUGlobal.pagePaddings,
@@ -71,6 +73,19 @@ export function CommonPage(props: CommonPageProps) {
               if (authorized) onRefresh();
           }
         : undefined;
+
+    // onUpdateAll support to load after page mounted
+    if (onUpdateAll != null && isMounted.current) {
+        onUpdateAll();
+    }
+
+    React.useEffect(() => {
+        isMounted.current = true;
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     // Return the UI
     return (
