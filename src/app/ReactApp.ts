@@ -7,7 +7,7 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
-import { DataTypes, Utils } from '@etsoo/shared';
+import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -356,18 +356,11 @@ export class ReactApp<
         refreshToken: string,
         keep?: boolean
     ): void {
-        // Changed
-        const dataChanged =
-            !this.authorized ||
-            this.userData == null ||
-            !Utils.objectEqual(this.userData, user, ['seconds', 'token']);
-
         // Super call, set token
         super.userLogin(user, refreshToken, keep);
 
         // Dispatch action
-        // Only when unauthorized or with changes except 'token' and 'seconds'
-        if (this.userStateDispatch != null && dataChanged)
+        if (this.userStateDispatch != null)
             this.userStateDispatch({
                 type: UserActionType.Login,
                 user
