@@ -40,6 +40,7 @@ export function CommonPage(props: CommonPageProps) {
         onUpdateAll,
         paddings = MUGlobal.pagePaddings,
         scrollContainer,
+        targetFields,
         pullContainer,
         sx = {},
         ...rest
@@ -49,11 +50,6 @@ export function CommonPage(props: CommonPageProps) {
     Object.assign(sx, {
         padding: paddings
     });
-
-    const ref = React.useRef<{
-        firstLoaded?: boolean;
-        loading?: boolean;
-    }>({});
 
     // Fab padding
     const fabPadding = MUGlobal.increase(
@@ -66,11 +62,7 @@ export function CommonPage(props: CommonPageProps) {
 
     // Update
     const update = onUpdateAll
-        ? async (authorized?: boolean) => {
-              ref.current.loading = true;
-              await onUpdateAll(authorized);
-              ref.current.firstLoaded = true;
-          }
+        ? onUpdateAll
         : onUpdate
         ? (authorized?: boolean) => {
               if (authorized == null || authorized) onUpdate();
@@ -81,29 +73,15 @@ export function CommonPage(props: CommonPageProps) {
           }
         : undefined;
 
-    React.useEffect(() => {
-        return () => {
-            ref.current.loading = false;
-            ref.current.firstLoaded = false;
-        };
-    }, []);
-
-    React.useEffect(() => {
-        if (ref.current.loading) {
-            ref.current.loading = false;
-            return;
-        }
-
-        // onUpdateAll support to load after page loaded
-        if (onUpdateAll != null && ref.current.firstLoaded) {
-            onUpdateAll();
-        }
-    });
-
     // Return the UI
     return (
         <React.Fragment>
-            {update && <ReactAppStateDetector update={update} />}
+            {update && (
+                <ReactAppStateDetector
+                    targetFields={targetFields}
+                    update={update}
+                />
+            )}
             <Container
                 disableGutters={disableGutters}
                 maxWidth={maxWidth}

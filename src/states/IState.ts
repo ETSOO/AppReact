@@ -20,13 +20,21 @@ export interface IUpdate<S extends IState, A extends IAction> {
  * State update interface
  */
 export interface IStateUpdate {
-    (authorized?: boolean): PromiseLike<void> | void;
+    (authorized?: boolean, matchedFields?: string[]): PromiseLike<void> | void;
 }
 
 /**
  * State update props
  */
 export interface IStateProps {
+    /**
+     * State last changed fields
+     */
+    targetFields?: string[];
+
+    /**
+     * State update callback
+     */
     update: IStateUpdate;
 }
 

@@ -62,4 +62,9 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
      * Scroll container
      */
     scrollContainer?: HTMLElement | object;
+
+    /**
+     * State last changed fields
+     */
+    targetFields?: string[];
 }

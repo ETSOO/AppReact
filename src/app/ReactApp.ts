@@ -42,7 +42,7 @@ let globalApp: IReactApp<IAppSettings, any, IPageData>;
  */
 export function ReactAppStateDetector(props: IStateProps) {
     // Destruct
-    const { update } = props;
+    const { targetFields, update } = props;
 
     // Context
     const { state } =
@@ -52,11 +52,24 @@ export function ReactAppStateDetector(props: IStateProps) {
                   (globalApp.userState as UserState<IUser>).context
               );
 
+    // Match fields
+    const changedFields = state.lastChangedFields;
+    let matchedFields: string[] | undefined;
+    if (targetFields == null || changedFields == null) {
+        matchedFields = changedFields;
+    } else {
+        matchedFields = [];
+        targetFields.forEach((targetField) => {
+            if (changedFields.includes(targetField))
+                matchedFields?.push(targetField);
+        });
+    }
+
     // Ready
     React.useEffect(() => {
         // Callback
-        update(state.authorized);
-    }, [state.authorized]);
+        update(state.authorized, matchedFields);
+    }, [state.authorized, matchedFields]);
 
     // return
     return React.createElement(React.Fragment);

@@ -1,4 +1,5 @@
 import { IAction, IUser, IUserData } from '@etsoo/appscript';
+import { Utils } from '@etsoo/shared';
 import { IProviderProps, IUpdate } from './IState';
 import { State } from './State';
 
@@ -73,10 +74,19 @@ export class UserState<D extends IUser> {
                 // User reducer
                 switch (action.type) {
                     case UserActionType.Login:
-                        return { ...action.user!, authorized: true } as D;
+                        const lastChangedFields =
+                            state.authorized && action.user
+                                ? this.getChangedFields(action.user, state)
+                                : [];
+                        return {
+                            ...action.user!,
+                            authorized: true,
+                            lastChangedFields
+                        } as D;
                     case UserActionType.Logout:
                         return {
                             ...state, // Keep other user data
+                            lastChangedFields: undefined,
                             token: undefined, // Remove token
                             authorized: false // Flag as unauthorized
                         };
@@ -84,6 +94,10 @@ export class UserState<D extends IUser> {
                         if (action.update) {
                             var newState = { ...state };
                             action.update(newState);
+                            newState.lastChangedFields = this.getChangedFields(
+                                newState,
+                                state
+                            );
                             return newState;
                         }
                         return state;
@@ -93,6 +107,7 @@ export class UserState<D extends IUser> {
 
                         return {
                             ...state, // Keep other user data and token for refresh
+                            lastChangedFields: undefined,
                             authorized: false // Flag as unauthorized
                         };
                     default:
@@ -105,5 +120,12 @@ export class UserState<D extends IUser> {
 
         this.context = context;
         this.provider = provider;
+    }
+
+    private getChangedFields(input: {}, init: {}) {
+        return Utils.getDataChanges(input, init, [
+            'seconds',
+            'lastChangedFields'
+        ]);
     }
 }
