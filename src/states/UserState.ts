@@ -123,7 +123,7 @@ export class UserState<D extends IUser> {
     }
 
     private getChangedFields(input: {}, init: {}) {
-        return Utils.getDataChanges(input, init, [
+        return Utils.objectUpdated(input, init, [
             'seconds',
             'lastChangedFields'
         ]);
