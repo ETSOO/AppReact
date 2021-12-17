@@ -65,6 +65,8 @@ export function ReactAppStateDetector(props: IStateProps) {
         });
     }
 
+    console.log(targetFields, changedFields, matchedFields);
+
     // Ready
     React.useEffect(() => {
         // Callback
