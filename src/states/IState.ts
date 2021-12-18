@@ -1,4 +1,4 @@
-import { IAction, IState } from '@etsoo/appscript';
+import { IAction, IState, UserKey } from '@etsoo/appscript';
 import React from 'react';
 
 /**
@@ -30,7 +30,7 @@ export interface IStateProps {
     /**
      * State last changed fields
      */
-    targetFields?: string[];
+    targetFields?: UserKey[];
 
     /**
      * State update callback

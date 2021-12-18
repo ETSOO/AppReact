@@ -1,4 +1,4 @@
-import { IAction, IUser, IUserData } from '@etsoo/appscript';
+import { IAction, IUser, IUserData, UserKey } from '@etsoo/appscript';
 import { Utils } from '@etsoo/shared';
 import { IProviderProps, IUpdate } from './IState';
 import { State } from './State';
@@ -77,13 +77,7 @@ export class UserState<D extends IUser> {
                         const lastChangedFields =
                             state.authorized && action.user
                                 ? this.getChangedFields(action.user, state)
-                                : [];
-                        console.log(
-                            'UserState',
-                            state,
-                            action.user,
-                            lastChangedFields
-                        );
+                                : undefined;
                         return {
                             ...action.user!,
                             authorized: true,
@@ -133,6 +127,6 @@ export class UserState<D extends IUser> {
             'authorized',
             'seconds',
             'lastChangedFields'
-        ]);
+        ]) as UserKey[];
     }
 }

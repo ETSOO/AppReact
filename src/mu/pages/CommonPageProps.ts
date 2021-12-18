@@ -1,3 +1,4 @@
+import { UserKey } from '@etsoo/appscript';
 import { ContainerProps } from '@mui/material';
 import { ListItemReact } from '../../components/ListItemReact';
 import { IStateUpdate } from '../../states/IState';
@@ -66,5 +67,5 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     /**
      * State last changed fields
      */
-    targetFields?: string[];
+    targetFields?: UserKey[];
 }
