@@ -53,31 +53,32 @@ export function ReactAppStateDetector(props: IStateProps) {
                   (globalApp.userState as UserState<IUser>).context
               );
 
+    // Match fields
+    const authorized = state.authorized;
+    const changedFields = state.lastChangedFields;
+    let matchedFields: string[] | undefined;
+    if (targetFields == null || changedFields == null) {
+        matchedFields = changedFields;
+    } else {
+        matchedFields = [];
+        targetFields.forEach((targetField) => {
+            if (changedFields.includes(targetField))
+                matchedFields?.push(targetField);
+        });
+    }
+
+    console.log(
+        'ReactAppStateDetector',
+        changedFields,
+        targetFields,
+        matchedFields
+    );
+
     // Ready
     React.useEffect(() => {
-        // Match fields
-        const changedFields = state.lastChangedFields;
-        let matchedFields: string[] | undefined;
-        if (targetFields == null || changedFields == null) {
-            matchedFields = changedFields;
-        } else {
-            matchedFields = [];
-            targetFields.forEach((targetField) => {
-                if (changedFields.includes(targetField))
-                    matchedFields?.push(targetField);
-            });
-        }
-
-        console.log(
-            'ReactAppStateDetector',
-            changedFields,
-            targetFields,
-            matchedFields
-        );
-
         // Callback
-        update(state.authorized, matchedFields);
-    }, [state]);
+        update(authorized, matchedFields);
+    }, [authorized, matchedFields]);
 
     // return
     return React.createElement(React.Fragment);
