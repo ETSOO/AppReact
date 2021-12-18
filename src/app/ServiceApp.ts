@@ -2,6 +2,8 @@ import {
     createClient,
     IApi,
     IApiPayload,
+    InitCallDto,
+    InitCallResult,
     RefreshTokenProps,
     RefreshTokenResult
 } from '@etsoo/appscript';
@@ -57,6 +59,15 @@ export class ServiceApp<
     }
 
     /**
+     * Api init call, connect to the core Api
+     * @param data Data
+     * @returns Result
+     */
+    protected override async apiInitCall(data: InitCallDto) {
+        return await this.coreApi.put<InitCallResult>(this.initCallApi, data);
+    }
+
+    /**
      * Go to the login page
      */
     override toLoginPage() {
@@ -96,6 +107,7 @@ export class ServiceApp<
         // Reqest data
         // Merge additional data passed
         const rq: RefreshTokenRQ = {
+            deviceId: this.deviceId,
             timezone: this.getTimeZone(),
             ...data
         };
