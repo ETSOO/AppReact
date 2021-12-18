@@ -168,7 +168,11 @@ export class ServiceApp<
                 return false;
             }
 
+            // Login
             this.userLoginEx(serviceResult.data, refreshToken, userData);
+
+            // Success callback
+            if (failCallback) failCallback(true);
 
             return true;
         };
@@ -195,15 +199,12 @@ export class ServiceApp<
                         }
 
                         // Set password for the action
-                        rq.pwd = this.encrypt(
-                            pwd,
-                            this.settings.serviceId.toString()
-                        );
+                        rq.pwd = this.encrypt(this.hash(pwd));
 
                         // Submit again
                         const result = await this.api.put<SmartERPLoginResult>(
                             'Auth/RefreshToken',
-                            data,
+                            rq,
                             payload
                         );
 
@@ -213,6 +214,11 @@ export class ServiceApp<
                             await success(
                                 result,
                                 (loginResult: RefreshTokenResult) => {
+                                    if (loginResult === true) {
+                                        if (callback) callback(true);
+                                        return;
+                                    }
+
                                     const message =
                                         this.formatRefreshTokenResult(
                                             loginResult
@@ -258,6 +264,9 @@ export class ServiceApp<
         // Refresh token
         return await this.refreshToken({
             callback: (result) => {
+                // Success
+                if (result === true) return;
+
                 const message = this.formatRefreshTokenResult(result);
                 if (message == null) {
                     this.loginFailed();
