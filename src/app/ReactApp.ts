@@ -67,13 +67,11 @@ export function ReactAppStateDetector(props: IStateProps) {
         });
     }
 
-    console.log('ReactAppStateDetector', state, authorized, matchedFields);
-
     // Ready
     React.useEffect(() => {
         // Callback
         update(authorized, matchedFields);
-    }, [authorized, matchedFields]);
+    }, [authorized, JSON.stringify(matchedFields ?? [])]);
 
     // return
     return React.createElement(React.Fragment);
