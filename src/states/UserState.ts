@@ -78,6 +78,12 @@ export class UserState<D extends IUser> {
                             state.authorized && action.user
                                 ? this.getChangedFields(action.user, state)
                                 : [];
+                        console.log(
+                            'UserState',
+                            state,
+                            action.user,
+                            lastChangedFields
+                        );
                         return {
                             ...action.user!,
                             authorized: true,
