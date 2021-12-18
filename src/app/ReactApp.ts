@@ -37,6 +37,7 @@ let globalApp: IReactApp<IAppSettings, any, IPageData>;
  * Case 1: undefined, when refresh the whole page
  * Case 2: false, unauthorized
  * Case 3: true, authorized or considered as authorized (maynot, like token expiry)
+ * Case 4: property or properties changed
  * @param props Props
  * @returns Component
  */
@@ -52,26 +53,31 @@ export function ReactAppStateDetector(props: IStateProps) {
                   (globalApp.userState as UserState<IUser>).context
               );
 
-    // Match fields
-    const changedFields = state.lastChangedFields;
-    let matchedFields: string[] | undefined;
-    if (targetFields == null || changedFields == null) {
-        matchedFields = changedFields;
-    } else {
-        matchedFields = [];
-        targetFields.forEach((targetField) => {
-            if (changedFields.includes(targetField))
-                matchedFields?.push(targetField);
-        });
-    }
-
-    console.log(targetFields, changedFields, matchedFields);
-
     // Ready
     React.useEffect(() => {
+        // Match fields
+        const changedFields = state.lastChangedFields;
+        let matchedFields: string[] | undefined;
+        if (targetFields == null || changedFields == null) {
+            matchedFields = changedFields;
+        } else {
+            matchedFields = [];
+            targetFields.forEach((targetField) => {
+                if (changedFields.includes(targetField))
+                    matchedFields?.push(targetField);
+            });
+        }
+
+        console.log(
+            'ReactAppStateDetector',
+            changedFields,
+            targetFields,
+            matchedFields
+        );
+
         // Callback
         update(state.authorized, matchedFields);
-    }, [state.authorized, matchedFields]);
+    }, [state]);
 
     // return
     return React.createElement(React.Fragment);

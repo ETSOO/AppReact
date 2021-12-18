@@ -124,6 +124,7 @@ export class UserState<D extends IUser> {
 
     private getChangedFields(input: {}, init: {}) {
         return Utils.objectUpdated(input, init, [
+            'authorized',
             'seconds',
             'lastChangedFields'
         ]);
