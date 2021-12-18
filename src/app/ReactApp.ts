@@ -67,7 +67,7 @@ export function ReactAppStateDetector(props: IStateProps) {
         });
     }
 
-    console.log('ReactAppStateDetector', state);
+    console.log('ReactAppStateDetector', state, authorized, matchedFields);
 
     // Ready
     React.useEffect(() => {
@@ -195,6 +195,8 @@ export class ReactApp<
         );
         this.cultureState = new CultureState(settings.currentCulture);
         this.pageState = new PageState<P>();
+
+        globalApp = this;
     }
 
     /**
