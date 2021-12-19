@@ -38,6 +38,11 @@ export class ServiceApp<
     coreUser?: ISmartERPUser;
 
     /**
+     * Service device id
+     */
+    protected serviceDeviceId: string = '';
+
+    /**
      * Constructor
      * @param settings Settings
      * @param name Application name
@@ -143,7 +148,10 @@ export class ServiceApp<
             const serviceResult = await this.api.put<ServiceLoginResult>(
                 'Auth/ExchangeToken',
                 {
-                    token: userData.token
+                    token: this.encryptEnhanced(
+                        userData.token,
+                        this.settings.serviceId.toString()
+                    )
                 },
                 {
                     showLoading,
@@ -202,11 +210,12 @@ export class ServiceApp<
                         rq.pwd = this.encrypt(this.hash(pwd));
 
                         // Submit again
-                        const result = await this.api.put<SmartERPLoginResult>(
-                            'Auth/RefreshToken',
-                            rq,
-                            payload
-                        );
+                        const result =
+                            await this.coreApi.put<SmartERPLoginResult>(
+                                'Auth/RefreshToken',
+                                rq,
+                                payload
+                            );
 
                         if (result == null) return;
 
@@ -254,6 +263,34 @@ export class ServiceApp<
     }
 
     /**
+     * Service decrypt message
+     * @param messageEncrypted Encrypted message
+     * @param passphrase Secret passphrase
+     * @returns Pure text
+     */
+    serviceDecrypt(messageEncrypted: string, passphrase?: string) {
+        return this.decrypt(
+            messageEncrypted,
+            passphrase ?? this.serviceDeviceId
+        );
+    }
+
+    /**
+     * Service encrypt message
+     * @param message Message
+     * @param passphrase Secret passphrase
+     * @param iterations Iterations, 1000 times, 1 - 99
+     * @returns Result
+     */
+    serviceEncrypt(message: string, passphrase?: string, iterations?: number) {
+        return this.encrypt(
+            message,
+            passphrase ?? this.serviceDeviceId,
+            iterations
+        );
+    }
+
+    /**
      * Try login
      */
     override async tryLogin<D extends {} = {}>(data?: D) {
@@ -294,6 +331,7 @@ export class ServiceApp<
         coreUser: ISmartERPUser
     ): void {
         // Service user login
+        this.serviceDeviceId = user.serviceDeviceId;
         super.userLogin(user, refreshToken, false);
 
         // Core system user
