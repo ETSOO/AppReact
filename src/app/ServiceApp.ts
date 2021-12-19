@@ -38,9 +38,9 @@ export class ServiceApp<
     coreUser?: ISmartERPUser;
 
     /**
-     * Service device id
+     * Service passphrase
      */
-    protected serviceDeviceId: string = '';
+    servicePassphrase: string = '';
 
     /**
      * Constructor
@@ -271,7 +271,7 @@ export class ServiceApp<
     serviceDecrypt(messageEncrypted: string, passphrase?: string) {
         return this.decrypt(
             messageEncrypted,
-            passphrase ?? this.serviceDeviceId
+            passphrase ?? this.servicePassphrase
         );
     }
 
@@ -285,7 +285,7 @@ export class ServiceApp<
     serviceEncrypt(message: string, passphrase?: string, iterations?: number) {
         return this.encrypt(
             message,
-            passphrase ?? this.serviceDeviceId,
+            passphrase ?? this.servicePassphrase,
             iterations
         );
     }
@@ -331,7 +331,11 @@ export class ServiceApp<
         coreUser: ISmartERPUser
     ): void {
         // Service user login
-        this.serviceDeviceId = user.serviceDeviceId;
+        this.servicePassphrase =
+            this.decrypt(
+                user.serviceDeviceId,
+                this.settings.serviceId.toString()
+            ) ?? '';
         super.userLogin(user, refreshToken, false);
 
         // Core system user
