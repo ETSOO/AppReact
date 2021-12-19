@@ -353,17 +353,19 @@ export class ReactApp<
      * @param user New user
      * @param refreshToken Refresh token
      * @param keep Keep in local storage or not
+     * @param dispatch User state dispatch
      */
     override userLogin(
         user: IUserData,
         refreshToken: string,
-        keep?: boolean
+        keep?: boolean,
+        dispatch?: boolean
     ): void {
         // Super call, set token
         super.userLogin(user, refreshToken, keep);
 
         // Dispatch action
-        if (this.userStateDispatch != null)
+        if (this.userStateDispatch != null && dispatch !== false)
             this.userStateDispatch({
                 type: UserActionType.Login,
                 user
