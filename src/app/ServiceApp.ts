@@ -31,9 +31,9 @@ export class ServiceApp<
     readonly serviceApi: IApi;
 
     /**
-     * Core system user
+     * Service user
      */
-    coreUser?: ISmartERPUser;
+    serviceUser?: ISmartERPUser;
 
     /**
      * Service passphrase
@@ -166,7 +166,7 @@ export class ServiceApp<
             }
 
             // Login
-            this.userLoginEx(serviceResult.data, refreshToken, userData);
+            this.userLoginEx(userData, refreshToken, serviceResult.data);
 
             // Success callback
             if (failCallback) failCallback(true);
@@ -309,29 +309,29 @@ export class ServiceApp<
 
     /**
      * User login extended
-     * @param user New user
+     * @param user Core system user
      * @param refreshToken Refresh token
-     * @param coreUser Core system user
+     * @param serviceUser Service user
      */
     userLoginEx(
-        user: IServiceUser,
+        user: ISmartERPUser,
         refreshToken: string,
-        coreUser: ISmartERPUser
+        serviceUser: IServiceUser
     ): void {
         // Service user login
         this.servicePassphrase =
             this.decrypt(
-                user.serviceDeviceId,
+                serviceUser.serviceDeviceId,
                 this.settings.serviceId.toString()
             ) ?? '';
 
         // Keep = true, means service could hold the refresh token for long access
         super.userLogin(user, refreshToken, true);
 
-        // Core system user
-        this.coreUser = coreUser;
+        // Service user
+        this.serviceUser = serviceUser;
 
         // Service API token
-        this.serviceApi.authorize(this.settings.authScheme, coreUser.token);
+        this.serviceApi.authorize(this.settings.authScheme, serviceUser.token);
     }
 }
