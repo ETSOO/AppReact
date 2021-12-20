@@ -2,8 +2,6 @@ import {
     createClient,
     IApi,
     IApiPayload,
-    InitCallDto,
-    InitCallResult,
     RefreshTokenProps,
     RefreshTokenResult
 } from '@etsoo/appscript';
@@ -28,9 +26,9 @@ export class ServiceApp<
     S extends IServiceAppSettings = IServiceAppSettings
 > extends ReactApp<S, U, P> {
     /**
-     * Core system API
+     * Service API
      */
-    readonly coreApi: IApi;
+    readonly serviceApi: IApi;
 
     /**
      * Core system user
@@ -51,32 +49,23 @@ export class ServiceApp<
         super(settings, name);
 
         // Check
-        if (settings.serviceId == null || settings.coreApi == null) {
+        if (settings.serviceId == null || settings.serviceEndpoint == null) {
             throw new Error('No service settings');
         }
 
-        // Core API
+        // Service API
         const api = createClient();
-        api.baseUrl = settings.coreApi;
+        api.baseUrl = settings.serviceEndpoint;
 
         this.setApi(api);
-        this.coreApi = api;
-    }
-
-    /**
-     * Api init call, connect to the core Api
-     * @param data Data
-     * @returns Result
-     */
-    protected override async apiInitCall(data: InitCallDto) {
-        return await this.coreApi.put<InitCallResult>(this.initCallApi, data);
+        this.serviceApi = api;
     }
 
     /**
      * Go to the login page
      */
     override toLoginPage() {
-        const coreUrl = this.settings.coreUrl;
+        const coreUrl = this.settings.webUrl;
         window.location.href =
             coreUrl +
             '?serviceId=' +
@@ -145,7 +134,7 @@ export class ServiceApp<
             const userData = result.data;
 
             // Use core system access token to service api to exchange service access token
-            const serviceResult = await this.api.put<ServiceLoginResult>(
+            const serviceResult = await this.serviceApi.put<ServiceLoginResult>(
                 'Auth/ExchangeToken',
                 {
                     token: this.encryptEnhanced(
@@ -186,7 +175,7 @@ export class ServiceApp<
         };
 
         // Call API
-        const result = await this.coreApi.put<SmartERPLoginResult>(
+        const result = await this.api.put<SmartERPLoginResult>(
             'Auth/RefreshToken',
             rq,
             payload
@@ -210,12 +199,11 @@ export class ServiceApp<
                         rq.pwd = this.encrypt(this.hash(pwd));
 
                         // Submit again
-                        const result =
-                            await this.coreApi.put<SmartERPLoginResult>(
-                                'Auth/RefreshToken',
-                                rq,
-                                payload
-                            );
+                        const result = await this.api.put<SmartERPLoginResult>(
+                            'Auth/RefreshToken',
+                            rq,
+                            payload
+                        );
 
                         if (result == null) return;
 
@@ -336,12 +324,14 @@ export class ServiceApp<
                 user.serviceDeviceId,
                 this.settings.serviceId.toString()
             ) ?? '';
-        super.userLogin(user, refreshToken, false);
+
+        // Keep = true, means service could hold the refresh token for long access
+        super.userLogin(user, refreshToken, true);
 
         // Core system user
         this.coreUser = coreUser;
 
-        // Core system API token
-        this.coreApi.authorize(this.settings.authScheme, coreUser.token);
+        // Service API token
+        this.serviceApi.authorize(this.settings.authScheme, coreUser.token);
     }
 }
