@@ -76,6 +76,8 @@ export class ServiceApp<
             coreUrl +
             '?serviceId=' +
             this.settings.serviceId +
+            '&serviceDeviceId=' +
+            this.deviceId +
             '&' +
             DomUtils.Culture +
             '=' +

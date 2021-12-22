@@ -13,6 +13,11 @@ export type RefreshTokenRQ = {
     pwd?: string;
 
     /**
+     * Service device id
+     */
+    serviceDeviceId?: string;
+
+    /**
      * Service id
      */
     serviceId?: number;
