@@ -30,15 +30,21 @@ export class ServiceApp<
      */
     readonly serviceApi: IApi;
 
+    private _serviceUser?: IServiceUser;
     /**
      * Service user
      */
-    serviceUser?: ISmartERPUser;
+    get serviceUser() {
+        return this._serviceUser;
+    }
+    protected set serviceUser(value: IServiceUser | undefined) {
+        this._serviceUser = value;
+    }
 
     /**
      * Service passphrase
      */
-    servicePassphrase: string = '';
+    protected servicePassphrase: string = '';
 
     /**
      * Constructor
