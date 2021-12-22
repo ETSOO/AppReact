@@ -77,7 +77,7 @@ export class ServiceApp<
             '?serviceId=' +
             this.settings.serviceId +
             '&serviceDeviceId=' +
-            this.deviceId +
+            encodeURIComponent(this.deviceId) +
             '&' +
             DomUtils.Culture +
             '=' +
