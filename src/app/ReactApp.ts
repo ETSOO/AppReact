@@ -7,7 +7,12 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
-import { DataTypes, DomUtils, WindowStorage } from '@etsoo/shared';
+import {
+    DataTypes,
+    DomUtils,
+    StorageUtils,
+    WindowStorage
+} from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -201,8 +206,16 @@ export class ReactApp<
                     CoreApp.serversideDeviceIdField
                 ],
                 (field, data, index) => {
-                    if (index > 0 && field === CoreApp.headerTokenField)
+                    if (index > 0 && field === CoreApp.headerTokenField) {
+                        // Clear passphrase to regenerate the device id
+                        StorageUtils.setSessionData(
+                            CoreApp.devicePassphraseField,
+                            undefined
+                        );
+
+                        // Clear token
                         return null;
+                    }
                     return data;
                 }
             ),
