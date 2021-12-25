@@ -7,7 +7,7 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, WindowStorage } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -188,6 +188,11 @@ export class ReactApp<
             settings,
             ReactApp.createApi(settings),
             ReactApp.createNotifier(),
+            new WindowStorage([
+                CoreApp.deviceIdField,
+                CoreApp.headerTokenField,
+                CoreApp.serversideDeviceIdField
+            ]),
             name
         );
         this.cultureState = new CultureState(settings.currentCulture);
