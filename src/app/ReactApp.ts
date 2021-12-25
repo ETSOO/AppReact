@@ -213,6 +213,14 @@ export class ReactApp<
                             undefined
                         );
 
+                        console.log(
+                            'devicePassphraseField',
+                            index,
+                            StorageUtils.getSessionData(
+                                CoreApp.devicePassphraseField
+                            )
+                        );
+
                         // Clear token
                         return null;
                     }
