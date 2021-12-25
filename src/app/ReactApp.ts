@@ -7,7 +7,7 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
-import { DataTypes, WindowStorage } from '@etsoo/shared';
+import { DataTypes, DomUtils, WindowStorage } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -191,6 +191,10 @@ export class ReactApp<
             ReactApp.createNotifier(),
             new WindowStorage([
                 ...globalFields,
+
+                DomUtils.CountryField,
+                DomUtils.CultureField,
+
                 CoreApp.deviceIdField,
                 CoreApp.headerTokenField,
                 CoreApp.serversideDeviceIdField

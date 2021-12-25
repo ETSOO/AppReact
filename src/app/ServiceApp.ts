@@ -80,7 +80,7 @@ export class ServiceApp<
             '&serviceDeviceId=' +
             encodeURIComponent(this.deviceId) +
             '&' +
-            DomUtils.Culture +
+            DomUtils.CultureField +
             '=' +
             this.culture;
     }
