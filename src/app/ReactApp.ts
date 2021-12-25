@@ -202,25 +202,17 @@ export class ReactApp<
                     DomUtils.CultureField,
 
                     CoreApp.deviceIdField,
+                    CoreApp.devicePassphraseField,
                     CoreApp.headerTokenField,
                     CoreApp.serversideDeviceIdField
                 ],
                 (field, data, index) => {
-                    if (index > 0 && field === CoreApp.headerTokenField) {
+                    if (
+                        index > 0 &&
+                        (field === CoreApp.headerTokenField ||
+                            field === CoreApp.devicePassphraseField)
+                    ) {
                         // Clear passphrase to regenerate the device id
-                        StorageUtils.setSessionData(
-                            CoreApp.devicePassphraseField,
-                            undefined
-                        );
-
-                        console.log(
-                            'devicePassphraseField',
-                            index,
-                            StorageUtils.getSessionData(
-                                CoreApp.devicePassphraseField
-                            )
-                        );
-
                         // Clear token
                         return null;
                     }
