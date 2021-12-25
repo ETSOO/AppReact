@@ -182,13 +182,15 @@ export class ReactApp<
      * Constructor
      * @param settings Settings
      * @param name Application name
+     * @param globalFields Global fields
      */
-    constructor(settings: S, name: string) {
+    constructor(settings: S, name: string, globalFields: string[]) {
         super(
             settings,
             ReactApp.createApi(settings),
             ReactApp.createNotifier(),
             new WindowStorage([
+                ...globalFields,
                 CoreApp.deviceIdField,
                 CoreApp.headerTokenField,
                 CoreApp.serversideDeviceIdField
