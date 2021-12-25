@@ -189,16 +189,23 @@ export class ReactApp<
             settings,
             ReactApp.createApi(settings),
             ReactApp.createNotifier(),
-            new WindowStorage([
-                ...globalFields,
+            new WindowStorage(
+                [
+                    ...globalFields,
 
-                DomUtils.CountryField,
-                DomUtils.CultureField,
+                    DomUtils.CountryField,
+                    DomUtils.CultureField,
 
-                CoreApp.deviceIdField,
-                CoreApp.headerTokenField,
-                CoreApp.serversideDeviceIdField
-            ]),
+                    CoreApp.deviceIdField,
+                    CoreApp.headerTokenField,
+                    CoreApp.serversideDeviceIdField
+                ],
+                (field, data, index) => {
+                    if (index > 0 && field === CoreApp.headerTokenField)
+                        return null;
+                    return data;
+                }
+            ),
             name
         );
         this.cultureState = new CultureState(settings.currentCulture);
