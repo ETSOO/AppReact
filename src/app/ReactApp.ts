@@ -210,7 +210,8 @@ export class ReactApp<
                     if (
                         index > 0 &&
                         (field === CoreApp.headerTokenField ||
-                            field === CoreApp.devicePassphraseField)
+                            field === CoreApp.devicePassphraseField ||
+                            CoreApp.serversideDeviceIdField)
                     ) {
                         // Clear passphrase to regenerate the device id
                         // Clear token
