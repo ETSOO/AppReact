@@ -7,7 +7,7 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
-import { DataTypes, DomUtils, WindowStorage } from '@etsoo/shared';
+import { DataTypes, WindowStorage } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -182,40 +182,13 @@ export class ReactApp<
      * Constructor
      * @param settings Settings
      * @param name Application name
-     * @param globalFields Global fields
      */
-    constructor(settings: S, name: string, globalFields: string[]) {
+    constructor(settings: S, name: string) {
         super(
             settings,
             ReactApp.createApi(settings),
             ReactApp.createNotifier(),
-            new WindowStorage(
-                [
-                    DomUtils.CountryField,
-                    DomUtils.CultureField,
-
-                    CoreApp.deviceIdField,
-                    CoreApp.devicePassphraseField,
-                    CoreApp.headerTokenField,
-                    CoreApp.serversideDeviceIdField,
-
-                    ...globalFields
-                ],
-                (field, data, index) => {
-                    console.log(field, data, index);
-                    if (
-                        index > 0 &&
-                        (field === CoreApp.headerTokenField ||
-                            field === CoreApp.devicePassphraseField ||
-                            CoreApp.serversideDeviceIdField)
-                    ) {
-                        // Clear passphrase to regenerate the device id
-                        // Clear token
-                        return null;
-                    }
-                    return data;
-                }
-            ),
+            new WindowStorage(),
             name
         );
         this.cultureState = new CultureState(settings.currentCulture);

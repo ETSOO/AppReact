@@ -50,10 +50,9 @@ export class ServiceApp<
      * Constructor
      * @param settings Settings
      * @param name Application name
-     * @param globalFields Global fields
      */
-    constructor(settings: S, name: string, globalFields: string[]) {
-        super(settings, name, globalFields);
+    constructor(settings: S, name: string) {
+        super(settings, name);
 
         // Check
         if (settings.serviceId == null || settings.serviceEndpoint == null) {
