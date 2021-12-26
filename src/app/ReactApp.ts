@@ -7,12 +7,7 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import { NotificationRenderProps } from '@etsoo/notificationbase';
-import {
-    DataTypes,
-    DomUtils,
-    StorageUtils,
-    WindowStorage
-} from '@etsoo/shared';
+import { DataTypes, DomUtils, WindowStorage } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -196,17 +191,18 @@ export class ReactApp<
             ReactApp.createNotifier(),
             new WindowStorage(
                 [
-                    ...globalFields,
-
                     DomUtils.CountryField,
                     DomUtils.CultureField,
 
                     CoreApp.deviceIdField,
                     CoreApp.devicePassphraseField,
                     CoreApp.headerTokenField,
-                    CoreApp.serversideDeviceIdField
+                    CoreApp.serversideDeviceIdField,
+
+                    ...globalFields
                 ],
                 (field, data, index) => {
+                    console.log(field, data, index);
                     if (
                         index > 0 &&
                         (field === CoreApp.headerTokenField ||
