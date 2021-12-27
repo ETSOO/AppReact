@@ -21,8 +21,8 @@ import { RefreshTokenRQ } from './RefreshTokenRQ';
  * Use the new acess token and refresh token to login
  */
 export class ServiceApp<
-    P extends IServicePageData = IServicePageData,
     U extends IServiceUser = IServiceUser,
+    P extends IServicePageData = IServicePageData,
     S extends IServiceAppSettings = IServiceAppSettings
 > extends ReactApp<S, U, P> {
     /**
@@ -76,8 +76,6 @@ export class ServiceApp<
             coreUrl +
             '?serviceId=' +
             this.settings.serviceId +
-            '&serviceDeviceId=' +
-            encodeURIComponent(this.deviceId) +
             '&' +
             DomUtils.CultureField +
             '=' +
