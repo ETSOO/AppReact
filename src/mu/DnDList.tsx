@@ -10,11 +10,7 @@ import {
 /**
  * DnD list props
  */
-export interface DnDListProps<
-    D extends {},
-    L extends keyof D,
-    E extends React.ElementType
-> {
+export interface DnDListProps<D extends {}, E extends React.ElementType> {
     /**
      * Item renderer
      */
@@ -48,7 +44,7 @@ export interface DnDListProps<
     /**
      * Label field
      */
-    labelField: L;
+    labelField: keyof D;
 
     /**
      * Load data
@@ -76,9 +72,8 @@ export interface DnDListProps<
  */
 export function DnDList<
     D extends {},
-    L extends keyof D,
     E extends React.ElementType = React.ElementType
->(props: DnDListProps<D, L, E>) {
+>(props: DnDListProps<D, E>) {
     // Destruct
     const {
         children,
