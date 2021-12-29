@@ -10,15 +10,30 @@ import {
 /**
  * DnD list props
  */
-export interface DnDListProps {
+export interface DnDListProps<
+    D extends {},
+    L extends keyof D,
+    E extends React.ElementType
+> {
     /**
      * Item renderer
      */
     children: (
-        item: DataTypes.IdItem,
+        item: D,
         index: number,
         onDelete: (index: number) => void
     ) => React.ReactNode;
+
+    /**
+     * List container component
+     * https://javascript.plainenglish.io/building-a-polymorphic-component-in-react-and-typescript-d9f236950af4
+     */
+    Component?: E;
+
+    /**
+     * List container props
+     */
+    componentProps?: React.ComponentProps<E>;
 
     /**
      * Get list item style callback
@@ -31,11 +46,21 @@ export interface DnDListProps {
     getListStyle?: (isDraggingOver: boolean) => CSSProperties;
 
     /**
+     * Label field
+     */
+    labelField: L;
+
+    /**
+     * Load data
+     */
+    loadData: (name: string) => PromiseLike<D[]>;
+
+    /**
      * Top and bottom sides renderer
      */
     sideRenderer?: (
         top: boolean,
-        onAdd: (item: DataTypes.IdItem) => boolean
+        onAdd: (item: D) => boolean
     ) => React.ReactNode;
 
     /**
@@ -49,18 +74,26 @@ export interface DnDListProps {
  * @param props Props
  * @returns Component
  */
-export function DnDList(props: DnDListProps) {
+export function DnDList<
+    D extends {},
+    L extends keyof D,
+    E extends React.ElementType = React.ElementType
+>(props: DnDListProps<D, L, E>) {
     // Destruct
     const {
         children,
+        Component = 'div',
+        componentProps,
         getItemStyle = (_isDragging) => ({}),
         getListStyle = () => undefined,
+        labelField,
+        loadData,
         name,
         sideRenderer
     } = props;
 
     // State
-    const [items, setItems] = React.useState<DataTypes.IdItem[]>([]);
+    const [items, setItems] = React.useState<D[]>([]);
 
     // Drag end handler
     const onDragEnd = (result: DropResult) => {
@@ -84,14 +117,9 @@ export function DnDList(props: DnDListProps) {
     };
 
     // Add handler
-    const onAdd = (newItem: DataTypes.IdItem) => {
+    const onAdd = (newItem: D) => {
         // Existence check
-        if (
-            items.some(
-                (item) =>
-                    DataTypes.getItemId(item) === DataTypes.getItemId(newItem)
-            )
-        ) {
+        if (items.some((item) => item[labelField] == newItem[labelField])) {
             return false;
         }
 
@@ -116,54 +144,67 @@ export function DnDList(props: DnDListProps) {
         setItems(newItems);
     };
 
+    React.useEffect(() => {
+        loadData(name).then((items) => setItems(items));
+    }, [name]);
+
     // Layout
     return (
         <React.Fragment>
             {sideRenderer && sideRenderer(true, onAdd)}
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId={name}>
-                    {(provided, snapshot) => (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={getListStyle(snapshot.isDraggingOver)}
-                        >
-                            {items.map((item, index) => {
-                                const id = DataTypes.getItemId(item);
-                                return (
-                                    <Draggable
-                                        key={id}
-                                        draggableId={id}
-                                        index={index}
-                                    >
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={{
-                                                    ...getItemStyle(
-                                                        snapshot.isDragging
-                                                    ),
-                                                    ...provided.draggableProps
-                                                        .style
-                                                }}
-                                            >
-                                                {children(
-                                                    item,
-                                                    index,
-                                                    onDelete
-                                                )}
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                );
-                            })}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
+            <Component {...componentProps}>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId={name}>
+                        {(provided, snapshot) => (
+                            <div
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                style={getListStyle(snapshot.isDraggingOver)}
+                            >
+                                {items.map((item, index) => {
+                                    // Id
+                                    const id = DataTypes.convert(
+                                        item[labelField],
+                                        'string'
+                                    );
+                                    if (id == null) return;
+
+                                    return (
+                                        <Draggable
+                                            key={id}
+                                            draggableId={id}
+                                            index={index}
+                                        >
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    style={{
+                                                        ...getItemStyle(
+                                                            snapshot.isDragging
+                                                        ),
+                                                        ...provided
+                                                            .draggableProps
+                                                            .style
+                                                    }}
+                                                >
+                                                    {children(
+                                                        item,
+                                                        index,
+                                                        onDelete
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    );
+                                })}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            </Component>
             {sideRenderer && sideRenderer(false, onAdd)}
         </React.Fragment>
     );
