@@ -34,7 +34,7 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     /**
      * Get list item style callback
      */
-    getItemStyle?: (isDragging: boolean) => CSSProperties;
+    getItemStyle?: (isDragging: boolean, index: number) => CSSProperties;
 
     /**
      * Get list style callback
@@ -201,7 +201,8 @@ export function DnDList<
                                                     {...provided.dragHandleProps}
                                                     style={{
                                                         ...getItemStyle(
-                                                            snapshot.isDragging
+                                                            snapshot.isDragging,
+                                                            index
                                                         ),
                                                         ...provided
                                                             .draggableProps
