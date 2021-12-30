@@ -17,7 +17,7 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     children: (
         item: D,
         index: number,
-        onDelete: (index: number) => void
+        deleteItem: (index: number) => void
     ) => React.ReactNode;
 
     /**
@@ -56,7 +56,8 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
      */
     sideRenderer?: (
         top: boolean,
-        onAdd: (item: D) => boolean
+        addItem: (item: D) => boolean,
+        addItems: (items: D[]) => number
     ) => React.ReactNode;
 
     /**
@@ -111,8 +112,8 @@ export function DnDList<
         setItems(newItems);
     };
 
-    // Add handler
-    const onAdd = (newItem: D) => {
+    // Add item
+    const addItem = (newItem: D) => {
         // Existence check
         if (items.some((item) => item[labelField] == newItem[labelField])) {
             return false;
@@ -127,8 +128,31 @@ export function DnDList<
         return true;
     };
 
-    // Delete handler
-    const onDelete = (index: number) => {
+    // Add items
+    const addItems = (inputItems: D[]) => {
+        // Clone
+        const newItems = [...items];
+
+        // Insert items
+        inputItems.forEach((newItem) => {
+            // Existence check
+            if (
+                newItems.some((item) => item[labelField] == newItem[labelField])
+            ) {
+                return;
+            }
+
+            newItems.push(newItem);
+        });
+
+        // Update the state
+        setItems(newItems);
+
+        return newItems.length - items.length;
+    };
+
+    // Delete item
+    const deleteItem = (index: number) => {
         // Clone
         const newItems = [...items];
 
@@ -146,7 +170,7 @@ export function DnDList<
     // Layout
     return (
         <React.Fragment>
-            {sideRenderer && sideRenderer(true, onAdd)}
+            {sideRenderer && sideRenderer(true, addItem, addItems)}
             <Component {...componentProps}>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId={name}>
@@ -187,7 +211,7 @@ export function DnDList<
                                                     {children(
                                                         item,
                                                         index,
-                                                        onDelete
+                                                        deleteItem
                                                     )}
                                                 </div>
                                             )}
@@ -200,7 +224,7 @@ export function DnDList<
                     </Droppable>
                 </DragDropContext>
             </Component>
-            {sideRenderer && sideRenderer(false, onAdd)}
+            {sideRenderer && sideRenderer(false, addItem, addItems)}
         </React.Fragment>
     );
 }
