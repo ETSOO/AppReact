@@ -20,7 +20,7 @@ import { TablePageProps } from './TablePageProps';
  * @returns Component
  */
 export function TablePage<
-    T,
+    T extends {},
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
 >(props: TablePageProps<T, F>) {
     // Destruct

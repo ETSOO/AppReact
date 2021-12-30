@@ -176,10 +176,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
         const input = inputRef.current;
         if (input) {
             // Update value
-            const newValue =
-                value != null && idField in value
-                    ? `${Reflect.get(value, idField)}`
-                    : '';
+            const newValue = DataTypes.getStringValue(value, idField) ?? '';
             if (newValue !== input.value) {
                 // Different value, trigger change event
                 Utils.triggerChange(input, newValue, false);

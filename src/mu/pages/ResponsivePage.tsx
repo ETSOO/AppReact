@@ -25,7 +25,7 @@ interface LocalStates {
  * @returns Component
  */
 export function ResponsivePage<
-    T,
+    T extends {},
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
 >(props: ResponsePageProps<T, F>) {
     // Destruct

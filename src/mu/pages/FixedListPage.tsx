@@ -17,7 +17,7 @@ import { ListPageProps } from './ListPageProps';
  * @returns Component
  */
 export function FixedListPage<
-    T,
+    T extends {},
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
 >(
     props: ListPageProps<T, F> & {

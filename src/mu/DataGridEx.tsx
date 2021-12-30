@@ -539,7 +539,6 @@ export function DataGridEx<T extends Record<string, any>>(
         // Selected
         const selected =
             data != null &&
-            idField in data &&
             (selectedRowIndex.current === rowIndex ||
                 selectedItems.some(
                     (selectedItem) =>
