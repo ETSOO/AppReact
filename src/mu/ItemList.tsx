@@ -8,18 +8,12 @@ import {
     DialogContent,
     Button
 } from '@mui/material';
-
-/**
- * Item list label callback
- */
-export interface ItemListLabel {
-    (item: any): string;
-}
+import { DataTypes } from '@etsoo/shared';
 
 /**
  * Item list properties
  */
-export interface ItemListProps {
+export interface ItemListProps<T extends Record<string, unknown>> {
     /**
      * Style class name
      */
@@ -28,12 +22,12 @@ export interface ItemListProps {
     /**
      * Id field name
      */
-    idField?: string;
+    idField?: keyof T;
 
     /**
      * Label field name or callback
      */
-    labelField?: string | ItemListLabel;
+    labelField?: keyof T | ((item: T) => string);
 
     /**
      * Button icon
@@ -48,7 +42,7 @@ export interface ItemListProps {
     /**
      * Close event
      */
-    onClose?(item: any, changed: boolean): void;
+    onClose?(item: T, changed: boolean): void;
 
     /**
      * Current selected language
@@ -68,7 +62,7 @@ export interface ItemListProps {
     /**
      * Items
      */
-    items: any[];
+    items: T[];
 
     /**
      * Button variant
@@ -80,7 +74,9 @@ export interface ItemListProps {
  * Item list component
  * @param props Properties
  */
-export function ItemList(props: ItemListProps) {
+export function ItemList<
+    T extends Record<string, unknown> = Record<string, unknown>
+>(props: ItemListProps<T>) {
     //  properties destructure
     const {
         className,
@@ -97,16 +93,18 @@ export function ItemList(props: ItemListProps) {
     } = props;
 
     // Get id
-    const getId = (item: any) => {
-        return item[idField];
+    const getId = (item: T): string | number => {
+        const id = item[idField];
+        if (typeof id === 'number') return id;
+        return DataTypes.convert(id, 'string') ?? '';
     };
 
     // Get label
-    const getLabel = (item: any) => {
+    const getLabel = (item: T): string => {
         if (typeof labelField === 'function') {
             return labelField(item);
         } else {
-            return item[labelField];
+            return DataTypes.convert(item[labelField], 'string') ?? '';
         }
     };
 

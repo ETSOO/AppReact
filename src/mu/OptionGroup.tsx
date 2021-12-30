@@ -32,7 +32,7 @@ export interface OptionGroupProps<
     /**
      * Id field, default is id
      */
-    idField?: string;
+    idField?: keyof T;
 
     /**
      * Label
@@ -42,7 +42,7 @@ export interface OptionGroupProps<
     /**
      * Label field, default is label
      */
-    labelField?: string;
+    labelField?: keyof T;
 
     /**
      * Multiple choose item
@@ -81,7 +81,7 @@ export interface OptionGroupProps<
  * @returns Component
  */
 export function OptionGroup<
-    T extends Record<string, any> = IdLabelDto,
+    T extends Record<string, unknown> = IdLabelDto,
     D extends DataTypes.IdType = string
 >(props: OptionGroupProps<T, D>) {
     // Destruct
@@ -102,8 +102,11 @@ export function OptionGroup<
     } = props;
 
     // Get option value
-    const getOptionValue = (option: T): D | undefined => {
-        return option[idField];
+    // D type should be the source id type
+    const getOptionValue = (option: T): D | null => {
+        const value = DataTypes.getIdValue(option, idField);
+        if (value == null) return null;
+        return value as D;
     };
 
     // Checkbox values
@@ -124,6 +127,9 @@ export function OptionGroup<
         return values.includes(value);
     };
 
+    // First item value
+    const firstOptionValue = getOptionValue(options[0]);
+
     // Items
     const list = options.map((option) => {
         // Control
@@ -134,9 +140,11 @@ export function OptionGroup<
                 size={size}
                 checked={itemChecked(option)}
                 onChange={(event) => {
+                    if (firstOptionValue == null) return;
+
                     const typeValue = Utils.parseString<D>(
                         event.target.value,
-                        options[0][idField]
+                        firstOptionValue
                     );
 
                     const changedValues = [...values];
@@ -188,10 +196,8 @@ export function OptionGroup<
             name={name}
             value={defaultValue}
             onChange={(_event, value) => {
-                const typeValue = Utils.parseString<D>(
-                    value,
-                    options[0][idField]
-                );
+                if (firstOptionValue == null) return;
+                const typeValue = Utils.parseString<D>(value, firstOptionValue);
                 if (onValueChange) onValueChange(typeValue);
             }}
         >

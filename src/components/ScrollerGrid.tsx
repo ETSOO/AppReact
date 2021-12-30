@@ -51,7 +51,7 @@ export interface ScrollerGridProps<T>
      * Id field
      * @default id
      */
-    idField?: string;
+    idField?: keyof T;
 
     /**
      * Item renderer
@@ -140,7 +140,7 @@ export interface ScrollerGridForwardRef extends GridMethodRef {
  * @param props Props
  * @returns Component
  */
-export const ScrollerGrid = <T extends Record<string, any>>(
+export const ScrollerGrid = <T extends Record<string, unknown>>(
     props: ScrollerGridProps<T>
 ) => {
     // Destruct

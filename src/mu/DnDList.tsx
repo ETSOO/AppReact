@@ -67,6 +67,7 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
 
 /**
  * Drag and drop list
+ * https://github.com/atlassian/react-beautiful-dnd
  * @param props Props
  * @returns Component
  */
@@ -92,7 +93,6 @@ export function DnDList<
 
     // Drag end handler
     const onDragEnd = (result: DropResult) => {
-        console.log(result);
         // Dropped outside the list
         if (!result.destination) {
             return;

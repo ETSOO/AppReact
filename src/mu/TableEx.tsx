@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import {
     Checkbox,
     Paper,
@@ -67,7 +68,7 @@ export interface TableExProps<T extends Record<string, any>>
     /**
      * Id field
      */
-    idField?: string;
+    idField?: keyof T;
 
     /**
      * Max height
@@ -100,9 +101,13 @@ export interface TableExProps<T extends Record<string, any>>
  * @param props Props
  * @returns Component
  */
-export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
+export function TableEx<T extends Record<string, unknown>>(
+    props: TableExProps<T>
+) {
     // Theme
     const theme = useTheme();
+
+    type keyType = keyof T;
 
     // Destruct
     const {
@@ -111,7 +116,7 @@ export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
         columns,
         defaultOrderBy,
         headerColors = [undefined, undefined],
-        idField = 'id',
+        idField = 'id' as keyType,
         loadBatchSize,
         loadData,
         maxHeight,
@@ -441,7 +446,8 @@ export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
                                     : undefined;
 
                             // Row id field value
-                            const rowId = row == null ? rowIndex : row[idField];
+                            const rowId =
+                                DataTypes.getIdValue(row, idField) ?? rowIndex;
 
                             // Selected or not
                             const isItemSelected = selectable
@@ -522,7 +528,10 @@ export function TableEx<T extends Record<string, any>>(props: TableExProps<T>) {
 
                                             return (
                                                 <TableCell
-                                                    key={rowId + columnIndex}
+                                                    key={
+                                                        rowId.toString() +
+                                                        columnIndex
+                                                    }
                                                     {...cellProps}
                                                 >
                                                     {child}

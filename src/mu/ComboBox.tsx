@@ -14,7 +14,7 @@ export interface ComboBoxProps<T extends {}>
     /**
      * Label field
      */
-    labelField?: string;
+    labelField?: keyof T;
 
     /**
      * Load data callback
@@ -118,9 +118,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         if (input) {
             // Update value
             const newValue =
-                value != null && idField in value
-                    ? `${Reflect.get(value, idField)}`
-                    : '';
+                value != null ? `${Reflect.get(value, idField)}` : '';
 
             if (newValue !== input.value) {
                 // Different value, trigger change event

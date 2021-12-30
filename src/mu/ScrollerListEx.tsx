@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { Utils } from '@etsoo/shared';
+import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
 import { ScrollerList, ScrollerListProps } from '../components/ScrollerList';
@@ -73,7 +73,7 @@ export interface ScrollerListExProps<T>
     /**
      * Id field
      */
-    idField?: string;
+    idField?: keyof T;
 
     /**
      * Inner item renderer
@@ -161,7 +161,7 @@ function defaultItemRenderer<T>({
  * @param props Props
  * @returns Component
  */
-export function ScrollerListEx<T extends Record<string, any>>(
+export function ScrollerListEx<T extends Record<string, unknown>>(
     props: ScrollerListExProps<T>
 ) {
     // Selected item ref
@@ -201,7 +201,7 @@ export function ScrollerListEx<T extends Record<string, any>>(
         innerItemRenderer,
         itemSize,
         itemKey = (index: number, data: T) =>
-            data != null && idField in data ? data[idField] : index,
+            DataTypes.getIdValue(data, idField) ?? index,
         itemRenderer = (itemProps) => {
             const itemHeight =
                 typeof itemSize === 'function'

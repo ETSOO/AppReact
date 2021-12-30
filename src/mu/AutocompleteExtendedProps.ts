@@ -5,7 +5,7 @@ import { ChangeEventHandler } from 'react';
 /**
  * Autocomplete extended props
  */
-export interface AutocompleteExtendedProps<T extends Record<string, any>>
+export interface AutocompleteExtendedProps<T extends Record<string, unknown>>
     extends Omit<
         AutocompleteProps<T, undefined, false, false>,
         'renderInput' | 'options'
@@ -13,7 +13,7 @@ export interface AutocompleteExtendedProps<T extends Record<string, any>>
     /**
      * Id field, default is id
      */
-    idField?: string;
+    idField?: keyof T;
 
     /**
      * Id value
