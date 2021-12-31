@@ -53,6 +53,11 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     loadData: (name: string) => PromiseLike<D[]>;
 
     /**
+     * Data change handler
+     */
+    onChange?: (items: D[]) => void;
+
+    /**
      * Top and bottom sides renderer
      */
     sideRenderer?: (
@@ -87,11 +92,20 @@ export function DnDList<
         labelField,
         loadData,
         name,
+        onChange,
         sideRenderer
     } = props;
 
     // State
     const [items, setItems] = React.useState<D[]>([]);
+
+    const changeItems = (items: D[]) => {
+        // Possible to alter items with the handler
+        if (onChange) onChange(items);
+
+        // Update state
+        setItems(items);
+    };
 
     // Drag end handler
     const onDragEnd = (result: DropResult) => {
@@ -110,7 +124,7 @@ export function DnDList<
         newItems.splice(result.destination.index, 0, removed);
 
         // Update the state
-        setItems(newItems);
+        changeItems(newItems);
     };
 
     // Add item
@@ -124,7 +138,7 @@ export function DnDList<
         const newItems = [newItem, ...items];
 
         // Update the state
-        setItems(newItems);
+        changeItems(newItems);
 
         return true;
     };
@@ -143,7 +157,7 @@ export function DnDList<
         newItems.splice(index, 1, newItem);
 
         // Update the state
-        setItems(newItems);
+        changeItems(newItems);
 
         return true;
     };
@@ -166,7 +180,7 @@ export function DnDList<
         });
 
         // Update the state
-        setItems(newItems);
+        changeItems(newItems);
 
         return newItems.length - items.length;
     };
@@ -180,10 +194,11 @@ export function DnDList<
         newItems.splice(index, 1);
 
         // Update the state
-        setItems(newItems);
+        changeItems(newItems);
     };
 
     React.useEffect(() => {
+        // Load data
         loadData(name).then((items) => setItems(items));
     }, [name]);
 
