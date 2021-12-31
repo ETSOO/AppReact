@@ -253,10 +253,9 @@ export class NotificationMU extends NotificationReact {
             // Result
             let result:
                 | boolean
-                | [boolean, string | undefined]
+                | string
                 | void
-                | PromiseLike<boolean | [boolean, string | undefined] | void> =
-                undefined;
+                | PromiseLike<boolean | string | void> = undefined;
 
             const input = inputRef.current;
 
@@ -302,13 +301,10 @@ export class NotificationMU extends NotificationReact {
                 input?.focus();
                 return;
             }
-            if (Array.isArray(v)) {
-                if (!v[0]) {
-                    const error = v[1];
-                    setError(error);
-                    input?.focus();
-                    return;
-                }
+            if (typeof v === 'string') {
+                setError(v);
+                input?.focus();
+                return;
             }
 
             this.dismiss();

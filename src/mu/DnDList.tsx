@@ -18,7 +18,7 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
         item: D,
         index: number,
         deleteItem: (index: number) => void,
-        editItem: (newItem: D, indexOrLabel: number | string) => void
+        editItem: (newItem: D, index: number) => boolean
     ) => React.ReactNode;
 
     /**
@@ -116,7 +116,7 @@ export function DnDList<
     // Add item
     const addItem = (newItem: D) => {
         // Existence check
-        if (items.some((item) => item[labelField] == newItem[labelField])) {
+        if (items.some((item) => item[labelField] === newItem[labelField])) {
             return false;
         }
 
@@ -130,16 +130,11 @@ export function DnDList<
     };
 
     // Edit item
-    const editItem = (newItem: D, indexOrLabel: number | string) => {
-        const index =
-            typeof indexOrLabel === 'number'
-                ? indexOrLabel
-                : items.findIndex(
-                      (item) =>
-                          DataTypes.convert(item[labelField], 'string') ==
-                          indexOrLabel
-                  );
-        if (index === -1) return;
+    const editItem = (newItem: D, index: number) => {
+        // Existence check
+        if (items.some((item) => item[labelField] === newItem[labelField])) {
+            return false;
+        }
 
         // Clone
         const newItems = [...items];
@@ -149,6 +144,8 @@ export function DnDList<
 
         // Update the state
         setItems(newItems);
+
+        return true;
     };
 
     // Add items
