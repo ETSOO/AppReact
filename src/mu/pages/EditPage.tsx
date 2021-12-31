@@ -6,7 +6,7 @@ import { Labels } from '../../app/Labels';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPage, CommonPageScrollContainer } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
-import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 
 /**
  * Edit page router props, include 'id' (/:id) query parameter
@@ -70,7 +70,7 @@ export function EditPage(props: EditPageProps) {
                         variant="contained"
                         type="submit"
                         fullWidth
-                        startIcon={<EditIcon />}
+                        startIcon={<SaveIcon />}
                     >
                         {labels.save}
                     </Button>

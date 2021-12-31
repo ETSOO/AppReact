@@ -17,7 +17,8 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     children: (
         item: D,
         index: number,
-        deleteItem: (index: number) => void
+        deleteItem: (index: number) => void,
+        editItem: (newItem: D, indexOrLabel: number | string) => void
     ) => React.ReactNode;
 
     /**
@@ -128,6 +129,28 @@ export function DnDList<
         return true;
     };
 
+    // Edit item
+    const editItem = (newItem: D, indexOrLabel: number | string) => {
+        const index =
+            typeof indexOrLabel === 'number'
+                ? indexOrLabel
+                : items.findIndex(
+                      (item) =>
+                          DataTypes.convert(item[labelField], 'string') ==
+                          indexOrLabel
+                  );
+        if (index === -1) return;
+
+        // Clone
+        const newItems = [...items];
+
+        // Remove the item
+        newItems.splice(index, 1, newItem);
+
+        // Update the state
+        setItems(newItems);
+    };
+
     // Add items
     const addItems = (inputItems: D[]) => {
         // Clone
@@ -212,7 +235,8 @@ export function DnDList<
                                                     {children(
                                                         item,
                                                         index,
-                                                        deleteItem
+                                                        deleteItem,
+                                                        editItem
                                                     )}
                                                 </div>
                                             )}
