@@ -25,7 +25,8 @@ import {
     Snackbar,
     styled,
     Switch,
-    TextField
+    TextField,
+    Typography
 } from '@mui/material';
 import { Error, Info, Help, Warning, Done } from '@mui/icons-material';
 import React from 'react';
@@ -238,18 +239,31 @@ export class NotificationMU extends NotificationReact {
             ...rest
         } = this.inputProps ?? {};
 
+        const inputRef = React.createRef<HTMLInputElement>();
+        const errorRef = React.createRef<HTMLSpanElement>();
+
+        const setError = (error?: string) => {
+            if (errorRef.current == null) return;
+            errorRef.current.innerText = error ?? '';
+        };
+
         const handleSubmit = async (
             event: React.MouseEvent<HTMLButtonElement>
         ) => {
             // Result
-            let result: boolean | void | PromiseLike<boolean | void> =
+            let result:
+                | boolean
+                | [boolean, string | undefined]
+                | void
+                | PromiseLike<boolean | [boolean, string | undefined] | void> =
                 undefined;
+
+            const input = inputRef.current;
 
             if (this.onReturn) {
                 // Inputs case, no HTMLForm set to value, set the current form
                 if (inputs && value == null) value = event.currentTarget.form;
 
-                const input = inputRef.current;
                 if (input) {
                     if (type === 'date') {
                         const dateValue = input.valueAsDate;
@@ -284,13 +298,23 @@ export class NotificationMU extends NotificationReact {
             // Get the value
             // returns false to prevent default dismiss
             const v = await result;
-            if (v === false) return;
+            if (v === false) {
+                input?.focus();
+                return;
+            }
+            if (Array.isArray(v)) {
+                if (!v[0]) {
+                    const error = v[1];
+                    setError(error);
+                    input?.focus();
+                    return;
+                }
+            }
 
             this.dismiss();
         };
 
         let localInputs: React.ReactNode;
-        let inputRef = React.createRef<HTMLInputElement>();
         let value: any = undefined;
 
         if (inputs == null) {
@@ -310,6 +334,7 @@ export class NotificationMU extends NotificationReact {
                 localInputs = (
                     <TextField
                         inputRef={inputRef}
+                        onChange={() => setError(undefined)}
                         autoFocus
                         margin="dense"
                         fullWidth
@@ -341,6 +366,12 @@ export class NotificationMU extends NotificationReact {
                     <DialogContent>
                         <DialogContentText>{this.content}</DialogContentText>
                         {localInputs}
+                        <Typography
+                            variant="caption"
+                            display="block"
+                            ref={errorRef}
+                            color={(theme) => theme.palette.error.main}
+                        />
                     </DialogContent>
                     <DialogActions>
                         <Button
