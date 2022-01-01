@@ -24,20 +24,20 @@ export class ServiceApp<
     U extends IServiceUser = IServiceUser,
     P extends IServicePageData = IServicePageData,
     S extends IServiceAppSettings = IServiceAppSettings
-> extends ReactApp<S, U, P> {
+> extends ReactApp<S, ISmartERPUser, P> {
     /**
      * Service API
      */
     readonly serviceApi: IApi;
 
-    private _serviceUser?: IServiceUser;
+    private _serviceUser?: U;
     /**
      * Service user
      */
     get serviceUser() {
         return this._serviceUser;
     }
-    protected set serviceUser(value: IServiceUser | undefined) {
+    protected set serviceUser(value: U | undefined) {
         this._serviceUser = value;
     }
 
@@ -140,7 +140,9 @@ export class ServiceApp<
             const userData = result.data;
 
             // Use core system access token to service api to exchange service access token
-            const serviceResult = await this.serviceApi.put<ServiceLoginResult>(
+            const serviceResult = await this.serviceApi.put<
+                ServiceLoginResult<U>
+            >(
                 'Auth/ExchangeToken',
                 {
                     token: this.encryptEnhanced(
@@ -322,7 +324,7 @@ export class ServiceApp<
     userLoginEx(
         user: ISmartERPUser,
         refreshToken: string,
-        serviceUser: IServiceUser
+        serviceUser: U
     ): void {
         // Service user login
         this.servicePassphrase =

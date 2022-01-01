@@ -13,4 +13,5 @@ export interface IServiceUser extends IUser {
 /**
  * Service user login result
  */
-export type ServiceLoginResult = IActionResult<IServiceUser>;
+export type ServiceLoginResult<U extends IServiceUser = IServiceUser> =
+    IActionResult<U>;
