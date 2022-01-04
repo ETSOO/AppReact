@@ -1,12 +1,17 @@
 import {
+    ActionResultError,
     CoreApp,
     createClient,
+    IActionResult,
     IAppSettings,
     ICoreApp,
     IUser,
     IUserData
 } from '@etsoo/appscript';
-import { NotificationRenderProps } from '@etsoo/notificationbase';
+import {
+    NotificationRenderProps,
+    NotificationReturn
+} from '@etsoo/notificationbase';
 import { DataTypes, WindowStorage } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
@@ -195,6 +200,40 @@ export class ReactApp<
         this.pageState = new PageState<P>();
 
         globalApp = this;
+    }
+
+    /**
+     * Override alert action result
+     * @param result Action result
+     * @param callback Callback
+     */
+    override alertResult(
+        result: IActionResult,
+        callback?: NotificationReturn<void>
+    ) {
+        this.formatResult(result);
+        const message = ActionResultError.format(result);
+        if (message.endsWith(')')) {
+            const startPos = message.lastIndexOf('(');
+            if (startPos > 0) {
+                const main = message.substring(0, startPos).trim();
+                const tip = message.substring(startPos);
+
+                const titleNode = React.createElement(
+                    React.Fragment,
+                    null,
+                    main,
+                    React.createElement(
+                        'div',
+                        { style: { fontSize: '9px' } },
+                        tip
+                    )
+                );
+                this.notifier.alert(titleNode, callback);
+                return;
+            }
+        }
+        this.notifier.alert(message, callback);
     }
 
     /**

@@ -9,13 +9,13 @@ import { CommonPageProps } from './CommonPageProps';
 import SaveIcon from '@mui/icons-material/Save';
 
 /**
- * Edit page router props, include 'id' (/:id) query parameter
+ * Add / Edit page router props, include 'id' (/:id) query parameter
  */
 export type EditPageRouterProps<T extends DataTypes.IdType = number> =
     RouteComponentProps<{ id: T }>;
 
 /**
- * Edit page props
+ * Add / Edit page props
  */
 export interface EditPageProps extends Omit<CommonPageProps, 'onSubmit'> {
     /**
@@ -25,7 +25,7 @@ export interface EditPageProps extends Omit<CommonPageProps, 'onSubmit'> {
 }
 
 /**
- * Edit page
+ * Add / Edit page
  * @param props Props
  */
 export function EditPage(props: EditPageProps) {

@@ -19,7 +19,6 @@ export * from './components/ScrollerGrid';
 export * from './components/ScrollerList';
 
 // mu
-export * from './mu/pages/AddPage';
 export * from './mu/pages/CommonPage';
 export * from './mu/pages/CommonPageProps';
 export * from './mu/pages/DataGridPage';
