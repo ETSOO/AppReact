@@ -1,18 +1,10 @@
-import { DataTypes } from '@etsoo/shared';
 import { Button, Grid } from '@mui/material';
-import { RouteComponentProps } from '@reach/router';
 import React, { FormEventHandler } from 'react';
 import { Labels } from '../../app/Labels';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPage, CommonPageScrollContainer } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
 import SaveIcon from '@mui/icons-material/Save';
-
-/**
- * Add / Edit page router props, include 'id' (/:id) query parameter
- */
-export type EditPageRouterProps<T extends DataTypes.IdType = number> =
-    RouteComponentProps<{ id: T }>;
 
 /**
  * Add / Edit page props
