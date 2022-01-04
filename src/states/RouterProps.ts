@@ -1,23 +1,36 @@
 import { DataTypes } from '@etsoo/shared';
 import { RouteComponentProps } from '@reach/router';
+import { Props } from 'react-input-mask';
 
 /**
  * Add / Edit page router props, include 'id' (/:id) or none when adding query parameter
  */
-export type EditPageRouterProps<T extends DataTypes.IdType = number> =
-    IdRouterProps<T> & WildcardRouterProps<T>;
+export type EditPageRouterProps = IdRouterProps & WildcardRouterProps;
+
+/**
+ * Get edit page id
+ * @param props Route props
+ * @param type Target data type
+ * @returns Data
+ */
+export function getEditPageId<T extends DataTypes.BasicNames = 'number'>(
+    props: EditPageRouterProps,
+    type: T
+): DataTypes.BasicConditional<T> | undefined {
+    const id = props.id ?? props['*'];
+    if (id == null || id === '') return undefined;
+    return DataTypes.convertByType(id, type);
+}
 
 /**
  * Id router props, include 'id' (/:id) query parameter
  */
-export type IdRouterProps<T extends DataTypes.IdType = number> =
-    RouteComponentProps<{ id: T }>;
+export type IdRouterProps = RouteComponentProps<{ id: string }>;
 
 /**
  * Wildcard router props, (/*) query parameter
  */
-export type WildcardRouterProps<T extends DataTypes.Basic = string> =
-    RouteComponentProps<{ '*': T }>;
+export type WildcardRouterProps = RouteComponentProps<{ '*': string }>;
 
 /**
  * Id state router props, include 'id' in location.state
