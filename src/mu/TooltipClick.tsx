@@ -81,6 +81,9 @@ export function TooltipClick(props: TooltipClickProps) {
                 disableFocusListener
                 disableTouchListener
                 disableHoverListener={disableHoverListener}
+                onMouseOver={
+                    disableHoverListener ? undefined : () => setOpen(true)
+                }
                 {...rest}
             >
                 {children(openTooltip)}
