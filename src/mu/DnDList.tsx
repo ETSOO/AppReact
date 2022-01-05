@@ -58,6 +58,11 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     onChange?: (items: D[]) => void;
 
     /**
+     * Drag end handler
+     */
+    onDragEnd?: (items: D[]) => void;
+
+    /**
      * Top and bottom sides renderer
      */
     sideRenderer?: (
@@ -93,6 +98,7 @@ export function DnDList<
         loadData,
         name,
         onChange,
+        onDragEnd,
         sideRenderer
     } = props;
 
@@ -108,7 +114,7 @@ export function DnDList<
     };
 
     // Drag end handler
-    const onDragEnd = (result: DropResult) => {
+    const onDragEndLocal = (result: DropResult) => {
         // Dropped outside the list
         if (!result.destination) {
             return;
@@ -125,6 +131,9 @@ export function DnDList<
 
         // Update the state
         changeItems(newItems);
+
+        // Drag end handler
+        if (onDragEnd) onDragEnd(newItems);
     };
 
     // Add item
@@ -211,7 +220,7 @@ export function DnDList<
         <React.Fragment>
             {sideRenderer && sideRenderer(true, addItem, addItems)}
             <Component {...componentProps}>
-                <DragDropContext onDragEnd={onDragEnd}>
+                <DragDropContext onDragEnd={onDragEndLocal}>
                     <Droppable droppableId={name}>
                         {(provided, snapshot) => (
                             <div
