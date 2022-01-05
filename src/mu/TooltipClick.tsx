@@ -7,15 +7,13 @@ import React from 'react';
 export interface TooltipClickProps
     extends Omit<
         TooltipProps,
-        | 'children'
-        | 'open'
-        | 'disableFocusListener'
-        | 'disableHoverListener'
-        | 'disableTouchListener'
+        'children' | 'open' | 'disableFocusListener' | 'disableTouchListener'
     > {
     children: (
         openTooltip: (newTitle?: string) => void
     ) => React.ReactElement<any, any>;
+
+    disableHoverListener?: boolean;
 }
 
 /**
@@ -26,7 +24,14 @@ export interface TooltipClickProps
 export function TooltipClick(props: TooltipClickProps) {
     // Destruct
     // leaveDelay set to 5 seconds to hide the tooltip automatically
-    const { children, leaveDelay = 5000, onClose, title, ...rest } = props;
+    const {
+        children,
+        disableHoverListener = true,
+        leaveDelay = 5000,
+        onClose,
+        title,
+        ...rest
+    } = props;
 
     // State
     const [localTitle, setTitle] = React.useState(title);
@@ -74,8 +79,8 @@ export function TooltipClick(props: TooltipClickProps) {
                 title={localTitle}
                 open={open}
                 disableFocusListener
-                disableHoverListener
                 disableTouchListener
+                disableHoverListener={disableHoverListener}
                 {...rest}
             >
                 {children(openTooltip)}

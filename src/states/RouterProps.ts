@@ -13,7 +13,7 @@ export type EditPageRouterProps = IdRouterProps & WildcardRouterProps;
  * @param type Target data type
  * @returns Data
  */
-export function getEditPageId<T extends DataTypes.BasicNames = 'number'>(
+export function getEditPageId<T extends DataTypes.BasicNames>(
     props: EditPageRouterProps,
     type: T
 ): DataTypes.BasicConditional<T> | undefined {
