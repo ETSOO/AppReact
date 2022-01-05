@@ -146,7 +146,11 @@ export function DnDList<
     // Edit item
     const editItem = (newItem: D, index: number) => {
         // Existence check
-        if (items.some((item) => item[labelField] === newItem[labelField])) {
+        const newIndex = items.findIndex(
+            (item) => item[labelField] === newItem[labelField]
+        );
+        if (newIndex >= 0 && newIndex != index) {
+            // Label field is the same with a different item
             return false;
         }
 
