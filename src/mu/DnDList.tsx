@@ -68,7 +68,8 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     sideRenderer?: (
         top: boolean,
         addItem: (item: D) => boolean,
-        addItems: (items: D[]) => number
+        addItems: (items: D[]) => number,
+        reloadItems: () => void
     ) => React.ReactNode;
 
     /**
@@ -210,15 +211,21 @@ export function DnDList<
         changeItems(newItems);
     };
 
-    React.useEffect(() => {
+    // Reload items
+    const reloadItems = () => {
         // Load data
         loadData(name).then((items) => setItems(items));
+    };
+
+    React.useEffect(() => {
+        // Load data
+        reloadItems();
     }, [name]);
 
     // Layout
     return (
         <React.Fragment>
-            {sideRenderer && sideRenderer(true, addItem, addItems)}
+            {sideRenderer && sideRenderer(true, addItem, addItems, reloadItems)}
             <Component {...componentProps}>
                 <DragDropContext onDragEnd={onDragEndLocal}>
                     <Droppable droppableId={name}>
@@ -274,7 +281,8 @@ export function DnDList<
                     </Droppable>
                 </DragDropContext>
             </Component>
-            {sideRenderer && sideRenderer(false, addItem, addItems)}
+            {sideRenderer &&
+                sideRenderer(false, addItem, addItems, reloadItems)}
         </React.Fragment>
     );
 }
