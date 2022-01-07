@@ -223,8 +223,9 @@ export class ReactApp<
                     React.Fragment,
                     null,
                     main,
+                    React.createElement('br'),
                     React.createElement(
-                        'div',
+                        'span',
                         { style: { fontSize: '9px' } },
                         tip
                     )

@@ -55,6 +55,7 @@ export * from './mu/ItemList';
 export * from './mu/ListItemRightIcon';
 export * from './mu/LoadingButton';
 export * from './mu/MaskInput';
+export * from './mu/MobileListItemRenderer';
 export * from './mu/MoreFab';
 export * from './mu/MUGlobal';
 export * from './mu/NotifierMU';
