@@ -151,8 +151,6 @@ export function ResponsibleContainer<
     const rect = dimensions[0][2];
     const showDataGrid = (rect?.width ?? 0) >= dataGridMinWidth;
 
-    console.log(hasFields, showDataGrid, refs);
-
     React.useEffect(() => {
         if (rect != null && rect.height > 50 && height == null) {
             let gridHeight =
@@ -224,6 +222,7 @@ export function ResponsibleContainer<
 
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
+        console.log(data, rect, refs.current.ref, showDataGrid);
         if (data == null || rect == null || refs.current.ref == null) return;
         refs.current.ref.reset({ data });
     };
