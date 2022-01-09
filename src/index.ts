@@ -63,6 +63,7 @@ export * from './mu/OptionGroup';
 export * from './mu/PList';
 export * from './mu/ProgressCount';
 export * from './mu/PullToRefreshUI';
+export * from './mu/ResponsibleContainer';
 export * from './mu/RLink';
 export * from './mu/ScrollerListEx';
 export * from './mu/ScrollTopFab';

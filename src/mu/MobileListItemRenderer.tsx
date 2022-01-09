@@ -15,6 +15,13 @@ function getActions(input: (ListItemReact | boolean)[]): ListItemReact[] {
     return actions;
 }
 
+/**
+ * Default mobile list item renderer
+ * @param param0 List renderer props
+ * @param margin Margin
+ * @param renderer Renderer for card content
+ * @returns Component
+ */
 export function MobileListItemRenderer<T>(
     { data, itemHeight }: ScrollerListExInnerItemRendererProps<T>,
     margin: {},
