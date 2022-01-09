@@ -151,6 +151,8 @@ export function ResponsibleContainer<
     const rect = dimensions[0][2];
     const showDataGrid = (rect?.width ?? 0) >= dataGridMinWidth;
 
+    console.log(hasFields, showDataGrid, refs);
+
     React.useEffect(() => {
         if (rect != null && rect.height > 50 && height == null) {
             let gridHeight =
