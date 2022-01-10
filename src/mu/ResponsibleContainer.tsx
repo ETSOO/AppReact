@@ -149,36 +149,42 @@ export function ResponsibleContainer<
     // Watch container
     const { dimensions } = useDimensions(1, undefined, sizeReadyMiliseconds);
     const rect = dimensions[0][2];
-    const showDataGrid = (rect?.width ?? 0) >= dataGridMinWidth;
-
-    React.useEffect(() => {
-        if (rect != null && rect.height >= 0 && height == null) {
-            let gridHeight =
-                window.innerHeight - Math.round(rect.top + rect.height + 1);
-
-            const style = window.getComputedStyle(dimensions[0][1]!);
-            const boxPadding = parseFloat(style.paddingLeft);
-            if (!isNaN(boxPadding)) gridHeight -= 2 * boxPadding;
-
-            if (adjustHeight != null) {
-                gridHeight -= adjustHeight(gridHeight);
-            }
-
-            if (gridHeight !== refs.current.height) {
-                refs.current.height = gridHeight;
-            }
-        }
-    }, [rect]);
 
     const localLoadData = (props: GridLoadDataProps) => {
         const data = GridDataGet(props, fieldTemplate);
         return loadData(data);
     };
 
-    const gridHeight = refs.current.height;
-    console.log(rect, gridHeight, showDataGrid);
     const list = React.useMemo(() => {
-        if (gridHeight == null) return;
+        // No rect
+        if (rect == null) return;
+
+        // If height is the same
+        let heightLocal: number;
+        if (height != null) {
+            heightLocal = height;
+        } else {
+            // Auto calculation
+            heightLocal =
+                window.innerHeight - Math.round(rect.top + rect.height + 1);
+
+            const style = window.getComputedStyle(dimensions[0][1]!);
+            const boxPadding = parseFloat(style.paddingLeft);
+            if (!isNaN(boxPadding)) heightLocal -= 2 * boxPadding;
+
+            if (adjustHeight != null) {
+                heightLocal -= adjustHeight(heightLocal);
+            }
+        }
+
+        console.log(rect, heightLocal, refs.current.height);
+
+        // Same height
+        if (heightLocal === refs.current.height) return;
+        refs.current.height = heightLocal;
+
+        // Show DataGrid or List dependng on width
+        const showDataGrid = rect.width >= dataGridMinWidth;
 
         if (showDataGrid) {
             // Delete
@@ -188,7 +194,7 @@ export function ResponsibleContainer<
                 <Box sx={listBoxSx == null ? undefined : listBoxSx(true)}>
                     <DataGridEx<T>
                         autoLoad={!hasFields}
-                        height={gridHeight}
+                        height={heightLocal}
                         loadData={localLoadData}
                         mRef={mRefs}
                         columns={columns}
@@ -212,14 +218,14 @@ export function ResponsibleContainer<
             <Box sx={listBoxSx == null ? undefined : listBoxSx(false)}>
                 <ScrollerListEx<T>
                     autoLoad={!hasFields}
-                    height={gridHeight}
+                    height={heightLocal}
                     loadData={localLoadData}
                     mRef={mRefs}
                     {...rest}
                 />
             </Box>
         );
-    }, [gridHeight, showDataGrid]);
+    }, [rect, height]);
 
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
