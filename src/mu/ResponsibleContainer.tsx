@@ -176,6 +176,7 @@ export function ResponsibleContainer<
     };
 
     const gridHeight = refs.current.height;
+    console.log(rect, gridHeight, showDataGrid);
     const list = React.useMemo(() => {
         if (gridHeight == null) return;
 
@@ -222,14 +223,9 @@ export function ResponsibleContainer<
 
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
-        console.log(data, rect, refs.current.ref, showDataGrid);
         if (data == null || rect == null || refs.current.ref == null) return;
         refs.current.ref.reset({ data });
     };
-
-    React.useEffect(() => {
-        console.log('useEffect', rect, refs.current.ref, showDataGrid);
-    }, []);
 
     // Layout
     return (
