@@ -1,3 +1,4 @@
+import { Utils } from '@etsoo/shared';
 import React from 'react';
 import {
     Align,
@@ -88,12 +89,8 @@ const calculateBatchSize = (
     height: number,
     itemSize: ((index: number) => number) | number
 ) => {
-    return (
-        2 +
-        Math.ceil(
-            height / (typeof itemSize === 'function' ? itemSize(0) : itemSize)
-        )
-    );
+    const size = Utils.getResult(itemSize, 0);
+    return 2 + Math.ceil(height / size);
 };
 
 /**

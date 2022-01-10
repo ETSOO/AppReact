@@ -1,3 +1,4 @@
+import { Utils } from '@etsoo/shared';
 import { Box, BoxProps, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 import React from 'react';
 
@@ -8,7 +9,7 @@ export interface TabBoxPanel extends Omit<TabProps, 'value' | 'children'> {
     /**
      * Children
      */
-    children?: React.ReactNode;
+    children?: ((visible: boolean) => React.ReactNode) | React.ReactNode;
 
     /**
      * Panel box props
@@ -76,7 +77,7 @@ export function TabBox(props: TabBoxPros) {
             </Box>
             {tabs.map(({ children, panel }, index) => (
                 <Box key={index} hidden={value !== index} {...panel}>
-                    {children}
+                    {Utils.getResult(children, value === index)}
                 </Box>
             ))}
         </React.Fragment>

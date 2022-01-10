@@ -227,6 +227,10 @@ export function ResponsibleContainer<
         refs.current.ref.reset({ data });
     };
 
+    React.useEffect(() => {
+        console.log('useEffect', rect, refs.current.ref, showDataGrid);
+    }, []);
+
     // Layout
     return (
         <Stack>
