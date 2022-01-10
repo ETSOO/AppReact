@@ -152,7 +152,7 @@ export function ResponsibleContainer<
     const showDataGrid = (rect?.width ?? 0) >= dataGridMinWidth;
 
     React.useEffect(() => {
-        if (rect != null && rect.height > 50 && height == null) {
+        if (rect != null && rect.height >= 0 && height == null) {
             let gridHeight =
                 window.innerHeight - Math.round(rect.top + rect.height + 1);
 
@@ -229,7 +229,7 @@ export function ResponsibleContainer<
 
     // Layout
     return (
-        <Stack>
+        <Stack ref={hasFields ? undefined : dimensions[0][0]}>
             {hasFields && (
                 <Box ref={dimensions[0][0]} sx={searchBoxSx}>
                     <SearchBar fields={fields} onSubmit={onSubmit} />
