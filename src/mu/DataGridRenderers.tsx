@@ -115,22 +115,21 @@ export namespace DataGridRenderers {
      * @param param Props
      * @returns Component
      */
-    export function defaultFooterItemRenderer<T>({
-        index,
-        states,
-        checkable
-    }: DataGridExFooterItemRendererProps<T>) {
-        const { selectedItems, rows, hasNextPage } = states;
+    export function defaultFooterItemRenderer<T>(
+        _rows: T[],
+        { index, states, checkable }: DataGridExFooterItemRendererProps<T>
+    ) {
+        const { selectedItems, loadedItems, hasNextPage } = states;
 
         if (checkable && index === 1) {
             return [
                 selectedItems.length,
-                rows.length.toLocaleString() + (hasNextPage ? '+' : '')
+                loadedItems.toLocaleString() + (hasNextPage ? '+' : '')
             ].join(' / ');
         }
 
         if (!checkable && index === 0) {
-            return rows.length.toLocaleString() + (hasNextPage ? '+' : '');
+            return loadedItems.toLocaleString() + (hasNextPage ? '+' : '');
         }
 
         return undefined;

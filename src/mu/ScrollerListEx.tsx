@@ -174,8 +174,7 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
         if (selectedData != null && selectedData[idField] === data[idField])
             return;
 
-        if (selectedDiv != null)
-            selectedDiv.classList.remove(selectedClassName);
+        selectedDiv?.classList.remove(selectedClassName);
 
         div.classList.add(selectedClassName);
 

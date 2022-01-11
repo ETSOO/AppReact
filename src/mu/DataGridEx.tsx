@@ -24,8 +24,6 @@ import {
     ScrollerGridProps
 } from '../components/ScrollerGrid';
 import useCombinedRefs from '../uses/useCombinedRefs';
-import { useDimensions } from '../uses/useDimensions';
-import { useWindowSize } from '../uses/useWindowSize';
 import { DataGridRenderers } from './DataGridRenderers';
 
 /**
@@ -79,6 +77,7 @@ export interface DataGridExProps<T extends Record<string, any>>
      * Footer item renderer
      */
     footerItemRenderer?: (
+        rows: T[],
         props: DataGridExFooterItemRendererProps<T>
     ) => React.ReactNode;
 
@@ -151,11 +150,6 @@ const createGridStyle = (
         }
     });
 };
-
-interface States {
-    gridWidth?: number;
-    ref?: ScrollerGridForwardRef;
-}
 
 const rowItems = (
     div: HTMLDivElement,
@@ -290,7 +284,7 @@ export function DataGridEx<T extends Record<string, any>>(
         );
     };
 
-    function defaultFooterRenderer(states: GridLoaderStates<T>) {
+    function defaultFooterRenderer(rows: T[], states: GridLoaderStates<T>) {
         return (
             <Box
                 className="DataGridEx-Footer"
@@ -310,7 +304,7 @@ export function DataGridEx<T extends Record<string, any>>(
 
                     // Cell
                     const cell = footerItemRenderer
-                        ? footerItemRenderer({
+                        ? footerItemRenderer(rows, {
                               column,
                               index,
                               states,
@@ -383,7 +377,7 @@ export function DataGridEx<T extends Record<string, any>>(
                         color="primary"
                         checked={selected}
                         onChange={(_event, checked) => {
-                            state.ref?.selectItem(data, checked);
+                            refs.current.ref?.selectItem(data, checked);
                         }}
                     />
                 );
@@ -403,11 +397,11 @@ export function DataGridEx<T extends Record<string, any>>(
                         color="primary"
                         indeterminate={
                             states.selectedItems.length > 0 &&
-                            states.selectedItems.length < states.rows.length
+                            states.selectedItems.length < states.loadedItems
                         }
                         checked={states.selectedItems.length > 0}
                         onChange={(_event, checked) =>
-                            state.ref?.selectAll(checked)
+                            refs.current.ref?.selectAll(checked)
                         }
                     />
                 );
@@ -422,19 +416,11 @@ export function DataGridEx<T extends Record<string, any>>(
         }
     }
 
-    // States
-    const [state, stateUpdate] = React.useReducer(
-        (currentState: States, newState: Partial<States>) => {
-            return { ...currentState, ...newState };
-        },
-        {
-            gridWidth: width
-        }
-    );
+    const refs = React.useRef<{ ref?: ScrollerGridForwardRef }>({});
 
-    const refs = useCombinedRefs(mRef, (ref: ScrollerGridForwardRef) => {
+    const mRefLocal = useCombinedRefs(mRef, (ref: ScrollerGridForwardRef) => {
         if (ref == null) return;
-        state.ref = ref;
+        refs.current.ref = ref;
     });
 
     // New sort
@@ -442,8 +428,9 @@ export function DataGridEx<T extends Record<string, any>>(
         reset({ orderBy: field, orderByAsc: asc });
     };
 
+    // Reset
     const reset = (add: {}) => {
-        state.ref?.reset(add);
+        refs.current.ref?.reset(add);
     };
 
     // Show hover tooltip for trucated text
@@ -594,14 +581,11 @@ export function DataGridEx<T extends Record<string, any>>(
         [columns]
     );
 
-    // Grid width
-    const { gridWidth } = state;
-
     // Column width
     const columnWidth = React.useCallback(
         (index: number) => {
             // Ignore null case
-            if (gridWidth == null) return 0;
+            if (width == null) return 0;
 
             // Column
             const column = columns[index];
@@ -609,9 +593,9 @@ export function DataGridEx<T extends Record<string, any>>(
 
             // More space
             const leftWidth =
-                gridWidth -
+                width -
                 widthCalculator.total -
-                (gridWidth < 800 ? 0 : scrollbarSize);
+                (width < 800 ? 0 : scrollbarSize);
 
             // Shared width
             const sharedWidth =
@@ -619,74 +603,50 @@ export function DataGridEx<T extends Record<string, any>>(
 
             return (column.minWidth || minWidth) + sharedWidth;
         },
-        [columns, gridWidth]
+        [columns, width]
     );
 
     // Table
     const table = React.useMemo(() => {
-        if (gridWidth != null) {
-            const defaultOrderByAsc = defaultOrderBy
-                ? columns.find((column) => column.field === defaultOrderBy)
-                      ?.sortAsc
-                : undefined;
+        const defaultOrderByAsc = defaultOrderBy
+            ? columns.find((column) => column.field === defaultOrderBy)?.sortAsc
+            : undefined;
 
-            return (
-                <ScrollerGrid<T>
-                    className={Utils.mergeClasses(
-                        'DataGridEx-Body',
-                        'DataGridEx-CustomBar',
-                        className,
-                        createGridStyle(
-                            alternatingColors,
-                            selectedColor,
-                            hoverColor
-                        )
-                    )}
-                    columnCount={columns.length}
-                    columnWidth={columnWidth}
-                    defaultOrderBy={defaultOrderBy}
-                    defaultOrderByAsc={defaultOrderByAsc}
-                    height={
-                        height -
-                        headerHeight -
-                        (hideFooter ? 0 : bottomHeight + 1) -
-                        scrollbarSize
-                    }
-                    headerRenderer={headerRenderer}
-                    idField={idField}
-                    itemRenderer={itemRenderer}
-                    footerRenderer={hideFooter ? undefined : footerRenderer}
-                    width={Math.max(gridWidth, widthCalculator.total)}
-                    mRef={refs}
-                    {...rest}
-                />
-            );
-        }
-    }, [gridWidth]);
-
-    // Watch container
-    const { dimensions } = useDimensions(1, undefined, 50);
-    const gridRect = dimensions[0][2];
-
-    const windowSize = useWindowSize(50);
-
-    React.useEffect(() => {
-        if (gridRect == null || width != null) return;
-
-        // Reset column widths
-        if (state.ref) state.ref.resetAfterColumnIndex(0);
-
-        const body = window.document.body;
-        const scrollWidth = body.scrollWidth - body.clientWidth;
-
-        stateUpdate({
-            gridWidth: gridRect.width - scrollWidth
-        });
-    }, [gridRect, windowSize]);
+        return (
+            <ScrollerGrid<T>
+                className={Utils.mergeClasses(
+                    'DataGridEx-Body',
+                    'DataGridEx-CustomBar',
+                    className,
+                    createGridStyle(
+                        alternatingColors,
+                        selectedColor,
+                        hoverColor
+                    )
+                )}
+                columnCount={columns.length}
+                columnWidth={columnWidth}
+                defaultOrderBy={defaultOrderBy}
+                defaultOrderByAsc={defaultOrderByAsc}
+                height={
+                    height -
+                    headerHeight -
+                    (hideFooter ? 0 : bottomHeight + 1) -
+                    scrollbarSize
+                }
+                headerRenderer={headerRenderer}
+                idField={idField}
+                itemRenderer={itemRenderer}
+                footerRenderer={hideFooter ? undefined : footerRenderer}
+                width={Math.max(width ?? 0, widthCalculator.total)}
+                mRef={mRefLocal}
+                {...rest}
+            />
+        );
+    }, [width]);
 
     return (
         <Paper
-            ref={dimensions[0][0]}
             sx={{
                 fontSize: '0.875rem',
                 height,
@@ -720,7 +680,7 @@ export function DataGridEx<T extends Record<string, any>>(
             <div
                 className="DataGridEx-CustomBar"
                 style={{
-                    width: gridWidth,
+                    width,
                     overflowX: 'auto',
                     overflowY: 'hidden'
                 }}

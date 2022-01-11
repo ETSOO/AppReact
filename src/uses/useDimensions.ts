@@ -1,17 +1,6 @@
 import { DomUtils } from '@etsoo/shared';
 import React from 'react';
 
-const createRef = (
-    source: [React.RefCallback<Element>, Element?, DOMRect?][],
-    index: number
-): [React.RefCallback<Element>] => {
-    return [
-        (instance) => {
-            if (instance != null) source[index][1] = instance;
-        }
-    ];
-};
-
 interface states {
     count: number;
     indices: number[];

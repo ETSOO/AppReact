@@ -2,6 +2,7 @@ import { DataTypes } from '@etsoo/shared';
 import { Box, Stack, SxProps, Theme } from '@mui/material';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
+import { Labels } from '../app/Labels';
 import { GridColumn } from '../components/GridColumn';
 import {
     GridDataGet,
@@ -16,12 +17,16 @@ import {
     DataGridExProps
 } from './DataGridEx';
 import { GridMethodRef } from './GridMethodRef';
+import { PullToRefreshUI } from './PullToRefreshUI';
 import {
     ScrollerListEx,
     ScrollerListExInnerItemRendererProps
 } from './ScrollerListEx';
 import { SearchBar } from './SearchBar';
 
+/**
+ * ResponsibleContainer props
+ */
 export interface ResponsibleContainerProps<
     T extends {},
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
@@ -100,6 +105,11 @@ export interface ResponsibleContainerProps<
     mRef?: React.MutableRefObject<GridMethodRef | undefined>;
 
     /**
+     * Pull to refresh data
+     */
+    pullToRefresh?: boolean;
+
+    /**
      * Searchbox SX
      */
     searchBoxSx?: SxProps<Theme>;
@@ -111,10 +121,16 @@ export interface ResponsibleContainerProps<
 }
 
 interface LocalRefs {
-    height?: number;
+    rect?: DOMRect;
     ref?: GridMethodRef;
+    mounted?: boolean;
 }
 
+/**
+ * Responsible container
+ * @param props Props
+ * @returns Layout
+ */
 export function ResponsibleContainer<
     T extends {},
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
@@ -130,10 +146,14 @@ export function ResponsibleContainer<
         listBoxSx,
         loadData,
         mRef,
+        pullToRefresh = true,
         searchBoxSx,
         sizeReadyMiliseconds = 0,
         ...rest
     } = props;
+
+    // Labels
+    const labels = Labels.CommonPage;
 
     // Refs
     const refs = React.useRef<LocalRefs>({});
@@ -143,23 +163,72 @@ export function ResponsibleContainer<
         refs.current.ref = ref;
     });
 
+    // Update mounted state
+    React.useEffect(() => {
+        return () => {
+            refs.current.mounted = false;
+        };
+    }, []);
+
     // Has fields
     const hasFields = fields != null && fields.length > 0;
 
-    // Watch container
-    const { dimensions } = useDimensions(1, undefined, sizeReadyMiliseconds);
-    const rect = dimensions[0][2];
-
+    // Load data
     const localLoadData = (props: GridLoadDataProps) => {
+        refs.current.mounted = true;
         const data = GridDataGet(props, fieldTemplate);
         return loadData(data);
     };
 
-    const list = React.useMemo(() => {
-        // No rect
-        if (rect == null) return;
+    // On submit callback
+    const onSubmit = (data: FormData, _reset: boolean) => {
+        if (data == null || rect == null || refs.current.ref == null) return;
+        refs.current.ref.reset({ data });
+    };
 
-        // If height is the same
+    // Watch container
+    const { dimensions } = useDimensions(
+        1,
+        undefined,
+        sizeReadyMiliseconds,
+        (_preRect, rect) => {
+            // Check
+            if (rect == null) return true;
+
+            // Last rect
+            const lastRect = refs.current.rect;
+
+            // 32 = scroll bar width
+            if (
+                lastRect != null &&
+                refs.current.mounted !== true &&
+                Math.abs(rect.width - lastRect.width) <= 32 &&
+                Math.abs(rect.height - lastRect.height) <= 32
+            )
+                return true;
+
+            // Hold the new rect
+            refs.current.rect = rect;
+
+            return false;
+        }
+    );
+
+    // Rect
+    const rect = dimensions[0][2];
+
+    // Create list
+    const [list, showDataGrid] = (() => {
+        // No layout
+        if (rect == null) return [null, false];
+
+        // Width
+        const width = rect.width;
+
+        // Show DataGrid or List dependng on width
+        const showDataGrid = width >= dataGridMinWidth;
+
+        // Height
         let heightLocal: number;
         if (height != null) {
             heightLocal = height;
@@ -177,31 +246,24 @@ export function ResponsibleContainer<
             }
         }
 
-        console.log(rect, heightLocal, refs.current.height);
-
-        // Same height
-        if (heightLocal === refs.current.height) return;
-        refs.current.height = heightLocal;
-
-        // Show DataGrid or List dependng on width
-        const showDataGrid = rect.width >= dataGridMinWidth;
-
         if (showDataGrid) {
             // Delete
             delete rest.itemRenderer;
 
-            return (
+            return [
                 <Box sx={listBoxSx == null ? undefined : listBoxSx(true)}>
                     <DataGridEx<T>
                         autoLoad={!hasFields}
                         height={heightLocal}
+                        width={rect.width}
                         loadData={localLoadData}
                         mRef={mRefs}
                         columns={columns}
                         {...rest}
                     />
-                </Box>
-            );
+                </Box>,
+                true
+            ];
         }
 
         // Delete
@@ -214,34 +276,53 @@ export function ResponsibleContainer<
         delete rest.hoverColor;
         delete rest.selectable;
 
-        return (
+        return [
             <Box sx={listBoxSx == null ? undefined : listBoxSx(false)}>
                 <ScrollerListEx<T>
                     autoLoad={!hasFields}
+                    width={rect.width}
                     height={heightLocal}
                     loadData={localLoadData}
                     mRef={mRefs}
                     {...rest}
                 />
-            </Box>
-        );
-    }, [rect, height]);
+            </Box>,
+            false
+        ];
+    })();
 
-    // On submit callback
-    const onSubmit = (data: FormData, _reset: boolean) => {
-        if (data == null || rect == null || refs.current.ref == null) return;
-        refs.current.ref.reset({ data });
-    };
+    // Pull container
+    const pullContainer = list
+        ? showDataGrid
+            ? '.DataGridEx-Body'
+            : '.ScrollerListEx-Body'
+        : undefined;
 
     // Layout
     return (
-        <Stack ref={hasFields ? undefined : dimensions[0][0]}>
-            {hasFields && (
+        <React.Fragment>
+            <Stack>
                 <Box ref={dimensions[0][0]} sx={searchBoxSx}>
-                    <SearchBar fields={fields} onSubmit={onSubmit} />
+                    {hasFields && (
+                        <SearchBar fields={fields} onSubmit={onSubmit} />
+                    )}
                 </Box>
+                {list}
+            </Stack>
+            {pullToRefresh && pullContainer && (
+                <PullToRefreshUI
+                    mainElement={pullContainer}
+                    triggerElement={pullContainer}
+                    instructionsPullToRefresh={labels.pullToRefresh}
+                    instructionsReleaseToRefresh={labels.releaseToRefresh}
+                    instructionsRefreshing={labels.refreshing}
+                    onRefresh={() => refs.current.ref?.reset()}
+                    shouldPullToRefresh={() => {
+                        const container = document.querySelector(pullContainer);
+                        return !container?.scrollTop;
+                    }}
+                />
             )}
-            {list}
-        </Stack>
+        </React.Fragment>
     );
 }

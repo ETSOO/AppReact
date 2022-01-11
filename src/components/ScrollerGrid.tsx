@@ -40,7 +40,10 @@ export interface ScrollerGridProps<T>
     /**
      * Footer renderer
      */
-    footerRenderer?: (states: GridLoaderStates<T>) => React.ReactNode;
+    footerRenderer?: (
+        rows: T[],
+        states: GridLoaderStates<T>
+    ) => React.ReactNode;
 
     /**
      * Header renderer
@@ -163,29 +166,28 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
         ...rest
     } = props;
 
-    // States
-    const [state, stateUpdate] = React.useReducer(
-        (
-            currentState: GridLoaderStates<T>,
-            newState: Partial<GridLoaderStates<T>>
-        ) => {
-            return { ...currentState, ...newState };
-        },
-        {
-            autoLoad,
-            currentPage: 0,
-            hasNextPage: true,
-            isNextPageLoading: false,
-            orderBy: defaultOrderBy,
-            orderByAsc: defaultOrderByAsc,
-            rows: [],
-            batchSize: 10,
-            selectedItems: []
-        }
-    );
-    const isMounted = React.useRef(true);
+    // Rows
+    const [rows, updateRows] = React.useState<T[]>([]);
+    const setRows = (rows: T[]) => {
+        state.loadedItems = rows.length;
+        updateRows(rows);
+    };
 
-    const ref = React.createRef<VariableSizeGrid<T>>();
+    // Refs
+    const refs = React.useRef<GridLoaderStates<T>>({
+        autoLoad,
+        currentPage: 0,
+        hasNextPage: true,
+        isNextPageLoading: false,
+        orderBy: defaultOrderBy,
+        orderByAsc: defaultOrderByAsc,
+        batchSize: 10,
+        loadedItems: 0,
+        selectedItems: []
+    });
+    const state = refs.current;
+
+    const ref = React.useRef<VariableSizeGrid<T>>(null);
 
     // Load data
     const loadDataLocal = (pageAdd: number = 1) => {
@@ -194,10 +196,10 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
 
         // Update state
         state.isNextPageLoading = true;
-        // stateUpdate({ isNextPageLoading: true });
 
         // Parameters
-        const { currentPage, batchSize, orderBy, orderByAsc, data } = state;
+        const { currentPage, batchSize, orderBy, orderByAsc, data, isMounted } =
+            state;
 
         const loadProps: GridLoadDataProps = {
             currentPage,
@@ -208,38 +210,36 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
         };
 
         loadData(loadProps).then((result) => {
-            if (result == null || !isMounted.current) {
+            state.isMounted = true;
+
+            if (result == null || isMounted === false) {
                 return;
             }
 
             const newItems = result.length;
+            state.lastLoadedItems = newItems;
+            state.isNextPageLoading = false;
+            state.hasNextPage = newItems >= batchSize;
 
             if (pageAdd === 0) {
                 // New items
-                const rows = state.lastLoadedItems
-                    ? state.rows
+                const newRows = state.lastLoadedItems
+                    ? [...rows]
                           .splice(
-                              state.rows.length - state.lastLoadedItems,
+                              rows.length - state.lastLoadedItems,
                               state.lastLoadedItems
                           )
                           .concat(result)
                     : result;
 
-                // Refresh current page
-                stateUpdate({
-                    rows,
-                    lastLoadedItems: newItems,
-                    isNextPageLoading: false,
-                    hasNextPage: newItems >= batchSize
-                });
+                // Update rows
+                setRows(newRows);
             } else {
-                stateUpdate({
-                    rows: state.rows.concat(result),
-                    lastLoadedItems: newItems,
-                    isNextPageLoading: false,
-                    currentPage: state.currentPage + pageAdd,
-                    hasNextPage: newItems >= batchSize
-                });
+                // Set current page
+                state.currentPage = state.currentPage + pageAdd;
+
+                // Update rows
+                setRows([...rows, ...result]);
             }
         });
     };
@@ -251,8 +251,8 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
     ) => {
         // Custom render
         const data =
-            itemProps.rowIndex < state.rows.length
-                ? state.rows[itemProps.rowIndex]
+            itemProps.rowIndex < rows.length
+                ? rows[itemProps.rowIndex]
                 : undefined;
         return itemRenderer({
             ...itemProps,
@@ -264,7 +264,7 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
     // Local items renderer callback
     const onItemsRenderedLocal = (props: GridOnItemsRenderedProps) => {
         // No items, means no necessary to load more data during reset
-        const itemCount = state.rows.length;
+        const itemCount = rows.length;
         if (
             itemCount > 0 &&
             props.visibleRowStopIndex + threshold > itemCount
@@ -278,17 +278,17 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
     };
 
     // Reset the state and load again
-    const reset = (add?: {}) => {
-        const state = {
+    const reset = (add?: Partial<GridLoaderStates<T>>) => {
+        const resetState: Partial<GridLoaderStates<T>> = {
             autoLoad: true,
             currentPage: 0,
+            loadedItems: 0,
             hasNextPage: true,
             isNextPageLoading: false,
             lastLoadedItems: undefined,
-            rows: [],
             ...add
         };
-        stateUpdate(state);
+        Object.assign(state, resetState);
     };
 
     React.useImperativeHandle(
@@ -307,16 +307,14 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
             select(rowIndex: number) {
                 // Select only one item
                 const selectedItems = state.selectedItems;
-                selectedItems[0] = state.rows[rowIndex];
+                selectedItems[0] = rows[rowIndex];
 
                 if (onSelectChange) onSelectChange(selectedItems);
-
-                stateUpdate({ selectedItems });
             },
             selectAll(checked: boolean) {
                 const selectedItems = state.selectedItems;
 
-                state.rows.forEach((row) => {
+                rows.forEach((row) => {
                     const index = selectedItems.findIndex(
                         (selectedItem) => selectedItem[idField] === row[idField]
                     );
@@ -329,8 +327,6 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
                 });
 
                 if (onSelectChange) onSelectChange(selectedItems);
-
-                stateUpdate({ selectedItems });
             },
             selectItem(item: T, checked: boolean) {
                 const selectedItems = state.selectedItems;
@@ -345,8 +341,6 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
                 }
 
                 if (onSelectChange) onSelectChange(selectedItems);
-
-                stateUpdate({ selectedItems });
             },
             reset,
             resetAfterColumnIndex(index: number, shouldForceUpdate?: boolean) {
@@ -363,17 +357,26 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
                 ref.current?.resetAfterRowIndex(index, shouldForceUpdate);
             }
         }),
-        [state.rows, state.selectedItems]
+        [rows]
     );
 
     React.useEffect(() => {
         return () => {
-            isMounted.current = false;
+            state.isMounted = false;
         };
     }, []);
 
+    // Force update to work with the new width
+    React.useEffect(() => {
+        ref.current?.resetAfterIndices({
+            columnIndex: 0,
+            rowIndex: 0,
+            shouldForceUpdate: true
+        });
+    }, [width]);
+
     // Destruct state
-    const { autoLoad: stateAutoLoad, rows, hasNextPage, currentPage } = state;
+    const { autoLoad: stateAutoLoad, hasNextPage, currentPage } = state;
     const rowLength = rows.length;
 
     // Row count
@@ -388,7 +391,7 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
             {headerRenderer && headerRenderer(state)}
             <VariableSizeGrid<T>
                 itemKey={({ columnIndex, rowIndex }) => {
-                    const data = state.rows[rowIndex];
+                    const data = rows[rowIndex];
                     if (data == null) return [rowIndex, columnIndex].join(',');
                     return [data[idField], columnIndex].join(',');
                 }}
@@ -406,7 +409,7 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
             >
                 {(props) => itemRendererLocal(props, state)}
             </VariableSizeGrid>
-            {footerRenderer && footerRenderer(state)}
+            {footerRenderer && footerRenderer(rows, state)}
         </React.Fragment>
     );
 };

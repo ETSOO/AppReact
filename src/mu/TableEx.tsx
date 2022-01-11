@@ -145,43 +145,41 @@ export function TableEx<T extends Record<string, unknown>>(
         rowsPerPageLocal = 10;
     }
 
+    // Rows
+    const [rows, updateRows] = React.useState<T[]>([]);
+    const setRows = (rows: T[]) => {
+        state.loadedItems = rows.length;
+        updateRows(rows);
+    };
+
     // States
-    const [state, stateUpdate] = React.useReducer(
-        (
-            currentState: GridLoaderStates<T>,
-            newState: Partial<GridLoaderStates<T>>
-        ) => {
-            return { ...currentState, ...newState };
-        },
-        {
-            autoLoad,
-            currentPage: 0,
-            hasNextPage: true,
-            isNextPageLoading: false,
-            orderBy: defaultOrderBy,
-            orderByAsc: defaultOrderBy
-                ? columns.find((column) => column.field === defaultOrderBy)
-                      ?.sortAsc
-                : undefined,
-            rows: [],
-            batchSize: rowsPerPageLocal,
-            selectedItems: []
-        }
-    );
-    const isMounted = React.useRef(true);
+    const stateRefs = React.useRef<GridLoaderStates<T>>({
+        autoLoad,
+        currentPage: 0,
+        loadedItems: 0,
+        hasNextPage: true,
+        isNextPageLoading: false,
+        orderBy: defaultOrderBy,
+        orderByAsc: defaultOrderBy
+            ? columns.find((column) => column.field === defaultOrderBy)?.sortAsc
+            : undefined,
+        batchSize: rowsPerPageLocal,
+        selectedItems: []
+    });
+    const state = stateRefs.current;
 
     // Reset the state and load again
-    const reset = (add?: {}) => {
-        const state = {
+    const reset = (add?: Partial<GridLoaderStates<T>>) => {
+        const resetState: Partial<GridLoaderStates<T>> = {
             autoLoad: true,
             currentPage: 0,
+            loadedItems: 0,
             hasNextPage: true,
             isNextPageLoading: false,
             lastLoadedItems: undefined,
-            rows: [],
             ...add
         };
-        stateUpdate(state);
+        Object.assign(state, resetState);
     };
 
     React.useImperativeHandle(
@@ -211,7 +209,8 @@ export function TableEx<T extends Record<string, unknown>>(
         state.isNextPageLoading = true;
 
         // Parameters
-        const { currentPage, batchSize, orderBy, orderByAsc, data } = state;
+        const { currentPage, batchSize, orderBy, orderByAsc, data, isMounted } =
+            state;
 
         const loadProps: GridLoadDataProps = {
             currentPage,
@@ -222,18 +221,18 @@ export function TableEx<T extends Record<string, unknown>>(
         };
 
         loadData(loadProps).then((result) => {
-            if (!isMounted.current || result == null) {
+            state.isMounted = true;
+            if (result == null || isMounted === false) {
                 return;
             }
 
             const newItems = result.length;
+            state.lastLoadedItems = newItems;
+            state.hasNextPage = newItems >= batchSize;
+            state.isNextPageLoading = false;
 
-            stateUpdate({
-                rows: result,
-                lastLoadedItems: newItems,
-                hasNextPage: newItems >= batchSize,
-                isNextPageLoading: false
-            });
+            // Update rows
+            setRows(result);
         });
     };
 
@@ -246,12 +245,12 @@ export function TableEx<T extends Record<string, unknown>>(
     const handleChangeRowsPerPage = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        const rowsPerPage = parseInt(event.target.value);
-        reset({ rowsPerPage });
+        const batchSize = parseInt(event.target.value);
+        reset({ batchSize });
     };
 
     const handleSelect = (item: T, checked: Boolean) => {
-        const selectedItems = [...state.selectedItems];
+        const selectedItems = state.selectedItems;
 
         const index = selectedItems.findIndex(
             (selectedItem) => selectedItem[idField] === item[idField]
@@ -265,14 +264,12 @@ export function TableEx<T extends Record<string, unknown>>(
         if (onSelectChange != null) {
             onSelectChange(selectedItems);
         }
-
-        stateUpdate({ selectedItems });
     };
 
     const handleSelectAll = (checked: boolean) => {
-        const selectedItems = [...state.selectedItems];
+        const selectedItems = state.selectedItems;
 
-        state.rows.forEach((row) => {
+        rows.forEach((row) => {
             const index = selectedItems.findIndex(
                 (selectedItem) => selectedItem[idField] === row[idField]
             );
@@ -287,8 +284,6 @@ export function TableEx<T extends Record<string, unknown>>(
         if (onSelectChange != null) {
             onSelectChange(selectedItems);
         }
-
-        stateUpdate({ selectedItems });
     };
 
     // New sort
@@ -303,7 +298,6 @@ export function TableEx<T extends Record<string, unknown>>(
         hasNextPage,
         lastLoadedItems,
         orderBy,
-        rows,
         batchSize,
         selectedItems
     } = state;
@@ -333,7 +327,7 @@ export function TableEx<T extends Record<string, unknown>>(
 
     React.useEffect(() => {
         return () => {
-            isMounted.current = false;
+            state.isMounted = false;
         };
     }, []);
 

@@ -133,27 +133,26 @@ export const ScrollerList = <T extends Record<string, any>>(
 
     const refs = useCombinedRefs(oRef, outerRef);
 
+    // Rows
+    const [rows, updateRows] = React.useState<T[]>([]);
+    const setRows = (rows: T[]) => {
+        state.loadedItems = rows.length;
+        updateRows(rows);
+    };
+
     // States
-    const [state, stateUpdate] = React.useReducer(
-        (
-            currentState: GridLoaderStates<T>,
-            newState: Partial<GridLoaderStates<T>>
-        ) => {
-            return { ...currentState, ...newState };
-        },
-        {
-            autoLoad,
-            currentPage: 0,
-            hasNextPage: true,
-            isNextPageLoading: false,
-            orderBy: defaultOrderBy,
-            orderByAsc: defaultOrderByAsc,
-            rows: [],
-            batchSize: GridSizeGet(loadBatchSize, height),
-            selectedItems: []
-        }
-    );
-    const isMounted = React.useRef(true);
+    const stateRefs = React.useRef<GridLoaderStates<T>>({
+        autoLoad,
+        currentPage: 0,
+        loadedItems: 0,
+        hasNextPage: true,
+        isNextPageLoading: false,
+        orderBy: defaultOrderBy,
+        orderByAsc: defaultOrderByAsc,
+        batchSize: GridSizeGet(loadBatchSize, height),
+        selectedItems: []
+    });
+    const state = stateRefs.current;
 
     // Load data
     const loadDataLocal = (pageAdd: number = 1) => {
@@ -162,10 +161,10 @@ export const ScrollerList = <T extends Record<string, any>>(
 
         // Update state
         state.isNextPageLoading = true;
-        // stateUpdate({ isNextPageLoading: true });
 
         // Parameters
-        const { currentPage, batchSize, orderBy, orderByAsc, data } = state;
+        const { currentPage, batchSize, orderBy, orderByAsc, data, isMounted } =
+            state;
 
         const loadProps: GridLoadDataProps = {
             currentPage,
@@ -176,38 +175,35 @@ export const ScrollerList = <T extends Record<string, any>>(
         };
 
         loadData(loadProps).then((result) => {
-            if (result == null || !isMounted.current) {
+            state.isMounted = true;
+
+            if (result == null || isMounted === false) {
                 return;
             }
 
             const newItems = result.length;
+            state.lastLoadedItems = newItems;
+            state.hasNextPage = newItems >= loadBatchSize;
+            state.isNextPageLoading = false;
 
             if (pageAdd === 0) {
                 // New items
-                const rows = state.lastLoadedItems
-                    ? state.rows
+                const newRows = state.lastLoadedItems
+                    ? [...rows]
                           .splice(
-                              state.rows.length - state.lastLoadedItems,
+                              rows.length - state.lastLoadedItems,
                               state.lastLoadedItems
                           )
                           .concat(result)
                     : result;
 
-                // Refresh current page
-                stateUpdate({
-                    rows,
-                    lastLoadedItems: newItems,
-                    hasNextPage: newItems >= loadBatchSize,
-                    isNextPageLoading: false
-                });
+                // Update rows
+                setRows(newRows);
             } else {
-                stateUpdate({
-                    rows: state.rows.concat(result),
-                    lastLoadedItems: newItems,
-                    currentPage: state.currentPage + pageAdd,
-                    hasNextPage: newItems >= loadBatchSize,
-                    isNextPageLoading: false
-                });
+                state.currentPage = state.currentPage + pageAdd;
+
+                // Update rows
+                setRows([...rows, ...result]);
             }
         });
     };
@@ -216,7 +212,7 @@ export const ScrollerList = <T extends Record<string, any>>(
         // Custom render
         return itemRenderer({
             ...itemProps,
-            data: state.rows[itemProps.index]
+            data: rows[itemProps.index]
         });
     };
 
@@ -241,17 +237,17 @@ export const ScrollerList = <T extends Record<string, any>>(
                     loadDataLocal(0);
                 },
 
-                reset(add?: {}): void {
-                    // Reset state, will load data soon
-                    stateUpdate({
+                reset(add?: Partial<GridLoaderStates<T>>): void {
+                    const resetState: Partial<GridLoaderStates<T>> = {
                         autoLoad: true,
-                        rows: [],
                         lastLoadedItems: undefined,
+                        loadedItems: 0,
                         currentPage: 0,
                         hasNextPage: true,
                         isNextPageLoading: false,
                         ...add
-                    });
+                    };
+                    Object.assign(state, resetState);
                 },
 
                 scrollTo(scrollOffset: number): void {
@@ -298,12 +294,12 @@ export const ScrollerList = <T extends Record<string, any>>(
             // Remove scroll event
             window.removeEventListener('scroll', handleWindowScroll);
 
-            isMounted.current = false;
+            state.isMounted = false;
         };
     }, []);
 
     // Destruct state
-    const { autoLoad: stateAutoLoad, rows, hasNextPage, currentPage } = state;
+    const { autoLoad: stateAutoLoad, hasNextPage, currentPage } = state;
     const rowCount = rows.length;
 
     // Local items renderer callback

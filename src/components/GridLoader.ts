@@ -127,6 +127,11 @@ export interface GridLoaderStates<T> extends GridLoadDataProps {
     lastLoadedItems?: number;
 
     /**
+     * All loaded items count
+     */
+    loadedItems: number;
+
+    /**
      * Has next page?
      */
     hasNextPage: boolean;
@@ -137,9 +142,9 @@ export interface GridLoaderStates<T> extends GridLoadDataProps {
     isNextPageLoading: boolean;
 
     /**
-     * Current rows
+     * Is mounted
      */
-    rows: T[];
+    isMounted?: boolean;
 
     /**
      * Selected items of id
