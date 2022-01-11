@@ -289,6 +289,9 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
             ...add
         };
         Object.assign(state, resetState);
+
+        // Reset items
+        setRows([]);
     };
 
     React.useImperativeHandle(

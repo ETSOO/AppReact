@@ -17,6 +17,7 @@ import {
     DataGridExProps
 } from './DataGridEx';
 import { GridMethodRef } from './GridMethodRef';
+import { MUGlobal } from './MUGlobal';
 import { PullToRefreshUI } from './PullToRefreshUI';
 import {
     ScrollerListEx,
@@ -105,6 +106,11 @@ export interface ResponsibleContainerProps<
     mRef?: React.MutableRefObject<GridMethodRef | undefined>;
 
     /**
+     * Paddings
+     */
+    paddings?: {};
+
+    /**
      * Pull to refresh data
      */
     pullToRefresh?: boolean;
@@ -146,8 +152,9 @@ export function ResponsibleContainer<
         listBoxSx,
         loadData,
         mRef,
+        paddings = MUGlobal.pagePaddings,
         pullToRefresh = true,
-        searchBoxSx,
+        searchBoxSx = { marginBottom: MUGlobal.half(paddings) },
         sizeReadyMiliseconds = 0,
         ...rest
     } = props;
@@ -157,16 +164,17 @@ export function ResponsibleContainer<
 
     // Refs
     const refs = React.useRef<LocalRefs>({});
+    const state = refs.current;
 
     const mRefs = useCombinedRefs(mRef, (ref: GridMethodRef) => {
         if (ref == null) return;
-        refs.current.ref = ref;
+        state.ref = ref;
     });
 
     // Update mounted state
     React.useEffect(() => {
         return () => {
-            refs.current.mounted = false;
+            state.mounted = false;
         };
     }, []);
 
@@ -175,15 +183,15 @@ export function ResponsibleContainer<
 
     // Load data
     const localLoadData = (props: GridLoadDataProps) => {
-        refs.current.mounted = true;
+        state.mounted = true;
         const data = GridDataGet(props, fieldTemplate);
         return loadData(data);
     };
 
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
-        if (data == null || rect == null || refs.current.ref == null) return;
-        refs.current.ref.reset({ data });
+        if (data == null || state.ref == null) return;
+        state.ref.reset({ data });
     };
 
     // Watch container
@@ -196,19 +204,19 @@ export function ResponsibleContainer<
             if (rect == null) return true;
 
             // Last rect
-            const lastRect = refs.current.rect;
+            const lastRect = state.rect;
 
             // 32 = scroll bar width
             if (
                 lastRect != null &&
-                refs.current.mounted !== true &&
+                state.mounted !== true &&
                 Math.abs(rect.width - lastRect.width) <= 32 &&
                 Math.abs(rect.height - lastRect.height) <= 32
             )
                 return true;
 
             // Hold the new rect
-            refs.current.rect = rect;
+            state.rect = rect;
 
             return false;
         }
@@ -234,12 +242,11 @@ export function ResponsibleContainer<
             heightLocal = height;
         } else {
             // Auto calculation
-            heightLocal =
-                window.innerHeight - Math.round(rect.top + rect.height + 1);
+            heightLocal = window.innerHeight - Math.round(rect.bottom + 1);
 
             const style = window.getComputedStyle(dimensions[0][1]!);
-            const boxPadding = parseFloat(style.paddingLeft);
-            if (!isNaN(boxPadding)) heightLocal -= 2 * boxPadding;
+            const boxMargin = parseFloat(style.marginBottom);
+            if (!isNaN(boxMargin)) heightLocal -= 3 * boxMargin; // 1 - Box, 2 - Page bottom
 
             if (adjustHeight != null) {
                 heightLocal -= adjustHeight(heightLocal);
@@ -316,7 +323,7 @@ export function ResponsibleContainer<
                     instructionsPullToRefresh={labels.pullToRefresh}
                     instructionsReleaseToRefresh={labels.releaseToRefresh}
                     instructionsRefreshing={labels.refreshing}
-                    onRefresh={() => refs.current.ref?.reset()}
+                    onRefresh={() => state.ref?.reset()}
                     shouldPullToRefresh={() => {
                         const container = document.querySelector(pullContainer);
                         return !container?.scrollTop;
