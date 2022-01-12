@@ -271,13 +271,13 @@ export function SearchBar(props: SearchBarProps) {
     };
 
     // Submit
-    const handleSubmit = () => {
+    const handleSubmit = (delay = 480) => {
         if (forms.submitSeed != null) {
             clearTimeout(forms.submitSeed);
         }
 
         // Delay the change
-        forms.submitSeed = window.setTimeout(handleSubmitInstant, 480);
+        forms.submitSeed = window.setTimeout(handleSubmitInstant, delay);
     };
 
     // Submit at once
@@ -297,7 +297,7 @@ export function SearchBar(props: SearchBarProps) {
     // First loading
     React.useEffect(() => {
         // Delayed way
-        handleSubmit();
+        handleSubmit(100);
 
         return () => {
             // Clear the seeds

@@ -112,23 +112,26 @@ export namespace DataGridRenderers {
 
     /**
      * Default footer item renderer
-     * @param param Props
+     * @param rows Rows
+     * @param props Renderer props
+     * @param location Renderer location (column index)
      * @returns Component
      */
     export function defaultFooterItemRenderer<T>(
         _rows: T[],
-        { index, states, checkable }: DataGridExFooterItemRendererProps<T>
+        { index, states, checkable }: DataGridExFooterItemRendererProps<T>,
+        location: number = 1
     ) {
         const { selectedItems, loadedItems, hasNextPage } = states;
 
-        if (checkable && index === 1) {
+        if (checkable && index === location + 1) {
             return [
                 selectedItems.length,
                 loadedItems.toLocaleString() + (hasNextPage ? '+' : '')
             ].join(' / ');
         }
 
-        if (!checkable && index === 0) {
+        if (!checkable && index === location) {
             return loadedItems.toLocaleString() + (hasNextPage ? '+' : '');
         }
 
