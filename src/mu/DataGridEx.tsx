@@ -241,7 +241,7 @@ export function DataGridEx<T extends Record<string, any>>(
                         sortLabel = headerCellRenderer({
                             cellProps,
                             column,
-                            columnIndex: index,
+                            columnIndex: checkable ? index - 1 : index, // Ignore the checkbox case,
                             states
                         });
                     } else if (sortable && field != null) {
@@ -306,7 +306,7 @@ export function DataGridEx<T extends Record<string, any>>(
                     const cell = footerItemRenderer
                         ? footerItemRenderer(rows, {
                               column,
-                              index,
+                              index: checkable ? index - 1 : index, // Ignore the checkbox case
                               states,
                               cellProps,
                               checkable
