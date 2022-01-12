@@ -91,7 +91,7 @@ export interface ResponsibleContainerProps<
     /**
      * Listbox SX (dataGrid determines the case)
      */
-    listBoxSx?: (dataGrid: boolean) => SxProps<Theme>;
+    listBoxSx?: (dataGrid: boolean, height: number) => SxProps<Theme>;
 
     /**
      * Load data callback
@@ -132,6 +132,16 @@ interface LocalRefs {
     mounted?: boolean;
 }
 
+function getDefaultSearchBoxSx(paddings: {}): SxProps<Theme> {
+    const half = MUGlobal.half(paddings);
+    return {
+        paddingLeft: half,
+        paddingRight: half,
+        paddingTop: half,
+        marginBottom: half
+    };
+}
+
 /**
  * Responsible container
  * @param props Props
@@ -154,7 +164,7 @@ export function ResponsibleContainer<
         mRef,
         paddings = MUGlobal.pagePaddings,
         pullToRefresh = true,
-        searchBoxSx = { marginBottom: MUGlobal.half(paddings) },
+        searchBoxSx = getDefaultSearchBoxSx(paddings),
         sizeReadyMiliseconds = 0,
         ...rest
     } = props;
@@ -228,7 +238,7 @@ export function ResponsibleContainer<
     // Create list
     const [list, showDataGrid] = (() => {
         // No layout
-        if (rect == null) return [null, false];
+        if (rect == null) return [null, undefined];
 
         // Width
         const width = rect.width;
@@ -258,7 +268,13 @@ export function ResponsibleContainer<
             delete rest.itemRenderer;
 
             return [
-                <Box sx={listBoxSx == null ? undefined : listBoxSx(true)}>
+                <Box
+                    sx={
+                        listBoxSx == null
+                            ? undefined
+                            : listBoxSx(true, heightLocal)
+                    }
+                >
                     <DataGridEx<T>
                         autoLoad={!hasFields}
                         height={heightLocal}
@@ -284,7 +300,13 @@ export function ResponsibleContainer<
         delete rest.selectable;
 
         return [
-            <Box sx={listBoxSx == null ? undefined : listBoxSx(false)}>
+            <Box
+                sx={
+                    listBoxSx == null
+                        ? undefined
+                        : listBoxSx(false, heightLocal)
+                }
+            >
                 <ScrollerListEx<T>
                     autoLoad={!hasFields}
                     width={rect.width}
@@ -298,21 +320,31 @@ export function ResponsibleContainer<
         ];
     })();
 
+    const searchBar = React.useMemo(() => {
+        if (!hasFields || showDataGrid == null) return;
+        return (
+            <SearchBar
+                fields={fields}
+                onSubmit={onSubmit}
+                className={`searchBar${showDataGrid ? 'Grid' : 'List'}`}
+            />
+        );
+    }, [showDataGrid, hasFields]);
+
     // Pull container
-    const pullContainer = list
-        ? showDataGrid
+    const pullContainer =
+        showDataGrid == null
+            ? undefined
+            : showDataGrid
             ? '.DataGridEx-Body'
-            : '.ScrollerListEx-Body'
-        : undefined;
+            : '.ScrollerListEx-Body';
 
     // Layout
     return (
         <React.Fragment>
             <Stack>
                 <Box ref={dimensions[0][0]} sx={searchBoxSx}>
-                    {hasFields && (
-                        <SearchBar fields={fields} onSubmit={onSubmit} />
-                    )}
+                    {searchBar}
                 </Box>
                 {list}
             </Stack>

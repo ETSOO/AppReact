@@ -55,11 +55,6 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     paddings?: {};
 
     /**
-     * Pull container
-     */
-    pullContainer?: string;
-
-    /**
      * Scroll container
      */
     scrollContainer?: HTMLElement | object;

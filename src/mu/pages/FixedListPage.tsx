@@ -113,11 +113,6 @@ export function FixedListPage<
         }
     }, [rect]);
 
-    // Pull container id
-    const pullContainer = scrollContainer?.parentElement
-        ? '#' + scrollContainer?.parentElement.id
-        : undefined;
-
     const { paddings, ...pageRest } = pageProps;
 
     // Layout
@@ -126,7 +121,6 @@ export function FixedListPage<
             {...pageRest}
             paddings={{}}
             scrollContainer={scrollContainer}
-            pullContainer={pullContainer}
         >
             <Stack>
                 <Box ref={dimensions[0][0]} sx={{ padding: paddings }}>

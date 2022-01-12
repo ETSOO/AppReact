@@ -1,7 +1,6 @@
 import React from 'react';
 import { FabBox } from '../FabBox';
 import { ScrollTopFab } from '../ScrollTopFab';
-import { PullToRefreshUI } from '../PullToRefreshUI';
 import { Labels } from '../../app/Labels';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPageProps } from './CommonPageProps';
@@ -9,11 +8,6 @@ import { MoreFab } from '../MoreFab';
 import { ReactAppStateDetector } from '../../app/ReactApp';
 import { Container, Fab } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-
-/**
- * Default pull container
- */
-export const CommonPagePullContainer = '#page-container';
 
 /**
  * Default scroll container
@@ -41,7 +35,6 @@ export function CommonPage(props: CommonPageProps) {
         paddings = MUGlobal.pagePaddings,
         scrollContainer,
         targetFields,
-        pullContainer,
         sx = {},
         ...rest
     } = props;
@@ -125,20 +118,6 @@ export function CommonPage(props: CommonPageProps) {
                 </FabBox>
                 {children}
             </Container>
-            {onRefresh != null && pullContainer != null && (
-                <PullToRefreshUI
-                    mainElement={pullContainer}
-                    triggerElement={pullContainer}
-                    instructionsPullToRefresh={labels.pullToRefresh}
-                    instructionsReleaseToRefresh={labels.releaseToRefresh}
-                    instructionsRefreshing={labels.refreshing}
-                    onRefresh={onRefresh}
-                    shouldPullToRefresh={() => {
-                        const container = document.querySelector(pullContainer);
-                        return !container?.scrollTop;
-                    }}
-                />
-            )}
         </React.Fragment>
     );
 }

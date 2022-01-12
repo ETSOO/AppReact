@@ -38,4 +38,9 @@ export interface ResponsePageProps<T, F extends DataTypes.BasicTemplate>
      * Methods
      */
     mRef?: React.MutableRefObject<GridMethodRef | undefined>;
+
+    /**
+     * Pull to refresh data
+     */
+    pullToRefresh?: boolean;
 }

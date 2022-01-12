@@ -248,6 +248,9 @@ export const ScrollerList = <T extends Record<string, any>>(
                         ...add
                     };
                     Object.assign(state, resetState);
+
+                    // Reset
+                    setRows([]);
                 },
 
                 scrollTo(scrollOffset: number): void {

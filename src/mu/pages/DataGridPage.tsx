@@ -113,18 +113,9 @@ export function DataGridPage<
         ref.reset({ data });
     }, [ref, data]);
 
-    // Pull container id
-    const pullContainer = states.element?.parentElement
-        ? '.DataGridEx-Body'
-        : undefined;
-
     // Layout
     return (
-        <CommonPage
-            {...pageProps}
-            scrollContainer={states.element}
-            pullContainer={pullContainer}
-        >
+        <CommonPage {...pageProps} scrollContainer={states.element}>
             <Stack>
                 <Box
                     ref={dimensions[0][0]}

@@ -99,18 +99,18 @@ export function SearchBar(props: SearchBarProps) {
     // Drawer open / close
     const [open, updateOpen] = React.useState(false);
 
-    // Forms
-    const [forms] = React.useState<{
+    // State
+    const state = React.useRef<{
         form?: HTMLFormElement;
         moreForm?: HTMLFormElement;
         submitSeed?: number;
         lastMaxWidth?: number;
-    }>({});
+    }>({}).current;
 
     // Watch container
     const { dimensions } = useDimensions(1, (target, rect) => {
         // Same logic from resetButtonRef
-        if (rect.width === forms.lastMaxWidth) return false;
+        if (rect.width === state.lastMaxWidth) return false;
 
         // Len
         const len = target.children.length;
@@ -143,10 +143,10 @@ export function SearchBar(props: SearchBarProps) {
 
         // Container width
         let maxWidth = containerRect.width;
-        if (maxWidth === forms.lastMaxWidth) {
+        if (maxWidth === state.lastMaxWidth) {
             return;
         }
-        forms.lastMaxWidth = maxWidth;
+        state.lastMaxWidth = maxWidth;
 
         // More button
         const buttonMore = resetButton.previousElementSibling!;
@@ -241,7 +241,7 @@ export function SearchBar(props: SearchBarProps) {
     const handleForm = (event: React.FormEvent<HTMLFormElement>) => {
         if (event.nativeEvent.cancelable && !event.nativeEvent.composed) return;
 
-        if (forms.form == null) forms.form = event.currentTarget;
+        if (state.form == null) state.form = event.currentTarget;
 
         handleSubmit();
     };
@@ -255,7 +255,7 @@ export function SearchBar(props: SearchBarProps) {
     const moreFormChange = (event: React.FormEvent<HTMLFormElement>) => {
         if (event.nativeEvent.cancelable && !event.nativeEvent.composed) return;
 
-        if (forms.moreForm == null) forms.moreForm = event.currentTarget;
+        if (state.moreForm == null) state.moreForm = event.currentTarget;
 
         handleSubmit();
     };
@@ -263,8 +263,8 @@ export function SearchBar(props: SearchBarProps) {
     // Reset
     const handleReset = () => {
         // Clear form values
-        if (forms.form != null) resetForm(forms.form);
-        if (forms.moreForm != null) resetForm(forms.moreForm);
+        if (state.form != null) resetForm(state.form);
+        if (state.moreForm != null) resetForm(state.moreForm);
 
         // Resubmit
         handleSubmitInstant(true);
@@ -272,23 +272,23 @@ export function SearchBar(props: SearchBarProps) {
 
     // Submit
     const handleSubmit = (delay = 480) => {
-        if (forms.submitSeed != null) {
-            clearTimeout(forms.submitSeed);
+        if (state.submitSeed != null) {
+            clearTimeout(state.submitSeed);
         }
 
         // Delay the change
-        forms.submitSeed = window.setTimeout(handleSubmitInstant, delay);
+        state.submitSeed = window.setTimeout(handleSubmitInstant, delay);
     };
 
     // Submit at once
     const handleSubmitInstant = (reset: boolean = false) => {
         // Reset timeout
-        forms.submitSeed = undefined;
+        state.submitSeed = undefined;
 
         // Prepare data
-        const data = new FormData(forms.form);
-        if (forms.moreForm != null) {
-            DomUtils.mergeFormData(data, new FormData(forms.moreForm));
+        const data = new FormData(state.form);
+        if (state.moreForm != null) {
+            DomUtils.mergeFormData(data, new FormData(state.moreForm));
         }
 
         onSubmit(data, reset);
@@ -296,14 +296,16 @@ export function SearchBar(props: SearchBarProps) {
 
     // First loading
     React.useEffect(() => {
-        // Delayed way
-        handleSubmit(100);
-
         return () => {
             // Clear the seeds
-            if (forms.submitSeed != null) clearTimeout(forms.submitSeed);
+            if (state.submitSeed != null) clearTimeout(state.submitSeed);
         };
     }, []);
+
+    React.useEffect(() => {
+        // Delayed way
+        handleSubmit(100);
+    }, [className]);
 
     // Layout
     return (
@@ -313,7 +315,7 @@ export function SearchBar(props: SearchBarProps) {
                 className={className}
                 onChange={handleForm}
                 ref={(form) => {
-                    if (form) forms.form = form;
+                    if (form) state.form = form;
                 }}
             >
                 <Stack
@@ -374,7 +376,7 @@ export function SearchBar(props: SearchBarProps) {
                     <form
                         onChange={moreFormChange}
                         ref={(form) => {
-                            if (form) forms.moreForm = form;
+                            if (form) state.moreForm = form;
                         }}
                     >
                         <Stack
