@@ -105,7 +105,8 @@ export function SearchBar(props: SearchBarProps) {
         moreForm?: HTMLFormElement;
         submitSeed?: number;
         lastMaxWidth?: number;
-    }>({}).current;
+        hasMore: boolean;
+    }>({ hasMore: true }).current;
     const lastMaxWidth = state.lastMaxWidth ?? 9999;
 
     // Watch container
@@ -113,9 +114,7 @@ export function SearchBar(props: SearchBarProps) {
         // Same logic from resetButtonRef
         if (
             rect.width === lastMaxWidth ||
-            (index != null &&
-                index >= fields.length &&
-                rect.width > lastMaxWidth)
+            (!state.hasMore && rect.width > lastMaxWidth)
         )
             return false;
 
@@ -152,7 +151,7 @@ export function SearchBar(props: SearchBarProps) {
         let maxWidth = containerRect.width;
         if (
             maxWidth === lastMaxWidth ||
-            (index != null && index >= fields.length && maxWidth > lastMaxWidth)
+            (!state.hasMore && maxWidth > lastMaxWidth)
         ) {
             return;
         }
@@ -230,6 +229,7 @@ export function SearchBar(props: SearchBarProps) {
         }
 
         // Show or hide more button
+        state.hasMore = hasMore;
         setElementVisible(buttonMore, hasMore);
         setElementVisible(resetButton, true);
 
