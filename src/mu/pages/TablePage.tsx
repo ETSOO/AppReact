@@ -79,7 +79,9 @@ export function TablePage<
     const rect = dimensions[0][2];
     const list = React.useMemo(() => {
         if (rect != null && rect.height > 50 && rect.width >= totalWidth) {
-            let maxHeight = window.innerHeight - (rect.top + rect.height + 1);
+            let maxHeight =
+                document.documentElement.clientHeight -
+                (rect.top + rect.height + 1);
 
             const style = window.getComputedStyle(dimensions[0][1]!);
             const paddingBottom = parseFloat(style.paddingBottom);

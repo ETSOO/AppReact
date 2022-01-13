@@ -106,7 +106,7 @@ export const ScrollerList = <T extends Record<string, any>>(
         autoLoad = true,
         defaultOrderBy,
         defaultOrderByAsc,
-        height = window.innerHeight,
+        height = document.documentElement.clientHeight,
         width = '100%',
         mRef,
         oRef,

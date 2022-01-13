@@ -52,6 +52,11 @@ export interface ResponsibleContainerProps<
     columns: GridColumn<T>[];
 
     /**
+     * Container box SX (dataGrid determines the case)
+     */
+    containerBoxSx?: (dataGrid: boolean) => SxProps<Theme>;
+
+    /**
      * Min width to show Datagrid
      */
     dataGridMinWidth?: number;
@@ -106,6 +111,11 @@ export interface ResponsibleContainerProps<
     mRef?: React.MutableRefObject<GridMethodRef | undefined>;
 
     /**
+     * Element ready callback
+     */
+    elementReady?: (element: HTMLElement, isDataGrid: boolean) => void;
+
+    /**
      * Paddings
      */
     paddings?: {};
@@ -135,8 +145,8 @@ interface LocalRefs {
 function getDefaultSearchBoxSx(paddings: {}): SxProps<Theme> {
     const half = MUGlobal.half(paddings);
     return {
-        paddingLeft: half,
-        paddingRight: half,
+        paddingLeft: (theme) => theme.spacing(0.5),
+        paddingRight: (theme) => theme.spacing(0.5),
         paddingTop: half,
         marginBottom: half
     };
@@ -155,7 +165,9 @@ export function ResponsibleContainer<
     const {
         adjustHeight,
         columns,
+        containerBoxSx,
         dataGridMinWidth = DataGridExCalColumns(columns).total,
+        elementReady,
         fields,
         fieldTemplate,
         height,
@@ -252,7 +264,9 @@ export function ResponsibleContainer<
             heightLocal = height;
         } else {
             // Auto calculation
-            heightLocal = window.innerHeight - Math.round(rect.bottom + 1);
+            heightLocal =
+                document.documentElement.clientHeight -
+                Math.round(rect.bottom + 1);
 
             const style = window.getComputedStyle(dimensions[0][1]!);
             const boxMargin = parseFloat(style.marginBottom);
@@ -281,6 +295,10 @@ export function ResponsibleContainer<
                         width={rect.width}
                         loadData={localLoadData}
                         mRef={mRefs}
+                        outerRef={(element?: HTMLDivElement) => {
+                            if (element != null && elementReady)
+                                elementReady(element, true);
+                        }}
                         columns={columns}
                         {...rest}
                     />
@@ -309,10 +327,13 @@ export function ResponsibleContainer<
             >
                 <ScrollerListEx<T>
                     autoLoad={!hasFields}
-                    width={rect.width}
                     height={heightLocal}
                     loadData={localLoadData}
                     mRef={mRefs}
+                    oRef={(element) => {
+                        if (element != null && elementReady)
+                            elementReady(element, false);
+                    }}
                     {...rest}
                 />
             </Box>,
@@ -341,7 +362,13 @@ export function ResponsibleContainer<
 
     // Layout
     return (
-        <React.Fragment>
+        <Box
+            sx={
+                containerBoxSx == null || showDataGrid == null
+                    ? undefined
+                    : containerBoxSx(showDataGrid)
+            }
+        >
             <Stack>
                 <Box ref={dimensions[0][0]} sx={searchBoxSx}>
                     {searchBar}
@@ -362,6 +389,6 @@ export function ResponsibleContainer<
                     }}
                 />
             )}
-        </React.Fragment>
+        </Box>
     );
 }

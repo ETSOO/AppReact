@@ -18,25 +18,44 @@ export function ResponsivePage<
     const { pageProps = {}, ...rest } = props;
 
     pageProps.paddings ??= MUGlobal.pagePaddings;
-    const { paddings, ...pageRest } = pageProps;
+    const { paddings, fabColumnDirection, ...pageRest } = pageProps;
 
-    const halfPadding = MUGlobal.half(paddings);
+    // State
+    const [scrollContainer, setScrollContainer] = React.useState<HTMLElement>();
+    const [direction, setDirection] = React.useState(fabColumnDirection);
 
     // Layout
     return (
-        <CommonPage {...pageRest} paddings={{}}>
+        <CommonPage
+            {...pageRest}
+            paddings={{}}
+            scrollContainer={scrollContainer}
+            fabColumnDirection={direction}
+        >
             <ResponsibleContainer<T, F>
                 paddings={paddings}
-                listBoxSx={(dataGrid, height) => {
+                containerBoxSx={(dataGrid) => {
                     if (dataGrid) {
                         return {
                             padding: paddings
                         };
                     } else {
                         return {
-                            height,
-                            paddingTop: halfPadding,
-                            paddingBottom: halfPadding
+                            paddingTop: paddings,
+                            paddingBottom: paddings
+                        };
+                    }
+                }}
+                elementReady={(element, isDataGrid) => {
+                    setDirection(!isDataGrid);
+                    setScrollContainer(element);
+                }}
+                listBoxSx={(dataGrid, height) => {
+                    if (dataGrid) {
+                        return {};
+                    } else {
+                        return {
+                            height: height
                         };
                     }
                 }}

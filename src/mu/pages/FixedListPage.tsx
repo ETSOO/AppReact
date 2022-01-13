@@ -85,7 +85,8 @@ export function FixedListPage<
     const list = React.useMemo(() => {
         if (rect != null && rect.height > 50) {
             let height =
-                window.innerHeight - Math.round(rect.top + rect.height + 1);
+                document.documentElement.clientHeight -
+                Math.round(rect.top + rect.height + 1);
 
             if (adjustHeight != null) {
                 height -= adjustHeight(height);

@@ -75,7 +75,8 @@ export function DataGridPage<
     React.useEffect(() => {
         if (rect != null && rect.height > 50 && height == null) {
             let gridHeight =
-                window.innerHeight - Math.round(rect.top + rect.height + 1);
+                document.documentElement.clientHeight -
+                Math.round(rect.top + rect.height + 1);
 
             const style = window.getComputedStyle(dimensions[0][1]!);
             const paddingBottom = parseFloat(style.paddingBottom);
