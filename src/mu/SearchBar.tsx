@@ -106,11 +106,18 @@ export function SearchBar(props: SearchBarProps) {
         submitSeed?: number;
         lastMaxWidth?: number;
     }>({}).current;
+    const lastMaxWidth = state.lastMaxWidth ?? 9999;
 
     // Watch container
     const { dimensions } = useDimensions(1, (target, rect) => {
         // Same logic from resetButtonRef
-        if (rect.width === state.lastMaxWidth) return false;
+        if (
+            rect.width === lastMaxWidth ||
+            (index != null &&
+                index >= fields.length &&
+                rect.width > lastMaxWidth)
+        )
+            return false;
 
         // Len
         const len = target.children.length;
@@ -143,7 +150,10 @@ export function SearchBar(props: SearchBarProps) {
 
         // Container width
         let maxWidth = containerRect.width;
-        if (maxWidth === state.lastMaxWidth) {
+        if (
+            maxWidth === lastMaxWidth ||
+            (index != null && index >= fields.length && maxWidth > lastMaxWidth)
+        ) {
             return;
         }
         state.lastMaxWidth = maxWidth;

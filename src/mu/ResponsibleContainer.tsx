@@ -374,7 +374,6 @@ export function ResponsibleContainer<
                 <Box ref={dimensions[0][0]} sx={searchBoxSx}>
                     {searchBar}
                 </Box>
-                {list}
             </Stack>
             {pullToRefresh && pullContainer && (
                 <PullToRefreshUI
