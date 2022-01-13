@@ -20,6 +20,8 @@ export function ResponsivePage<
     pageProps.paddings ??= MUGlobal.pagePaddings;
     const { paddings, fabColumnDirection, ...pageRest } = pageProps;
 
+    const half = MUGlobal.half(paddings);
+
     // State
     const [scrollContainer, setScrollContainer] = React.useState<HTMLElement>();
     const [direction, setDirection] = React.useState(fabColumnDirection);
@@ -35,29 +37,27 @@ export function ResponsivePage<
             <ResponsibleContainer<T, F>
                 paddings={paddings}
                 containerBoxSx={(dataGrid) => {
-                    if (dataGrid) {
-                        return {
-                            padding: paddings
-                        };
-                    } else {
-                        return {
-                            paddingTop: paddings,
-                            paddingBottom: paddings
-                        };
-                    }
+                    // .SearchBox keep the same to avoid flick when switching between DataGrid and List
+                    return {
+                        '& .SearchBox': {
+                            marginLeft: paddings,
+                            marginTop: paddings,
+                            marginRight: paddings,
+                            marginBottom: half
+                        },
+                        '& .ListBox': {
+                            marginBottom: paddings
+                        },
+                        '& .DataGridBox': {
+                            marginLeft: paddings,
+                            marginRight: paddings,
+                            marginBottom: paddings
+                        }
+                    };
                 }}
                 elementReady={(element, isDataGrid) => {
                     setDirection(!isDataGrid);
                     setScrollContainer(element);
-                }}
-                listBoxSx={(dataGrid, height) => {
-                    if (dataGrid) {
-                        return {};
-                    } else {
-                        return {
-                            height: height
-                        };
-                    }
                 }}
                 {...rest}
             />

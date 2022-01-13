@@ -104,28 +104,30 @@ export function SearchBar(props: SearchBarProps) {
         form?: HTMLFormElement;
         moreForm?: HTMLFormElement;
         submitSeed?: number;
-        lastMaxWidth?: number;
+        lastMaxWidth: number;
         hasMore: boolean;
-    }>({ hasMore: true }).current;
-    const lastMaxWidth = state.lastMaxWidth ?? 9999;
+    }>({ hasMore: true, lastMaxWidth: 9999 }).current;
 
     // Watch container
-    const { dimensions } = useDimensions(1, (target, rect) => {
-        // Same logic from resetButtonRef
-        console.log('useDimensions', state.hasMore, rect.width, lastMaxWidth);
-        if (
-            rect.width === lastMaxWidth ||
-            (!state.hasMore && rect.width > lastMaxWidth)
-        )
-            return false;
+    const { dimensions } = useDimensions(
+        1,
+        (target, rect) => {
+            // Same logic from resetButtonRef
+            if (
+                rect.width === state.lastMaxWidth ||
+                (!state.hasMore && rect.width > state.lastMaxWidth)
+            )
+                return false;
 
-        // Len
-        const len = target.children.length;
-        for (let i = 0; i < len; i++) {
-            var classList = target.children[i].classList;
-            classList.remove('showChild');
-        }
-    });
+            // Len
+            const len = target.children.length;
+            for (let i = 0; i < len; i++) {
+                var classList = target.children[i].classList;
+                classList.remove('showChild');
+            }
+        },
+        0
+    );
 
     // Show or hide element
     const setElementVisible = (element: Element, visible: boolean) => {
@@ -149,16 +151,10 @@ export function SearchBar(props: SearchBarProps) {
             return;
 
         // Container width
-        console.log(
-            'resetButtonRef',
-            state.hasMore,
-            containerRect.width,
-            lastMaxWidth
-        );
         let maxWidth = containerRect.width;
         if (
-            maxWidth === lastMaxWidth ||
-            (!state.hasMore && maxWidth > lastMaxWidth)
+            maxWidth === state.lastMaxWidth ||
+            (!state.hasMore && maxWidth > state.lastMaxWidth)
         ) {
             return;
         }

@@ -54,7 +54,7 @@ export interface ResponsibleContainerProps<
     /**
      * Container box SX (dataGrid determines the case)
      */
-    containerBoxSx?: (dataGrid: boolean) => SxProps<Theme>;
+    containerBoxSx?: (dataGrid?: boolean) => SxProps<Theme>;
 
     /**
      * Min width to show Datagrid
@@ -94,11 +94,6 @@ export interface ResponsibleContainerProps<
     itemSize: ((index: number) => number) | number;
 
     /**
-     * Listbox SX (dataGrid determines the case)
-     */
-    listBoxSx?: (dataGrid: boolean, height: number) => SxProps<Theme>;
-
-    /**
      * Load data callback
      */
     loadData: (
@@ -126,11 +121,6 @@ export interface ResponsibleContainerProps<
     pullToRefresh?: boolean;
 
     /**
-     * Searchbox SX
-     */
-    searchBoxSx?: SxProps<Theme>;
-
-    /**
      * Size ready to read miliseconds span
      */
     sizeReadyMiliseconds?: number;
@@ -145,8 +135,8 @@ interface LocalRefs {
 function getDefaultSearchBoxSx(paddings: {}): SxProps<Theme> {
     const half = MUGlobal.half(paddings);
     return {
-        paddingLeft: (theme) => theme.spacing(0.5),
-        paddingRight: (theme) => theme.spacing(0.5),
+        paddingLeft: (theme) => theme.spacing(1),
+        paddingRight: (theme) => theme.spacing(1),
         paddingTop: half,
         marginBottom: half
     };
@@ -166,17 +156,15 @@ export function ResponsibleContainer<
         adjustHeight,
         columns,
         containerBoxSx,
-        dataGridMinWidth = DataGridExCalColumns(columns).total,
+        dataGridMinWidth = Math.max(576, DataGridExCalColumns(columns).total),
         elementReady,
         fields,
         fieldTemplate,
         height,
-        listBoxSx,
         loadData,
         mRef,
         paddings = MUGlobal.pagePaddings,
         pullToRefresh = true,
-        searchBoxSx = getDefaultSearchBoxSx(paddings),
         sizeReadyMiliseconds = 0,
         ...rest
     } = props;
@@ -229,7 +217,6 @@ export function ResponsibleContainer<
             const lastRect = state.rect;
 
             // 32 = scroll bar width
-            console.log(lastRect, rect);
             if (
                 lastRect != null &&
                 state.mounted !== true &&
@@ -283,13 +270,7 @@ export function ResponsibleContainer<
             delete rest.itemRenderer;
 
             return [
-                <Box
-                    sx={
-                        listBoxSx == null
-                            ? undefined
-                            : listBoxSx(true, heightLocal)
-                    }
-                >
+                <Box className="DataGridBox">
                     <DataGridEx<T>
                         autoLoad={!hasFields}
                         height={heightLocal}
@@ -319,13 +300,7 @@ export function ResponsibleContainer<
         delete rest.selectable;
 
         return [
-            <Box
-                sx={
-                    listBoxSx == null
-                        ? undefined
-                        : listBoxSx(false, heightLocal)
-                }
-            >
+            <Box className="ListBox" sx={{ height: heightLocal }}>
                 <ScrollerListEx<T>
                     autoLoad={!hasFields}
                     height={heightLocal}
@@ -365,13 +340,13 @@ export function ResponsibleContainer<
     return (
         <Box
             sx={
-                containerBoxSx == null || showDataGrid == null
+                containerBoxSx == null
                     ? undefined
                     : containerBoxSx(showDataGrid)
             }
         >
             <Stack>
-                <Box ref={dimensions[0][0]} sx={searchBoxSx}>
+                <Box ref={dimensions[0][0]} className="SearchBox">
                     {searchBar}
                 </Box>
                 {list}
