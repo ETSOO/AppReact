@@ -103,7 +103,7 @@ export namespace DataGridRenderers {
             }
 
             if (value) return <CheckIcon fontSize="small" />;
-            else return <ClearIcon fontSize="small" />;
+            else return <ClearIcon fontSize="small" color="error" />;
         }
 
         // To string
