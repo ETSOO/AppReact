@@ -27,6 +27,16 @@ export interface TabBoxPros extends BoxProps {
     container?: Omit<TabsProps, 'value'>;
 
     /**
+     * Default selected index
+     */
+    defaultIndex?: number;
+
+    /**
+     * Current index
+     */
+    index?: number;
+
+    /**
      * Add a hidden input and its name
      */
     inputName?: string;
@@ -49,11 +59,23 @@ export interface TabBoxPros extends BoxProps {
  */
 export function TabBox(props: TabBoxPros) {
     // Destruct
-    const { inputName, root, container = {}, tabs } = props;
+    const {
+        index,
+        inputName,
+        root,
+        container = {},
+        defaultIndex = 0,
+        tabs
+    } = props;
     const { onChange, ...rest } = container;
 
     // State
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState(defaultIndex);
+
+    React.useEffect(() => {
+        if (index == null) return;
+        setValue(index);
+    }, [index]);
 
     // Layout
     return (
