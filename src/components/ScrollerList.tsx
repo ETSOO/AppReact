@@ -163,8 +163,7 @@ export const ScrollerList = <T extends Record<string, any>>(
         state.isNextPageLoading = true;
 
         // Parameters
-        const { currentPage, batchSize, orderBy, orderByAsc, data, isMounted } =
-            state;
+        const { currentPage, batchSize, orderBy, orderByAsc, data } = state;
 
         const loadProps: GridLoadDataProps = {
             currentPage,
@@ -175,11 +174,10 @@ export const ScrollerList = <T extends Record<string, any>>(
         };
 
         loadData(loadProps).then((result) => {
-            state.isMounted = true;
-
-            if (result == null || isMounted === false) {
+            if (result == null || state.isMounted === false) {
                 return;
             }
+            state.isMounted = true;
 
             const newItems = result.length;
             state.lastLoadedItems = newItems;
@@ -250,7 +248,7 @@ export const ScrollerList = <T extends Record<string, any>>(
                     Object.assign(state, resetState);
 
                     // Reset
-                    setRows([]);
+                    if (state.isMounted !== false) setRows([]);
                 },
 
                 scrollTo(scrollOffset: number): void {
@@ -301,8 +299,7 @@ export const ScrollerList = <T extends Record<string, any>>(
         };
     }, []);
 
-    // Destruct state
-    const { autoLoad: stateAutoLoad, hasNextPage, currentPage } = state;
+    // Row count
     const rowCount = rows.length;
 
     // Local items renderer callback
@@ -319,10 +316,10 @@ export const ScrollerList = <T extends Record<string, any>>(
     };
 
     // Item count
-    const itemCount = hasNextPage ? rowCount + 1 : rowCount;
+    const itemCount = state.hasNextPage ? rowCount + 1 : rowCount;
 
     // Auto load data when current page is 0
-    if (currentPage === 0 && stateAutoLoad) loadDataLocal();
+    if (state.currentPage === 0 && state.autoLoad) loadDataLocal();
 
     // Layout
     return typeof itemSize === 'function' ? (

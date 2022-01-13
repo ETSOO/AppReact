@@ -198,8 +198,7 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
         state.isNextPageLoading = true;
 
         // Parameters
-        const { currentPage, batchSize, orderBy, orderByAsc, data, isMounted } =
-            state;
+        const { currentPage, batchSize, orderBy, orderByAsc, data } = state;
 
         const loadProps: GridLoadDataProps = {
             currentPage,
@@ -210,11 +209,10 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
         };
 
         loadData(loadProps).then((result) => {
-            state.isMounted = true;
-
-            if (result == null || isMounted === false) {
+            if (result == null || state.isMounted === false) {
                 return;
             }
+            state.isMounted = true;
 
             const newItems = result.length;
             state.lastLoadedItems = newItems;
@@ -291,7 +289,7 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
         Object.assign(state, resetState);
 
         // Reset items
-        setRows([]);
+        if (state.isMounted !== false) setRows([]);
     };
 
     React.useImperativeHandle(
@@ -378,15 +376,14 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
         });
     }, [width]);
 
-    // Destruct state
-    const { autoLoad: stateAutoLoad, hasNextPage, currentPage } = state;
+    // Rows
     const rowLength = rows.length;
 
     // Row count
-    const rowCount = hasNextPage ? rowLength + 1 : rowLength;
+    const rowCount = state.hasNextPage ? rowLength + 1 : rowLength;
 
     // Auto load data when current page is 0
-    if (currentPage === 0 && stateAutoLoad) loadDataLocal();
+    if (state.currentPage === 0 && state.autoLoad) loadDataLocal();
 
     // Layout
     return (
