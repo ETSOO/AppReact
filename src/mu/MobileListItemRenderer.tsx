@@ -143,10 +143,7 @@ export function MobileListItemRenderer<T>(
             />
             <CardContent
                 sx={{
-                    paddingTop: 0,
-                    '&:last-child': {
-                        paddingBottom: 0 // default 24px
-                    }
+                    paddingTop: 0
                 }}
             >
                 {children}
