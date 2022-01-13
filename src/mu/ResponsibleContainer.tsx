@@ -229,6 +229,7 @@ export function ResponsibleContainer<
             const lastRect = state.rect;
 
             // 32 = scroll bar width
+            console.log(lastRect, rect);
             if (
                 lastRect != null &&
                 state.mounted !== true &&
