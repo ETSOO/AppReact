@@ -20,8 +20,6 @@ export function ResponsivePage<
     pageProps.paddings ??= MUGlobal.pagePaddings;
     const { paddings, fabColumnDirection, ...pageRest } = pageProps;
 
-    const half = MUGlobal.half(paddings);
-
     // State
     const [scrollContainer, setScrollContainer] = React.useState<HTMLElement>();
     const [direction, setDirection] = React.useState(fabColumnDirection);
@@ -36,7 +34,10 @@ export function ResponsivePage<
         >
             <ResponsibleContainer<T, F>
                 paddings={paddings}
-                containerBoxSx={(dataGrid) => {
+                containerBoxSx={(paddings, _dataGrid) => {
+                    // Half
+                    const half = MUGlobal.half(paddings);
+
                     // .SearchBox keep the same to avoid flick when switching between DataGrid and List
                     return {
                         '& .SearchBox': {
