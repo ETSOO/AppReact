@@ -47,28 +47,24 @@ export function MobileListItemRenderer<T>(
     // Elements
     const [title, subheader, actions, children] = renderer(data);
 
-    // Half
-    //const halfMargin = MUGlobal.half(margin);
-    //const nMargin = MUGlobal.reverse(margin);
+    // Calculate margin
     const calculateMargin = () => {
         if (typeof margin === 'function') return margin();
         if (Array.isArray(margin)) {
             const marginValue = margin[0];
             const isNarrow = margin[1];
-            const nMargin = MUGlobal.reverse(marginValue);
             const half = MUGlobal.half(marginValue);
             if (isNarrow) {
-                const nHalf = MUGlobal.reverse(half);
                 return {
-                    marginLeft: nHalf,
-                    marginRight: nHalf,
+                    marginLeft: 0,
+                    marginRight: 0,
                     marginTop: half,
                     marginBottom: half
                 };
             } else {
                 return {
-                    marginLeft: nMargin,
-                    marginRight: nMargin,
+                    marginLeft: half,
+                    marginRight: half,
                     marginTop: half,
                     marginBottom: half
                 };
@@ -145,7 +141,16 @@ export function MobileListItemRenderer<T>(
                 subheader={subheader}
                 subheaderTypographyProps={{ variant: 'caption' }}
             />
-            <CardContent sx={{ paddingTop: 0 }}>{children}</CardContent>
+            <CardContent
+                sx={{
+                    paddingTop: 0,
+                    '&:last-child': {
+                        paddingBottom: 0 // default 24px
+                    }
+                }}
+            >
+                {children}
+            </CardContent>
         </Card>
     );
 }
