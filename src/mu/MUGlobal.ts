@@ -57,18 +57,41 @@ export class MUGlobal {
     }
 
     /**
-     * Update object number properties with adjustment
+     * Reverse object number properties, like 5 to -5
      * @param input Input object
-     * @param adjust Adjust value
-     * @param field Specific field
      * @returns Updated object
      */
-    static increase(input: {}, adjust: number, field?: string) {
+    static reverse(input: {}) {
         const newObj = { ...input };
         Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number') {
-                if (field == null || field === key)
-                    Reflect.set(newObj, key, value + adjust);
+                Reflect.set(newObj, key, -value);
+            }
+        });
+        return newObj;
+    }
+
+    /**
+     * Update object number properties with adjustment
+     * @param input Input object
+     * @param adjust Adjust value or new size object
+     * @param field Specific field
+     * @returns Updated object
+     */
+    static increase(input: {}, adjust: number | {}, field?: string) {
+        const newObj = { ...input };
+        Object.entries(newObj).forEach(([key, value]) => {
+            if (typeof value === 'number') {
+                if (field == null || field === key) {
+                    const adjustValue =
+                        typeof adjust === 'number'
+                            ? adjust
+                            : Reflect.get(adjust, key);
+                    if (adjustValue == null || typeof adjustValue !== 'number')
+                        return;
+
+                    Reflect.set(newObj, key, value + adjustValue);
+                }
             }
         });
         return newObj;

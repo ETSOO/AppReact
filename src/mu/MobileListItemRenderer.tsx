@@ -1,4 +1,11 @@
-import { Card, CardContent, CardHeader, LinearProgress } from '@mui/material';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    LinearProgress,
+    SxProps,
+    Theme
+} from '@mui/material';
 import React from 'react';
 import { ListItemReact } from '../components/ListItemReact';
 import { MoreFab } from './MoreFab';
@@ -24,7 +31,7 @@ function getActions(input: (ListItemReact | boolean)[]): ListItemReact[] {
  */
 export function MobileListItemRenderer<T>(
     { data, itemHeight }: ScrollerListExInnerItemRendererProps<T>,
-    margin: {},
+    margin: {} | [{}, boolean] | (() => SxProps<Theme>),
     renderer: (
         data: T
     ) => [
@@ -41,17 +48,48 @@ export function MobileListItemRenderer<T>(
     const [title, subheader, actions, children] = renderer(data);
 
     // Half
-    const halfMargin = MUGlobal.half(margin);
+    //const halfMargin = MUGlobal.half(margin);
+    //const nMargin = MUGlobal.reverse(margin);
+    const calculateMargin = () => {
+        if (typeof margin === 'function') return margin();
+        if (Array.isArray(margin)) {
+            const marginValue = margin[0];
+            const isNarrow = margin[1];
+            const nMargin = MUGlobal.reverse(marginValue);
+            const half = MUGlobal.half(marginValue);
+            if (isNarrow) {
+                const nHalf = MUGlobal.reverse(half);
+                return {
+                    marginLeft: nHalf,
+                    marginRight: nHalf,
+                    marginTop: half,
+                    marginBottom: half
+                };
+            } else {
+                return {
+                    marginLeft: nMargin,
+                    marginRight: nMargin,
+                    marginTop: half,
+                    marginBottom: half
+                };
+            }
+        }
+
+        const half = MUGlobal.half(margin);
+        return {
+            marginLeft: margin,
+            marginRight: margin,
+            marginTop: half,
+            marginBottom: half
+        };
+    };
 
     return (
         <Card
             sx={{
                 height: (theme) =>
                     MUGlobal.adjustWithTheme(itemHeight, margin, theme.spacing),
-                marginLeft: margin,
-                marginRight: margin,
-                marginTop: halfMargin,
-                marginBottom: halfMargin
+                ...calculateMargin()
             }}
         >
             <CardHeader
