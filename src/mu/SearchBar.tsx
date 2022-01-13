@@ -112,6 +112,7 @@ export function SearchBar(props: SearchBarProps) {
     // Watch container
     const { dimensions } = useDimensions(1, (target, rect) => {
         // Same logic from resetButtonRef
+        console.log('useDimensions', state.hasMore, rect.width, lastMaxWidth);
         if (
             rect.width === lastMaxWidth ||
             (!state.hasMore && rect.width > lastMaxWidth)
@@ -148,6 +149,12 @@ export function SearchBar(props: SearchBarProps) {
             return;
 
         // Container width
+        console.log(
+            'resetButtonRef',
+            state.hasMore,
+            containerRect.width,
+            lastMaxWidth
+        );
         let maxWidth = containerRect.width;
         if (
             maxWidth === lastMaxWidth ||
