@@ -5,15 +5,26 @@ import { MUGlobal } from '../MUGlobal';
 import { CommonPage, CommonPageScrollContainer } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 /**
  * Add / Edit page props
  */
 export interface EditPageProps extends Omit<CommonPageProps, 'onSubmit'> {
     /**
+     * Is editing
+     */
+    isEditing?: boolean;
+
+    /**
      * On form submit
      */
     onSubmit?: FormEventHandler<HTMLFormElement>;
+
+    /**
+     * On delete callback
+     */
+    onDelete?: () => Promise<void> | void;
 }
 
 /**
@@ -24,6 +35,8 @@ export function EditPage(props: EditPageProps) {
     // Destruct
     const {
         children,
+        isEditing,
+        onDelete,
         onSubmit,
         paddings = MUGlobal.pagePaddings,
         scrollContainer = CommonPageScrollContainer,
@@ -51,6 +64,8 @@ export function EditPage(props: EditPageProps) {
                 <Grid
                     container
                     position="sticky"
+                    display="flex"
+                    gap={paddings}
                     sx={{
                         top: 'auto',
                         bottom: (theme) =>
@@ -58,11 +73,22 @@ export function EditPage(props: EditPageProps) {
                         paddingTop: paddings
                     }}
                 >
+                    {isEditing && onDelete && (
+                        <Button
+                            color="primary"
+                            variant="outlined"
+                            onClick={() => onDelete()}
+                            startIcon={<DeleteIcon color="warning" />}
+                        >
+                            {labels.delete}
+                        </Button>
+                    )}
                     <Button
                         variant="contained"
                         type="submit"
                         fullWidth
                         startIcon={<SaveIcon />}
+                        sx={{ flexGrow: 1 }}
                     >
                         {labels.save}
                     </Button>
