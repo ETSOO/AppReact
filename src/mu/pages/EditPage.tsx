@@ -86,7 +86,6 @@ export function EditPage(props: EditPageProps) {
                     <Button
                         variant="contained"
                         type="submit"
-                        fullWidth
                         startIcon={<SaveIcon />}
                         sx={{ flexGrow: 1 }}
                     >
