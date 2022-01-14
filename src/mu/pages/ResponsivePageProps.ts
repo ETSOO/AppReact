@@ -1,7 +1,10 @@
 import { DataTypes } from '@etsoo/shared';
 import { ListChildComponentProps } from 'react-window';
 import { GridMethodRef } from '../GridMethodRef';
-import { ScrollerListExInnerItemRendererProps } from '../ScrollerListEx';
+import {
+    ScrollerListExInnerItemRendererProps,
+    ScrollerListExItemSize
+} from '../ScrollerListEx';
 import { DataGridPageProps } from './DataGridPageProps';
 
 /**
@@ -32,7 +35,7 @@ export interface ResponsePageProps<T, F extends DataTypes.BasicTemplate>
     /**
      * Item size, a function indicates its a variable size list
      */
-    itemSize: ((index: number) => number) | number;
+    itemSize: ScrollerListExItemSize;
 
     /**
      * Methods

@@ -21,7 +21,8 @@ import { MUGlobal } from './MUGlobal';
 import { PullToRefreshUI } from './PullToRefreshUI';
 import {
     ScrollerListEx,
-    ScrollerListExInnerItemRendererProps
+    ScrollerListExInnerItemRendererProps,
+    ScrollerListExItemSize
 } from './ScrollerListEx';
 import { SearchBar } from './SearchBar';
 
@@ -91,7 +92,7 @@ export interface ResponsibleContainerProps<
     /**
      * Item size, a function indicates its a variable size list
      */
-    itemSize: ((index: number) => number) | number;
+    itemSize: ScrollerListExItemSize;
 
     /**
      * Load data callback

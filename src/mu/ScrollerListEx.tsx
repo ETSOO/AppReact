@@ -1,8 +1,10 @@
 import { css } from '@emotion/css';
 import { DataTypes, Utils } from '@etsoo/shared';
+import { useTheme } from '@mui/material';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
 import { ScrollerList, ScrollerListProps } from '../components/ScrollerList';
+import { MUGlobal } from './MUGlobal';
 
 // Scroll bar size
 const scrollbarSize = 16;
@@ -44,6 +46,37 @@ const createGridStyle = (
     });
 };
 
+// Default margin
+const defaultMargin = (margin: {}, isNarrow?: boolean) => {
+    const half = MUGlobal.half(margin);
+
+    if (isNarrow == null) {
+        const half = MUGlobal.half(margin);
+        return {
+            marginLeft: margin,
+            marginRight: margin,
+            marginTop: half,
+            marginBottom: half
+        };
+    }
+
+    if (isNarrow) {
+        return {
+            marginLeft: 0,
+            marginRight: 0,
+            marginTop: half,
+            marginBottom: half
+        };
+    }
+
+    return {
+        marginLeft: half,
+        marginRight: half,
+        marginTop: half,
+        marginBottom: half
+    };
+};
+
 /**
  * Extended ScrollerList inner item renderer props
  */
@@ -58,13 +91,34 @@ export interface ScrollerListExInnerItemRendererProps<T>
      * Item height
      */
     itemHeight: number;
+
+    /**
+     * Item space
+     */
+    space: number;
+
+    /**
+     * Default margins
+     */
+    margins: {};
 }
+
+/**
+ * Extended ScrollerList ItemSize type
+ * 1. Callback function
+ * 2. Static sets
+ * 3. Dynamic calculation
+ */
+export type ScrollerListExItemSize =
+    | ((index: number) => [number, number] | [number, number, {}])
+    | [number, number]
+    | [number, {}, boolean?];
 
 /**
  * Extended ScrollerList Props
  */
 export interface ScrollerListExProps<T>
-    extends Omit<ScrollerListProps<T>, 'itemRenderer'> {
+    extends Omit<ScrollerListProps<T>, 'itemRenderer' | 'itemSize'> {
     /**
      * Alternating colors for odd/even rows
      */
@@ -86,6 +140,11 @@ export interface ScrollerListExProps<T>
      * Item renderer
      */
     itemRenderer?: (props: ListChildComponentProps<T>) => React.ReactElement;
+
+    /**
+     * Item size, a function indicates its a variable size list
+     */
+    itemSize: ScrollerListExItemSize;
 
     /**
      * On items select change
@@ -117,6 +176,16 @@ interface defaultItemRendererProps<T> extends ListChildComponentProps<T> {
     itemHeight: number;
 
     /**
+     * Item space
+     */
+    space: number;
+
+    /**
+     * Default margins
+     */
+    margins: {};
+
+    /**
      * Item selected
      */
     selected: boolean;
@@ -130,7 +199,9 @@ function defaultItemRenderer<T>({
     onMouseDown,
     selected,
     style,
-    itemHeight
+    itemHeight,
+    space,
+    margins
 }: defaultItemRendererProps<T>) {
     // Child
     const child = innerItemRenderer({
@@ -138,7 +209,9 @@ function defaultItemRenderer<T>({
         data,
         style,
         selected,
-        itemHeight
+        itemHeight,
+        space,
+        margins
     });
 
     let rowClass = `ScrollerListEx-Row${index % 2}`;
@@ -192,6 +265,41 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
         return selected;
     };
 
+    // Theme
+    const theme = useTheme();
+
+    // Calculate size
+    const calculateItemSize = (index: number): [number, number, {}] => {
+        // Callback function
+        if (typeof itemSize === 'function') {
+            const result = itemSize(index);
+            if (result.length == 2)
+                return [...result, defaultMargin(MUGlobal.pagePaddings)];
+            return result;
+        }
+
+        // Calculation
+        const [size, spaces, isNarrow] = itemSize;
+        if (typeof spaces === 'number')
+            return [
+                size,
+                spaces,
+                defaultMargin(MUGlobal.pagePaddings, undefined)
+            ];
+
+        return [
+            size,
+            MUGlobal.getSpace(spaces, theme),
+            defaultMargin(spaces, isNarrow)
+        ];
+    };
+
+    // Local item size
+    const itemSizeLocal = (index: number) => {
+        const [size, space] = calculateItemSize(index);
+        return size + space;
+    };
+
     // Destruct
     const {
         alternatingColors = [undefined, undefined],
@@ -202,14 +310,15 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
         itemKey = (index: number, data: T) =>
             DataTypes.getIdValue(data, idField) ?? index,
         itemRenderer = (itemProps) => {
-            const itemHeight =
-                typeof itemSize === 'function'
-                    ? itemSize(itemProps.index)
-                    : itemSize;
+            const [itemHeight, space, margins] = calculateItemSize(
+                itemProps.index
+            );
             return defaultItemRenderer({
                 itemHeight,
                 innerItemRenderer,
                 onMouseDown,
+                space,
+                margins,
                 selected: isSelected(itemProps.data),
                 ...itemProps
             });
@@ -229,7 +338,7 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
             )}
             itemKey={itemKey}
             itemRenderer={itemRenderer}
-            itemSize={itemSize}
+            itemSize={itemSizeLocal}
             {...rest}
         />
     );

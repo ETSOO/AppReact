@@ -1,4 +1,5 @@
 import { NumberUtils } from '@etsoo/shared';
+import { Breakpoint, Theme } from '@mui/material';
 
 export class MUGlobal {
     /**
@@ -123,6 +124,28 @@ export class MUGlobal {
             }
         });
         return newObj;
+    }
+
+    /**
+     * Get multple medias theme space
+     * @param spaces Spaces
+     * @param theme Theme
+     * @returns Result
+     */
+    static getSpace(spaces: {}, theme: Theme) {
+        for (const [key, value] of Object.entries(spaces)) {
+            if (
+                typeof value === 'number' &&
+                theme.breakpoints.keys.findIndex((bk) => bk === key) != -1
+            ) {
+                const mediaRaw = theme.breakpoints.up(key as Breakpoint);
+                const mediaQuery = mediaRaw.substring(mediaRaw.indexOf('('));
+                if (window.matchMedia(mediaQuery).matches) {
+                    return parseInt(theme.spacing(value), 10);
+                }
+            }
+        }
+        return 0;
     }
 
     /**
