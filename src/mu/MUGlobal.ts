@@ -127,17 +127,25 @@ export class MUGlobal {
     }
 
     /**
+     * Break points defined
+     */
+    static breakpoints = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
+
+    /**
      * Get multple medias theme space
+     * Responsive values and Breakpoints as an object
+     * xs = theme.breakpoints.up('xs')
+     * https://mui.com/system/basics/
      * @param spaces Spaces
      * @param theme Theme
      * @returns Result
      */
     static getSpace(spaces: {}, theme: Theme) {
-        for (const [key, value] of Object.entries(spaces)) {
-            if (
-                typeof value === 'number' &&
-                theme.breakpoints.keys.findIndex((bk) => bk === key) != -1
-            ) {
+        const start = this.breakpoints.length - 1;
+        for (let i = start; i >= 0; i--) {
+            const key = this.breakpoints[i];
+            const value = Reflect.get(spaces, key);
+            if (typeof value === 'number') {
                 const mediaRaw = theme.breakpoints.up(key as Breakpoint);
                 const mediaQuery = mediaRaw.substring(mediaRaw.indexOf('('));
                 if (window.matchMedia(mediaQuery).matches) {
@@ -145,6 +153,7 @@ export class MUGlobal {
                 }
             }
         }
+
         return 0;
     }
 

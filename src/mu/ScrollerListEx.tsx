@@ -265,41 +265,6 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
         return selected;
     };
 
-    // Theme
-    const theme = useTheme();
-
-    // Calculate size
-    const calculateItemSize = (index: number): [number, number, {}] => {
-        // Callback function
-        if (typeof itemSize === 'function') {
-            const result = itemSize(index);
-            if (result.length == 2)
-                return [...result, defaultMargin(MUGlobal.pagePaddings)];
-            return result;
-        }
-
-        // Calculation
-        const [size, spaces, isNarrow] = itemSize;
-        if (typeof spaces === 'number')
-            return [
-                size,
-                spaces,
-                defaultMargin(MUGlobal.pagePaddings, undefined)
-            ];
-
-        return [
-            size,
-            MUGlobal.getSpace(spaces, theme),
-            defaultMargin(spaces, isNarrow)
-        ];
-    };
-
-    // Local item size
-    const itemSizeLocal = (index: number) => {
-        const [size, space] = calculateItemSize(index);
-        return size + space;
-    };
-
     // Destruct
     const {
         alternatingColors = [undefined, undefined],
@@ -327,6 +292,49 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
         selectedColor = '#edf4fb',
         ...rest
     } = props;
+
+    // Theme
+    const theme = useTheme();
+
+    // Cache calculation
+    const itemSizeResult = React.useMemo(():
+        | [number, number, {}]
+        | undefined => {
+        if (typeof itemSize === 'function') return undefined;
+        const [size, spaces, isNarrow] = itemSize;
+        if (typeof spaces === 'number')
+            return [
+                size,
+                spaces,
+                defaultMargin(MUGlobal.pagePaddings, undefined)
+            ];
+
+        return [
+            size,
+            MUGlobal.getSpace(spaces, theme),
+            defaultMargin(spaces, isNarrow)
+        ];
+    }, [itemSize]);
+
+    // Calculate size
+    const calculateItemSize = (index: number): [number, number, {}] => {
+        // Callback function
+        if (typeof itemSize === 'function') {
+            const result = itemSize(index);
+            if (result.length == 2)
+                return [...result, defaultMargin(MUGlobal.pagePaddings)];
+            return result;
+        }
+
+        // Calculation
+        return itemSizeResult!;
+    };
+
+    // Local item size
+    const itemSizeLocal = (index: number) => {
+        const [size, space] = calculateItemSize(index);
+        return size + space;
+    };
 
     // Layout
     return (
