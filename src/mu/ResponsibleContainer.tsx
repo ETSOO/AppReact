@@ -349,7 +349,11 @@ export function ResponsibleContainer<
             }
         >
             <Stack>
-                <Box ref={dimensions[0][0]} className="SearchBox">
+                <Box
+                    ref={dimensions[0][0]}
+                    className="SearchBox"
+                    sx={{ height: 64 }}
+                >
                     {searchBar}
                 </Box>
                 {list}
