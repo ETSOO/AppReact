@@ -1,5 +1,6 @@
 import { Utils } from '@etsoo/shared';
 import { Box, BoxProps, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
+import { Link } from '@reach/router';
 import React from 'react';
 
 /**
@@ -15,6 +16,11 @@ export interface TabBoxPanel extends Omit<TabProps, 'value' | 'children'> {
      * Panel box props
      */
     panel?: Omit<BoxProps, 'hidden'>;
+
+    /**
+     * To URL
+     */
+    to?: string;
 }
 
 /**
@@ -93,7 +99,12 @@ export function TabBox(props: TabBoxPros) {
                     {...rest}
                 >
                     {tabs.map(({ children, panel, ...tabRest }, index) => (
-                        <Tab key={index} value={index} {...tabRest} />
+                        <Tab
+                            key={index}
+                            value={index}
+                            LinkComponent={tabRest.to ? Link : undefined}
+                            {...tabRest}
+                        />
                     ))}
                 </Tabs>
             </Box>
