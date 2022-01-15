@@ -34,7 +34,7 @@ export function ResponsivePage<
         >
             <ResponsibleContainer<T, F>
                 paddings={paddings}
-                containerBoxSx={(paddings, _dataGrid) => {
+                containerBoxSx={(paddings, hasField, _dataGrid) => {
                     // Half
                     const half = MUGlobal.half(paddings);
 
@@ -44,7 +44,7 @@ export function ResponsivePage<
                         '& .SearchBox': {
                             marginLeft: paddings,
                             marginRight: paddings,
-                            marginBottom: half
+                            marginBottom: hasField ? half : 0
                         },
                         '& .ListBox': {
                             marginBottom: paddings

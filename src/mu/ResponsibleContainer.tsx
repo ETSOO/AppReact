@@ -55,7 +55,11 @@ export interface ResponsibleContainerProps<
     /**
      * Container box SX (dataGrid determines the case)
      */
-    containerBoxSx?: (paddings: {}, dataGrid?: boolean) => SxProps<Theme>;
+    containerBoxSx?: (
+        paddings: {},
+        hasFields: boolean,
+        dataGrid?: boolean
+    ) => SxProps<Theme>;
 
     /**
      * Min width to show Datagrid
@@ -135,12 +139,13 @@ interface LocalRefs {
 
 function defaultContainerBoxSx(
     paddings: {},
+    hasField: boolean,
     _dataGrid?: boolean
 ): SxProps<Theme> {
     const half = MUGlobal.half(paddings);
     return {
         '& .SearchBox': {
-            marginBottom: half
+            marginBottom: hasField ? half : 0
         }
     };
 }
@@ -345,14 +350,14 @@ export function ResponsibleContainer<
             sx={
                 containerBoxSx == null
                     ? undefined
-                    : containerBoxSx(paddings, showDataGrid)
+                    : containerBoxSx(paddings, hasFields, showDataGrid)
             }
         >
             <Stack>
                 <Box
                     ref={dimensions[0][0]}
                     className="SearchBox"
-                    sx={{ height: searchBar == null ? 0 : 40 }}
+                    sx={{ height: hasFields ? 40 : 0 }}
                 >
                     {searchBar}
                 </Box>
