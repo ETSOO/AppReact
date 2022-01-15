@@ -352,7 +352,7 @@ export function ResponsibleContainer<
                 <Box
                     ref={dimensions[0][0]}
                     className="SearchBox"
-                    sx={{ height: 64 }}
+                    sx={{ height: searchBar == null ? 0 : 40 }}
                 >
                     {searchBar}
                 </Box>

@@ -40,9 +40,9 @@ export function ResponsivePage<
 
                     // .SearchBox keep the same to avoid flick when switching between DataGrid and List
                     return {
+                        paddingTop: paddings,
                         '& .SearchBox': {
                             marginLeft: paddings,
-                            marginTop: paddings,
                             marginRight: paddings,
                             marginBottom: half
                         },
