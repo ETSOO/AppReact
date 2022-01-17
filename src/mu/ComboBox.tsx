@@ -72,6 +72,11 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
     const [localOptions, setOptions] = React.useState(options);
     const isMounted = React.useRef(true);
 
+    // When options change
+    React.useEffect(() => {
+        setOptions(options);
+    }, [options]);
+
     // Local default value
     let localValue =
         idValue != null

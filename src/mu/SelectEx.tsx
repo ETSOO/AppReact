@@ -90,6 +90,11 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
     const [localOptions, setOptions] = React.useState(options);
     const isMounted = React.useRef(true);
 
+    // When options change
+    React.useEffect(() => {
+        setOptions(options);
+    }, [options]);
+
     // Local value
     const valueSource = defaultValue ?? value ?? '';
     let localValue: unknown | unknown[];
