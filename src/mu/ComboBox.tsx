@@ -74,9 +74,10 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
 
     // When options change
     // [options] will cause infinite loop
+    const propertyWay = loadData == null;
     React.useEffect(() => {
-        if (options != null) setOptions(options);
-    }, [JSON.stringify(options)]);
+        if (propertyWay && options != null) setOptions(options);
+    }, [JSON.stringify(options), propertyWay]);
 
     // Local default value
     let localValue =
