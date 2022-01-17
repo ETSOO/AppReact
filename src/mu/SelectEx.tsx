@@ -91,9 +91,10 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
     const isMounted = React.useRef(true);
 
     // When options change
+    // [options] will cause infinite loop
     React.useEffect(() => {
-        setOptions(options);
-    }, [options]);
+        if (options != null) setOptions(options);
+    }, [JSON.stringify(options)]);
 
     // Local value
     const valueSource = defaultValue ?? value ?? '';

@@ -56,7 +56,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         onLoadData,
         name,
         inputAutoComplete = 'off',
-        options = [],
+        options,
         readOnly = true,
         onChange,
         value,
@@ -69,13 +69,14 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
     const inputRef = React.createRef<HTMLInputElement>();
 
     // Options state
-    const [localOptions, setOptions] = React.useState(options);
+    const [localOptions, setOptions] = React.useState(options ?? []);
     const isMounted = React.useRef(true);
 
     // When options change
+    // [options] will cause infinite loop
     React.useEffect(() => {
-        setOptions(options);
-    }, [options]);
+        if (options != null) setOptions(options);
+    }, [JSON.stringify(options)]);
 
     // Local default value
     let localValue =
