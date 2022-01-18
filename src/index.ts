@@ -72,6 +72,7 @@ export * from './mu/SearchField';
 export * from './mu/SearchOptionGroup';
 export * from './mu/SelectEx';
 export * from './mu/Switch';
+export * from './mu/SwitchAnt';
 export * from './mu/TabBox';
 export * from './mu/TableEx';
 export * from './mu/TextFieldEx';

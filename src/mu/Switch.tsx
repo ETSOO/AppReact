@@ -36,8 +36,10 @@ export interface SwitchProps extends Omit<FormControlLabelProps, 'control'> {
 export function Switch(props: SwitchProps) {
     // Destruct
     const {
+        checked,
         defaultChecked,
         defaultValue,
+        onChange,
         readOnly,
         size,
         checkbox = false,
@@ -47,12 +49,20 @@ export function Switch(props: SwitchProps) {
 
     // Checked state
     const [controlChecked, setControlChecked] = React.useState(
-        defaultChecked ?? defaultValue == value
+        checked ?? defaultChecked ?? defaultValue == value
     );
 
+    React.useEffect(() => {
+        if (checked) setControlChecked(checked);
+    }, [checked]);
+
     // Handle change
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setControlChecked(event.target.checked);
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        checked: boolean
+    ) => {
+        if (onChange) onChange(event, checked);
+        setControlChecked(checked);
     };
 
     // Control
