@@ -54,6 +54,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
         name,
         readOnly,
         onChange,
+        openOnFocus = true,
         sx = { minWidth: '180px' },
         ...rest
     } = props;
@@ -242,6 +243,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
                     }
                 }}
                 open={states.open}
+                openOnFocus={openOnFocus}
                 onOpen={() => {
                     // Should load
                     const loading = states.loading

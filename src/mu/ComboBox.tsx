@@ -1,4 +1,5 @@
 import { IdLabelDto } from '@etsoo/appscript';
+import { Keyboard } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
@@ -11,6 +12,11 @@ import { SearchField } from './SearchField';
  */
 export interface ComboBoxProps<T extends {}>
     extends AutocompleteExtendedProps<T> {
+    /**
+     * Data readonly
+     */
+    dataReadonly?: boolean;
+
     /**
      * Label field
      */
@@ -57,8 +63,10 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         name,
         inputAutoComplete = 'off',
         options,
-        readOnly = true,
+        dataReadonly = true,
+        readOnly,
         onChange,
+        openOnFocus = true,
         value,
         getOptionLabel = (option: T) => String(Reflect.get(option, labelField)),
         sx = { minWidth: '150px' },
@@ -107,6 +115,14 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
             if (readOnly) {
                 Object.assign(params.inputProps, { 'data-reset': true });
             }
+        }
+
+        if (dataReadonly) {
+            params.inputProps.onKeyDown = (event) => {
+                if (Keyboard.isTypingContent(event.key)) {
+                    event.preventDefault();
+                }
+            };
         }
 
         // https://stackoverflow.com/questions/15738259/disabling-chrome-autofill
@@ -176,6 +192,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
                     if (onChange != null)
                         onChange(event, value, reason, details);
                 }}
+                openOnFocus={openOnFocus}
                 sx={sx}
                 renderInput={(params) =>
                     search ? (

@@ -8,6 +8,7 @@ import {
 import { MUGlobal } from './MUGlobal';
 import { Clear, Visibility } from '@mui/icons-material';
 import useCombinedRefs from '../uses/useCombinedRefs';
+import { Keyboard } from '@etsoo/shared';
 
 /**
  * Extended text field props
@@ -166,7 +167,7 @@ export const TextFieldEx = React.forwardRef<
         onEnter == null
             ? onKeyPress
             : (e: React.KeyboardEvent<HTMLDivElement>) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === Keyboard.Keys.Enter) {
                       // Enter press callback
                       onEnter(e);
                   }
