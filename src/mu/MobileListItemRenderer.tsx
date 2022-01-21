@@ -29,14 +29,15 @@ export function MobileListItemRenderer<T>(
         string,
         string | undefined,
         React.ReactNode | (ListItemReact | boolean)[],
-        React.ReactNode
+        React.ReactNode,
+        React.ReactNode?
     ]
 ) {
     // Loading
     if (data == null) return <LinearProgress />;
 
     // Elements
-    const [title, subheader, actions, children] = renderer(data);
+    const [title, subheader, actions, children, cardActions] = renderer(data);
 
     return (
         <Card
@@ -105,6 +106,7 @@ export function MobileListItemRenderer<T>(
             >
                 {children}
             </CardContent>
+            {cardActions && cardActions}
         </Card>
     );
 }

@@ -292,10 +292,11 @@ export class ReactApp<
 
     /**
      * Get money format props
+     * @param currency Currency, if undefined, default currency applied
      * @returns Props
      */
-    getMoneyFormatProps() {
-        return { culture: this.culture, currency: this.currency };
+    getMoneyFormatProps(currency?: string) {
+        return { culture: this.culture, currency: currency ?? this.currency };
     }
 
     /**
