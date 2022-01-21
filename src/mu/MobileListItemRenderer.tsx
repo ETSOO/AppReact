@@ -104,7 +104,10 @@ export function MobileListItemRenderer<T>(
             <CardContent
                 sx={{
                     paddingTop: 0,
-                    paddingBottom: cardActions == null ? margins : 0
+                    paddingBottom:
+                        cardActions == null
+                            ? Reflect.get(margins, 'marginBottom')
+                            : 0
                 }}
             >
                 {children}
