@@ -36,6 +36,8 @@ export function MobileListItemRenderer<T>(
     // Loading
     if (data == null) return <LinearProgress />;
 
+    console.log('margins', margins);
+
     // Elements
     const [title, subheader, actions, children, cardActions] = renderer(data);
 
@@ -101,12 +103,13 @@ export function MobileListItemRenderer<T>(
             />
             <CardContent
                 sx={{
-                    paddingTop: 0
+                    paddingTop: 0,
+                    paddingBottom: cardActions == null ? margins : 0
                 }}
             >
                 {children}
             </CardContent>
-            {cardActions && cardActions}
+            {cardActions}
         </Card>
     );
 }
