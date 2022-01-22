@@ -333,13 +333,14 @@ export class ServiceApp<
                 this.settings.serviceId.toString()
             ) ?? '';
 
-        // Keep = true, means service could hold the refresh token for long access
-        super.userLogin(user, refreshToken, true);
-
         // Service user
         this.serviceUser = serviceUser;
 
         // Service API token
         this.serviceApi.authorize(this.settings.authScheme, serviceUser.token);
+
+        // Keep = true, means service could hold the refresh token for long access
+        // Trigger Context change and serviceUser is ready then
+        super.userLogin(user, refreshToken, true);
     }
 }
