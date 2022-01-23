@@ -17,7 +17,7 @@ export interface ViewPageField<T extends {}> extends GridProps {
     /**
      * Label field
      */
-    label: string | (() => React.ReactNode);
+    label?: string | (() => React.ReactNode);
 
     /**
      * Display as single row
@@ -79,13 +79,16 @@ function getItemField<T>(
 
         // Field data
         if (typeof fieldData === 'function') itemData = fieldData(data);
-        else itemData = formatItemData(formatItemData);
+        else itemData = formatItemData(data[fieldData]);
 
         // Field label
         itemLabel =
             typeof fieldLabel === 'function'
                 ? fieldLabel()
-                : globalApp.get<string>(fieldLabel) ?? fieldLabel;
+                : globalApp.get<string>(
+                      fieldLabel ??
+                          (typeof fieldData === 'string' ? fieldData : 'noData')
+                  ) ?? fieldLabel;
     } else {
         itemData = formatItemData(data[field]);
         itemLabel = globalApp.get<string>(field) ?? field;
