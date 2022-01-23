@@ -17,7 +17,7 @@ export interface ViewPageField<T extends {}> extends GridProps {
     /**
      * Label field
      */
-    label?: string | (() => React.ReactNode);
+    label: string | (() => React.ReactNode);
 }
 
 type ViewPageFieldType<T> = (string & keyof T) | ViewPageField<T>;
@@ -58,8 +58,6 @@ function getItemField<T>(
 
     if (typeof field === 'object') {
         // Destruct
-        if (field.label == null && typeof field.data === 'string')
-            field.label = field.data;
         const { data: fieldData, label: fieldLabel, ...rest } = field;
         gridProps = rest;
 
@@ -71,8 +69,6 @@ function getItemField<T>(
         itemLabel =
             typeof fieldLabel === 'function'
                 ? fieldLabel()
-                : fieldLabel == null
-                ? 'No Label'
                 : globalApp.get<string>(fieldLabel) ?? fieldLabel;
     } else {
         itemData = formatItemData(data[field]);
