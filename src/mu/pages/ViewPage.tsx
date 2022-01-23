@@ -18,6 +18,11 @@ export interface ViewPageField<T extends {}> extends GridProps {
      * Label field
      */
     label: string | (() => React.ReactNode);
+
+    /**
+     * Display as single row
+     */
+    singleRow?: boolean;
 }
 
 type ViewPageFieldType<T> = (string & keyof T) | ViewPageField<T>;
@@ -42,9 +47,11 @@ export interface ViewPageProps<T extends {}> extends CommonPageProps {
     supportRefresh?: boolean;
 }
 
-function formatItemData(fieldData: unknown) {
+function formatItemData(fieldData: unknown): string | undefined {
+    if (fieldData == null) return undefined;
+    if (typeof fieldData === 'string') return fieldData;
     if (fieldData instanceof Date) return globalApp.formatDate(fieldData, 'd');
-    return new String(fieldData);
+    return `${fieldData}`;
 }
 
 function getItemField<T>(
@@ -54,12 +61,21 @@ function getItemField<T>(
     // Item data and label
     let itemData: React.ReactNode,
         itemLabel: React.ReactNode,
-        gridProps: GridProps;
+        gridProps: GridProps = {};
 
     if (typeof field === 'object') {
         // Destruct
-        const { data: fieldData, label: fieldLabel, ...rest } = field;
-        gridProps = rest;
+        const {
+            data: fieldData,
+            label: fieldLabel,
+            singleRow = false,
+            ...rest
+        } = field;
+
+        gridProps = {
+            ...rest,
+            ...(singleRow && { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 })
+        };
 
         // Field data
         if (typeof fieldData === 'function') itemData = fieldData(data);
@@ -73,10 +89,13 @@ function getItemField<T>(
     } else {
         itemData = formatItemData(data[field]);
         itemLabel = globalApp.get<string>(field) ?? field;
-        gridProps = { xs: 12, sm: 6, md: 4, lg: 3 };
     }
 
-    return [itemData, itemLabel, gridProps];
+    return [
+        itemData,
+        itemLabel,
+        { xs: 12, sm: 6, md: 6, lg: 4, xl: 3, ...gridProps }
+    ];
 }
 
 /**
