@@ -1,6 +1,7 @@
 import { Grid, GridProps, LinearProgress, Typography } from '@mui/material';
 import React from 'react';
 import { globalApp } from '../../app/ReactApp';
+import { MUGlobal } from '../MUGlobal';
 import { CommonPage } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
 
@@ -16,7 +17,7 @@ export interface ViewPageField<T extends {}> extends GridProps {
     /**
      * Label field
      */
-    label: string | (() => React.ReactNode);
+    label?: string | (() => React.ReactNode);
 }
 
 type ViewPageFieldType<T> = (string & keyof T) | ViewPageField<T>;
@@ -57,6 +58,8 @@ function getItemField<T>(
 
     if (typeof field === 'object') {
         // Destruct
+        if (field.label == null && typeof field.data === 'string')
+            field.label = field.data;
         const { data: fieldData, label: fieldLabel, ...rest } = field;
         gridProps = rest;
 
@@ -68,11 +71,13 @@ function getItemField<T>(
         itemLabel =
             typeof fieldLabel === 'function'
                 ? fieldLabel()
+                : fieldLabel == null
+                ? 'No Label'
                 : globalApp.get<string>(fieldLabel) ?? fieldLabel;
     } else {
         itemData = formatItemData(data[field]);
         itemLabel = globalApp.get<string>(field) ?? field;
-        gridProps = { xs: 12, sm: 6 };
+        gridProps = { xs: 12, sm: 6, md: 4, lg: 3 };
     }
 
     return [itemData, itemLabel, gridProps];
@@ -88,7 +93,7 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
         children,
         fields,
         loadData,
-        paddings,
+        paddings = MUGlobal.pagePaddings,
         supportRefresh = true,
         ...rest
     } = props;
@@ -115,15 +120,24 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                 <LinearProgress />
             ) : (
                 <React.Fragment>
-                    <Grid container justifyContent="left" spacing={paddings}>
-                        {fields.map((field) => {
+                    <Grid
+                        container
+                        justifyContent="left"
+                        spacing={paddings}
+                        sx={{
+                            '.MuiTypography-subtitle2': { fontWeight: 'bold' }
+                        }}
+                    >
+                        {fields.map((field, index) => {
                             // Get data
                             const [itemData, itemLabel, gridProps] =
                                 getItemField(field, data);
 
+                            if (itemData == null) return undefined;
+
                             // Layout
                             return (
-                                <Grid item {...gridProps}>
+                                <Grid item {...gridProps} key={index}>
                                     <Typography
                                         variant="caption"
                                         component="div"
