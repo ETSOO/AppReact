@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.4.58",
+    "version": "1.4.59",
     "description": "TypeScript ReactJs framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -77,7 +77,7 @@
     },
     "devDependencies": {
         "@babel/cli": "^7.16.8",
-        "@babel/core": "^7.16.10",
+        "@babel/core": "^7.16.12",
         "@babel/plugin-transform-runtime": "^7.16.10",
         "@babel/preset-env": "^7.16.11",
         "@babel/runtime-corejs3": "^7.16.8",

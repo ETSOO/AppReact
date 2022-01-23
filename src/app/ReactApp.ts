@@ -34,8 +34,10 @@ import {
 import { InputDialogProps } from './InputDialogProps';
 import { Labels } from './Labels';
 
-// Global application
-let globalApp: IReactApp<IAppSettings, any, IPageData>;
+/**
+ * Global application
+ */
+export let globalApp: IReactApp<IAppSettings, any, IPageData>;
 
 /**
  * React app state detector
