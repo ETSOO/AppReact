@@ -49,6 +49,7 @@ export * from './mu/DraggablePaperComponent';
 export * from './mu/EmailInput';
 export * from './mu/FabBox';
 export * from './mu/FlexBox';
+export * from './mu/GridDataFormat';
 export * from './mu/IconButtonLink';
 export * from './mu/InputField';
 export * from './mu/ItemList';

@@ -1,6 +1,11 @@
 import { Grid, GridProps, LinearProgress, Typography } from '@mui/material';
 import React from 'react';
 import { globalApp } from '../../app/ReactApp';
+import {
+    GridColumnRenderProps,
+    GridDataType
+} from '../../components/GridColumn';
+import { GridDataFormat } from '../GridDataFormat';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPage } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
@@ -15,6 +20,11 @@ export interface ViewPageField<T extends {}> extends GridProps {
     data: keyof T | ((item: T) => React.ReactNode);
 
     /**
+     * Data type
+     */
+    dataType?: GridDataType;
+
+    /**
      * Label field
      */
     label?: string | (() => React.ReactNode);
@@ -23,9 +33,17 @@ export interface ViewPageField<T extends {}> extends GridProps {
      * Display as single row
      */
     singleRow?: boolean;
+
+    /**
+     * Render props
+     */
+    renderProps?: GridColumnRenderProps;
 }
 
-type ViewPageFieldType<T> = (string & keyof T) | ViewPageField<T>;
+type ViewPageFieldType<T> =
+    | (string & keyof T)
+    | [string & keyof T, GridDataType, GridColumnRenderProps?]
+    | ViewPageField<T>;
 
 /**
  * View page props
@@ -63,11 +81,17 @@ function getItemField<T>(
         itemLabel: React.ReactNode,
         gridProps: GridProps = {};
 
-    if (typeof field === 'object') {
+    if (Array.isArray(field)) {
+        const [fieldData, fieldType, renderProps] = field;
+        itemData = GridDataFormat(data[fieldData], fieldType, renderProps);
+        itemLabel = globalApp.get<string>(fieldData) ?? fieldData;
+    } else if (typeof field === 'object') {
         // Destruct
         const {
             data: fieldData,
+            dataType,
             label: fieldLabel,
+            renderProps,
             singleRow = false,
             ...rest
         } = field;
@@ -79,7 +103,8 @@ function getItemField<T>(
 
         // Field data
         if (typeof fieldData === 'function') itemData = fieldData(data);
-        else itemData = formatItemData(data[fieldData]);
+        else if (dataType == null) itemData = formatItemData(data[fieldData]);
+        else itemData = GridDataFormat(data[fieldData], dataType, renderProps);
 
         // Field label
         itemLabel =
