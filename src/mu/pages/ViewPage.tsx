@@ -5,6 +5,7 @@ import {
     GridColumnRenderProps,
     GridDataType
 } from '../../components/GridColumn';
+import { HBox } from '../FlexBox';
 import { GridDataFormat } from '../GridDataFormat';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPage } from './CommonPage';
@@ -49,6 +50,11 @@ type ViewPageFieldType<T> =
  * View page props
  */
 export interface ViewPageProps<T extends {}> extends CommonPageProps {
+    /**
+     * Actions
+     */
+    actions?: React.ReactNode;
+
     /**
      * Fields to display
      */
@@ -133,6 +139,7 @@ function getItemField<T>(
 export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
     // Destruct
     const {
+        actions,
         children,
         fields,
         loadData,
@@ -168,7 +175,9 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                         justifyContent="left"
                         spacing={paddings}
                         sx={{
-                            '.MuiTypography-subtitle2': { fontWeight: 'bold' }
+                            '.MuiTypography-subtitle2': {
+                                fontWeight: 'bold'
+                            }
                         }}
                     >
                         {fields.map((field, index) => {
@@ -194,6 +203,11 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                             );
                         })}
                     </Grid>
+                    {actions != null && (
+                        <HBox paddingTop={paddings} paddingBottom={paddings}>
+                            {actions}
+                        </HBox>
+                    )}
                     {children}
                 </React.Fragment>
             )}
