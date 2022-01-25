@@ -1,12 +1,17 @@
 import { Utils } from '@etsoo/shared';
-import { Grid, GridProps, LinearProgress, Typography } from '@mui/material';
+import {
+    Grid,
+    GridProps,
+    LinearProgress,
+    Stack,
+    Typography
+} from '@mui/material';
 import React from 'react';
 import { globalApp } from '../../app/ReactApp';
 import {
     GridColumnRenderProps,
     GridDataType
 } from '../../components/GridColumn';
-import { HBox } from '../FlexBox';
 import { GridDataFormat } from '../GridDataFormat';
 import { MUGlobal } from '../MUGlobal';
 import { CommonPage } from './CommonPage';
@@ -55,7 +60,7 @@ export interface ViewPageProps<T extends {}>
     /**
      * Actions
      */
-    actions?: (data: T) => React.ReactNode;
+    actions?: React.ReactNode | ((data: T) => React.ReactNode);
 
     /**
      * Children
@@ -211,9 +216,15 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                         })}
                     </Grid>
                     {actions != null && (
-                        <HBox paddingTop={paddings} paddingBottom={paddings}>
-                            {actions}
-                        </HBox>
+                        <Stack
+                            direction="row"
+                            width="100%"
+                            flexWrap="wrap"
+                            paddingTop={paddings}
+                            paddingBottom={paddings}
+                        >
+                            {Utils.getResult(actions, data)}
+                        </Stack>
                     )}
                     {Utils.getResult(children, data)}
                 </React.Fragment>
