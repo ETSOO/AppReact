@@ -212,10 +212,10 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                     </Grid>
                     {actions != null && (
                         <HBox paddingTop={paddings} paddingBottom={paddings}>
-                            {Utils.getResult(children, data)}
+                            {actions}
                         </HBox>
                     )}
-                    {children}
+                    {Utils.getResult(children, data)}
                 </React.Fragment>
             )}
         </CommonPage>
