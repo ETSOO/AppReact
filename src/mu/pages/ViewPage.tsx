@@ -1,3 +1,4 @@
+import { Utils } from '@etsoo/shared';
 import { Grid, GridProps, LinearProgress, Typography } from '@mui/material';
 import React from 'react';
 import { globalApp } from '../../app/ReactApp';
@@ -49,11 +50,17 @@ type ViewPageFieldType<T> =
 /**
  * View page props
  */
-export interface ViewPageProps<T extends {}> extends CommonPageProps {
+export interface ViewPageProps<T extends {}>
+    extends Exclude<CommonPageProps, 'children'> {
     /**
      * Actions
      */
-    actions?: React.ReactNode;
+    actions?: (data: T) => React.ReactNode;
+
+    /**
+     * Children
+     */
+    children?: React.ReactNode | ((data: T) => React.ReactNode);
 
     /**
      * Fields to display
@@ -205,7 +212,7 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                     </Grid>
                     {actions != null && (
                         <HBox paddingTop={paddings} paddingBottom={paddings}>
-                            {actions}
+                            {Utils.getResult(children, data)}
                         </HBox>
                     )}
                     {children}
