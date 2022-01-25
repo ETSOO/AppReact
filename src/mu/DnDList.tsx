@@ -234,7 +234,7 @@ export function DnDList<
             {sideRenderer && sideRenderer(true, addItem, addItems, reloadItems)}
             <Component {...componentProps}>
                 {disabled ? (
-                    <div>
+                    <div style={getListStyle(false)}>
                         {items.map((item, index) => {
                             // Id
                             const id = DataTypes.convert(
@@ -244,7 +244,10 @@ export function DnDList<
                             if (id == null) return;
 
                             return (
-                                <div>
+                                <div
+                                    key={id}
+                                    style={getItemStyle(false, index)}
+                                >
                                     {children(
                                         item,
                                         index,
