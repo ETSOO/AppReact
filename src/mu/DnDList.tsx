@@ -33,6 +33,11 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     componentProps?: React.ComponentProps<E>;
 
     /**
+     * List disabled
+     */
+    disabled?: boolean;
+
+    /**
      * Get list item style callback
      */
     getItemStyle?: (isDragging: boolean, index: number) => CSSProperties;
@@ -93,6 +98,7 @@ export function DnDList<
         children,
         Component = 'div',
         componentProps,
+        disabled = false,
         getItemStyle = (_isDragging) => ({}),
         getListStyle = () => undefined,
         labelField,
@@ -227,59 +233,85 @@ export function DnDList<
         <React.Fragment>
             {sideRenderer && sideRenderer(true, addItem, addItems, reloadItems)}
             <Component {...componentProps}>
-                <DragDropContext onDragEnd={onDragEndLocal}>
-                    <Droppable droppableId={name}>
-                        {(provided, snapshot) => (
-                            <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                                style={getListStyle(snapshot.isDraggingOver)}
-                            >
-                                {items.map((item, index) => {
-                                    // Id
-                                    const id = DataTypes.convert(
-                                        item[labelField],
-                                        'string'
-                                    );
-                                    if (id == null) return;
+                {disabled ? (
+                    <div>
+                        {items.map((item, index) => {
+                            // Id
+                            const id = DataTypes.convert(
+                                item[labelField],
+                                'string'
+                            );
+                            if (id == null) return;
 
-                                    return (
-                                        <Draggable
-                                            key={id}
-                                            draggableId={id}
-                                            index={index}
-                                        >
-                                            {(provided, snapshot) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    style={{
-                                                        ...getItemStyle(
-                                                            snapshot.isDragging,
-                                                            index
-                                                        ),
-                                                        ...provided
-                                                            .draggableProps
-                                                            .style
-                                                    }}
-                                                >
-                                                    {children(
-                                                        item,
-                                                        index,
-                                                        deleteItem,
-                                                        editItem
-                                                    )}
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    );
-                                })}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                            return (
+                                <div>
+                                    {children(
+                                        item,
+                                        index,
+                                        deleteItem,
+                                        editItem
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <DragDropContext onDragEnd={onDragEndLocal}>
+                        <Droppable droppableId={name}>
+                            {(provided, snapshot) => (
+                                <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                    style={getListStyle(
+                                        snapshot.isDraggingOver
+                                    )}
+                                >
+                                    {items.map((item, index) => {
+                                        // Id
+                                        const id = DataTypes.convert(
+                                            item[labelField],
+                                            'string'
+                                        );
+                                        if (id == null) return;
+
+                                        return (
+                                            <Draggable
+                                                key={id}
+                                                draggableId={id}
+                                                index={index}
+                                            >
+                                                {(provided, snapshot) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        style={{
+                                                            ...getItemStyle(
+                                                                snapshot.isDragging,
+                                                                index
+                                                            ),
+                                                            ...provided
+                                                                .draggableProps
+                                                                .style
+                                                        }}
+                                                    >
+                                                        {children(
+                                                            item,
+                                                            index,
+                                                            deleteItem,
+                                                            editItem
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        );
+                                    })}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+                )}
             </Component>
             {sideRenderer &&
                 sideRenderer(false, addItem, addItems, reloadItems)}

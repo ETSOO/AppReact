@@ -186,6 +186,7 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                         container
                         justifyContent="left"
                         spacing={paddings}
+                        className="ET-ViewPage"
                         sx={{
                             '.MuiTypography-subtitle2': {
                                 fontWeight: 'bold'
@@ -217,6 +218,7 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                     </Grid>
                     {actions != null && (
                         <Stack
+                            className="ET-ViewPage-Actions"
                             direction="row"
                             width="100%"
                             flexWrap="wrap"
