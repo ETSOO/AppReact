@@ -222,6 +222,7 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                             flexWrap="wrap"
                             paddingTop={paddings}
                             paddingBottom={paddings}
+                            gap={paddings}
                         >
                             {Utils.getResult(actions, data)}
                         </Stack>
