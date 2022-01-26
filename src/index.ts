@@ -71,6 +71,7 @@ export * from './mu/ScrollTopFab';
 export * from './mu/SearchBar';
 export * from './mu/SearchField';
 export * from './mu/SearchOptionGroup';
+export * from './mu/SelectBool';
 export * from './mu/SelectEx';
 export * from './mu/Switch';
 export * from './mu/SwitchAnt';
