@@ -222,6 +222,7 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                             direction="row"
                             width="100%"
                             flexWrap="wrap"
+                            justifyContent="flex-end"
                             paddingTop={paddings}
                             paddingBottom={paddings}
                             gap={paddings}
