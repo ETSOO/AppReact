@@ -36,8 +36,6 @@ export function MobileListItemRenderer<T>(
     // Loading
     if (data == null) return <LinearProgress />;
 
-    console.log('margins', margins);
-
     // Elements
     const [title, subheader, actions, children, cardActions] = renderer(data);
 

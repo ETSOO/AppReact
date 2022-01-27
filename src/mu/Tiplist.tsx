@@ -219,7 +219,9 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                value={localIdValue ?? ''}
+                value={
+                    (states.value && Reflect.get(states.value, idField)) ?? ''
+                }
                 readOnly
                 onChange={inputOnChange}
             />
