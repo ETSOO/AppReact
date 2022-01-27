@@ -83,6 +83,12 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
         }
     );
 
+    // Input value
+    const inputValue = React.useMemo(
+        () => states.value && Reflect.get(states.value, idField),
+        [states.value]
+    );
+
     React.useEffect(() => {
         if (localValue != null) stateUpdate({ value: localValue });
     }, [localValue]);
@@ -219,9 +225,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                value={
-                    (states.value && Reflect.get(states.value, idField)) ?? ''
-                }
+                value={inputValue ?? ''}
                 readOnly
                 onChange={inputOnChange}
             />

@@ -32,7 +32,7 @@ export interface OptionGroupProps<
     /**
      * Id field, default is id
      */
-    idField?: keyof T;
+    idField?: string & keyof T;
 
     /**
      * Label
@@ -42,7 +42,7 @@ export interface OptionGroupProps<
     /**
      * Label field, default is label
      */
-    labelField?: keyof T;
+    labelField?: string & keyof T;
 
     /**
      * Multiple choose item

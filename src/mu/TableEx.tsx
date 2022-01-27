@@ -68,7 +68,7 @@ export interface TableExProps<T extends Record<string, any>>
     /**
      * Id field
      */
-    idField?: keyof T;
+    idField?: string & keyof T;
 
     /**
      * Max height
@@ -107,7 +107,7 @@ export function TableEx<T extends Record<string, unknown>>(
     // Theme
     const theme = useTheme();
 
-    type keyType = keyof T;
+    type keyType = string & keyof T;
 
     // Destruct
     const {

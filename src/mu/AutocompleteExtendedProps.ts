@@ -13,7 +13,7 @@ export interface AutocompleteExtendedProps<T extends Record<string, unknown>>
     /**
      * Id field, default is id
      */
-    idField?: keyof T;
+    idField?: string & keyof T;
 
     /**
      * Id value

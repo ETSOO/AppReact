@@ -50,7 +50,7 @@ export interface DnDListProps<D extends {}, E extends React.ElementType> {
     /**
      * Label field
      */
-    labelField: keyof D;
+    labelField: string & keyof D;
 
     /**
      * Load data

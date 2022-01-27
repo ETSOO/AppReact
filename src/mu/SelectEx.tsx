@@ -23,7 +23,7 @@ export interface SelectExProps<T extends {}>
     /**
      * Id field, default is id
      */
-    idField?: keyof T;
+    idField?: string & keyof T;
 
     /**
      * Item icon renderer
@@ -33,7 +33,7 @@ export interface SelectExProps<T extends {}>
     /**
      * Label field, default is label
      */
-    labelField?: ((option: T) => string) | keyof T;
+    labelField?: ((option: T) => string) | (string & keyof T);
 
     /**
      * Load data callback

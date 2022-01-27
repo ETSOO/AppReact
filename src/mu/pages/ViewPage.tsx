@@ -24,7 +24,7 @@ export interface ViewPageField<T extends {}> extends GridProps {
     /**
      * Data field
      */
-    data: keyof T | ((item: T) => React.ReactNode);
+    data: (string & keyof T) | ((item: T) => React.ReactNode);
 
     /**
      * Data type

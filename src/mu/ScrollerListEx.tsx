@@ -127,7 +127,7 @@ export interface ScrollerListExProps<T>
     /**
      * Id field
      */
-    idField?: keyof T;
+    idField?: string & keyof T;
 
     /**
      * Inner item renderer

@@ -22,12 +22,12 @@ export interface ItemListProps<T extends Record<string, unknown>> {
     /**
      * Id field name
      */
-    idField?: keyof T;
+    idField?: string & keyof T;
 
     /**
      * Label field name or callback
      */
-    labelField?: keyof T | ((item: T) => string);
+    labelField?: (string & keyof T) | ((item: T) => string);
 
     /**
      * Button icon

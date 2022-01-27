@@ -54,7 +54,7 @@ export interface ScrollerGridProps<T>
      * Id field
      * @default id
      */
-    idField?: keyof T;
+    idField?: string & keyof T;
 
     /**
      * Item renderer

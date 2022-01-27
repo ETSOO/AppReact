@@ -20,7 +20,7 @@ export interface ComboBoxProps<T extends {}>
     /**
      * Label field
      */
-    labelField?: keyof T;
+    labelField?: string & keyof T;
 
     /**
      * Load data callback
