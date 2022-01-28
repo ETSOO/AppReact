@@ -160,7 +160,7 @@ export interface GridColumn<T> {
     /**
      * The column identifier. It's used to map with row data
      */
-    field?: string;
+    field?: string & keyof T;
 
     /**
      * The title of the column rendered in the column header cell

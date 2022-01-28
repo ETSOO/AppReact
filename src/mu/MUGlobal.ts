@@ -1,6 +1,17 @@
 import { NumberUtils } from '@etsoo/shared';
 import { Breakpoint, Theme } from '@mui/material';
 
+/**
+ * Mouse event handler with data
+ */
+export type MouseEventWithDataHandler<T> = (
+    event: React.MouseEvent<HTMLDivElement>,
+    data: T
+) => void;
+
+/**
+ * MUGlobal for global configurations
+ */
 export class MUGlobal {
     /**
      * Search field shrink

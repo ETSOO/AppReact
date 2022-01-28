@@ -3,6 +3,7 @@ import { Box, Stack, SxProps, Theme } from '@mui/material';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
 import { Labels } from '../app/Labels';
+import { Utils } from '../app/Utils';
 import { GridColumn } from '../components/GridColumn';
 import {
     GridDataGet,
@@ -126,6 +127,11 @@ export interface ResponsibleContainerProps<
     pullToRefresh?: boolean;
 
     /**
+     * Quick action for double click or click under mobile
+     */
+    quickAction?: (data: T) => void;
+
+    /**
      * Size ready to read miliseconds span
      */
     sizeReadyMiliseconds?: number;
@@ -173,6 +179,7 @@ export function ResponsibleContainer<
         mRef,
         paddings = MUGlobal.pagePaddings,
         pullToRefresh = true,
+        quickAction,
         sizeReadyMiliseconds = 0,
         ...rest
     } = props;
@@ -285,6 +292,9 @@ export function ResponsibleContainer<
                         width={rect.width}
                         loadData={localLoadData}
                         mRef={mRefs}
+                        onDoubleClick={(_, data) =>
+                            quickAction && quickAction(data)
+                        }
                         outerRef={(element?: HTMLDivElement) => {
                             if (element != null && elementReady)
                                 elementReady(element, true);
@@ -314,6 +324,11 @@ export function ResponsibleContainer<
                     height={heightLocal}
                     loadData={localLoadData}
                     mRef={mRefs}
+                    onClick={(event, data) =>
+                        quickAction &&
+                        Utils.isSafeClick(event) &&
+                        quickAction(data)
+                    }
                     oRef={(element) => {
                         if (element != null && elementReady)
                             elementReady(element, false);

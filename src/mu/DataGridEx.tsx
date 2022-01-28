@@ -25,6 +25,7 @@ import {
 } from '../components/ScrollerGrid';
 import useCombinedRefs from '../uses/useCombinedRefs';
 import { DataGridRenderers } from './DataGridRenderers';
+import { MouseEventWithDataHandler } from './MUGlobal';
 
 /**
  * Footer item renderer props
@@ -97,6 +98,16 @@ export interface DataGridExProps<T extends Record<string, any>>
      * Hover color
      */
     hoverColor?: string;
+
+    /**
+     * Double click handler
+     */
+    onDoubleClick?: MouseEventWithDataHandler<T>;
+
+    /**
+     * Click handler
+     */
+    onClick?: MouseEventWithDataHandler<T>;
 
     /**
      * Selectable to support hover over and out effect and row clickable
@@ -351,6 +362,8 @@ export function DataGridEx<T extends Record<string, any>>(
         hoverColor = '#f6f9fb',
         idField = 'id',
         mRef = React.createRef(),
+        onClick,
+        onDoubleClick,
         selectable = true,
         selectedColor = '#edf4fb',
         width,
@@ -567,6 +580,12 @@ export function DataGridEx<T extends Record<string, any>>(
                 }
                 onMouseOver={selectable ? handleMouseOver : undefined}
                 onMouseOut={selectable ? handleMouseOut : undefined}
+                onClick={(event) =>
+                    onClick && data != null && onClick(event, data)
+                }
+                onDoubleClick={(event) =>
+                    onDoubleClick && data != null && onDoubleClick(event, data)
+                }
             >
                 <Box {...cellProps} onMouseEnter={handleMouseEnter}>
                     {child}

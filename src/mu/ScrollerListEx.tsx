@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
 import { ScrollerList, ScrollerListProps } from '../components/ScrollerList';
-import { MUGlobal } from './MUGlobal';
+import { MouseEventWithDataHandler, MUGlobal } from './MUGlobal';
 
 // Scroll bar size
 const scrollbarSize = 16;
@@ -147,6 +147,16 @@ export interface ScrollerListExProps<T>
     itemSize: ScrollerListExItemSize;
 
     /**
+     * Double click handler
+     */
+    onDoubleClick?: MouseEventWithDataHandler<T>;
+
+    /**
+     * Click handler
+     */
+    onClick?: MouseEventWithDataHandler<T>;
+
+    /**
      * On items select change
      */
     onSelectChange?: (selectedItems: T[]) => void;
@@ -176,6 +186,16 @@ interface defaultItemRendererProps<T> extends ListChildComponentProps<T> {
     itemHeight: number;
 
     /**
+     * Double click handler
+     */
+    onDoubleClick?: MouseEventWithDataHandler<T>;
+
+    /**
+     * Click handler
+     */
+    onClick?: MouseEventWithDataHandler<T>;
+
+    /**
      * Item space
      */
     space: number;
@@ -200,6 +220,8 @@ function defaultItemRenderer<T>({
     selected,
     style,
     itemHeight,
+    onClick,
+    onDoubleClick,
     space,
     margins
 }: defaultItemRendererProps<T>) {
@@ -223,6 +245,10 @@ function defaultItemRenderer<T>({
             className={rowClass}
             style={style}
             onMouseDown={(event) => onMouseDown(event.currentTarget, data)}
+            onClick={(event) => onClick && onClick(event, data)}
+            onDoubleClick={(event) =>
+                onDoubleClick && onDoubleClick(event, data)
+            }
         >
             {child}
         </div>
@@ -282,12 +308,16 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
                 itemHeight,
                 innerItemRenderer,
                 onMouseDown,
+                onClick,
+                onDoubleClick,
                 space,
                 margins,
                 selected: isSelected(itemProps.data),
                 ...itemProps
             });
         },
+        onClick,
+        onDoubleClick,
         onSelectChange,
         selectedColor = '#edf4fb',
         ...rest

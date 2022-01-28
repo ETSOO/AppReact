@@ -46,4 +46,9 @@ export interface ResponsePageProps<T, F extends DataTypes.BasicTemplate>
      * Pull to refresh data
      */
     pullToRefresh?: boolean;
+
+    /**
+     * Quick action for double click or click under mobile
+     */
+    quickAction?: (data: T) => void;
 }

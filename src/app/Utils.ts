@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * React utils
  */
@@ -17,6 +19,36 @@ export namespace Utils {
         if (Array.isArray(value)) return value;
 
         return String(value);
+    }
+
+    /**
+     * Is safe click
+     * @param event Mouse event
+     * @returns Result
+     */
+    export function isSafeClick(event: React.MouseEvent<HTMLElement>) {
+        // No target
+        // HTMLElement <= Element, SVGElement <= Element
+        if (!(event.target instanceof Element)) return true;
+
+        // Outside of the currentTarget
+        let target: Element | null = event.target;
+        if (!event.currentTarget.contains(target)) return false;
+
+        while (target != null && target != event.currentTarget) {
+            const nodeName = target.nodeName.toUpperCase();
+            if (
+                nodeName === 'INPUT' ||
+                nodeName === 'BUTTON' ||
+                nodeName === 'A' ||
+                target.hasAttribute('onClick')
+            )
+                return false;
+
+            target = target.parentElement;
+        }
+
+        return true;
     }
 
     /**
