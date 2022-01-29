@@ -143,6 +143,18 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
         }
     };
 
+    // Get option id
+    const getId = (option: T) => {
+        return Reflect.get(option, idField);
+    };
+
+    // Get option label
+    const getLabel = (option: T) => {
+        return typeof labelField === 'function'
+            ? labelField(option)
+            : Reflect.get(option, labelField);
+    };
+
     // Refs
     const divRef = React.useRef<HTMLDivElement>();
 
@@ -198,26 +210,24 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
                 renderValue={(selected) => {
                     // The text shows up
                     return localOptions
-                        .filter((option: any) =>
-                            Array.isArray(selected)
-                                ? selected.indexOf(option.id) !== -1
-                                : selected === option.id
-                        )
-                        .map((option: any) => option.label)
+                        .filter((option) => {
+                            const id = getId(option);
+                            return Array.isArray(selected)
+                                ? selected.indexOf(id) !== -1
+                                : selected === id;
+                        })
+                        .map((option) => getLabel(option))
                         .join(', ');
                 }}
                 sx={{ minWidth: '150px' }}
                 {...rest}
             >
-                {localOptions.map((option: any) => {
+                {localOptions.map((option) => {
                     // Option id
-                    const id = option[idField];
+                    const id = getId(option);
 
                     // Option label
-                    const label =
-                        typeof labelField === 'function'
-                            ? labelField(option)
-                            : option[labelField];
+                    const label = getLabel(option);
 
                     // Option
                     return (
