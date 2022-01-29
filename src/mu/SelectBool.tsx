@@ -1,4 +1,5 @@
 import { IdLabelDto } from '@etsoo/appscript';
+import { Utils } from '@etsoo/shared';
 import React from 'react';
 import { globalApp } from '..';
 import { SelectEx, SelectExProps } from './SelectEx';
@@ -24,7 +25,7 @@ export function SelectBool(props: SelectBoolProps) {
         { id: 'true', label: globalApp.get('yes')! }
     ];
 
-    if (search) options.unshift({ id: '', label: '---' });
+    if (search) Utils.addBlankItem(options);
 
     // Layout
     return <SelectEx options={options} search={search} {...rest} />;

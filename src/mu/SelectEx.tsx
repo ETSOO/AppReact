@@ -14,6 +14,7 @@ import React from 'react';
 import { MUGlobal } from './MUGlobal';
 import { IdLabelDto } from '@etsoo/appscript';
 import { ListItemRightIcon } from './ListItemRightIcon';
+import { Utils } from '@etsoo/shared';
 
 /**
  * Extended select component props
@@ -171,6 +172,9 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
             loadData().then((result) => {
                 if (result == null || !isMounted.current) return;
                 if (onLoadData) onLoadData(result);
+                if (search) {
+                    Utils.addBlankItem(result, idField, labelField);
+                }
                 setOptions(result);
             });
         }

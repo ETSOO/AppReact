@@ -3,6 +3,7 @@ import { Keyboard } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils } from '../app/Utils';
+import { Utils as SharedUtils } from '@etsoo/shared';
 import { AutocompleteExtendedProps } from './AutocompleteExtendedProps';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
@@ -155,6 +156,9 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
             loadData().then((result) => {
                 if (result == null || !isMounted.current) return;
                 if (onLoadData) onLoadData(result);
+                if (search) {
+                    SharedUtils.addBlankItem(result, idField, labelField);
+                }
                 setOptions(result);
             });
         }
