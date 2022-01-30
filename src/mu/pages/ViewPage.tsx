@@ -60,12 +60,16 @@ export interface ViewPageProps<T extends {}>
     /**
      * Actions
      */
-    actions?: React.ReactNode | ((data: T) => React.ReactNode);
+    actions?:
+        | React.ReactNode
+        | ((data: T, refresh: () => PromiseLike<void>) => React.ReactNode);
 
     /**
      * Children
      */
-    children?: React.ReactNode | ((data: T) => React.ReactNode);
+    children?:
+        | React.ReactNode
+        | ((data: T, refresh: () => PromiseLike<void>) => React.ReactNode);
 
     /**
      * Fields to display
@@ -164,7 +168,7 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
     const [data, setData] = React.useState<T>();
 
     // Load data
-    const onRefresh = async () => {
+    const refresh = async () => {
         const result = await loadData();
         if (result == null) return;
         setData(result);
@@ -173,8 +177,8 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
     return (
         <CommonPage
             paddings={paddings}
-            onRefresh={supportRefresh ? onRefresh : undefined}
-            onUpdate={supportRefresh ? undefined : onRefresh}
+            onRefresh={supportRefresh ? refresh : undefined}
+            onUpdate={supportRefresh ? undefined : refresh}
             {...rest}
             scrollContainer={global}
         >
@@ -198,7 +202,9 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                             const [itemData, itemLabel, gridProps] =
                                 getItemField(field, data);
 
-                            if (itemData == null) return undefined;
+                            // Some callback function may return '' instead of undefined
+                            if (itemData == null || itemData === '')
+                                return undefined;
 
                             // Layout
                             return (
@@ -227,10 +233,10 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                             paddingBottom={paddings}
                             gap={paddings}
                         >
-                            {Utils.getResult(actions, data)}
+                            {Utils.getResult(actions, data, refresh)}
                         </Stack>
                     )}
-                    {Utils.getResult(children, data)}
+                    {Utils.getResult(children, data, refresh)}
                 </React.Fragment>
             )}
         </CommonPage>
