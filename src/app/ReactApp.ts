@@ -97,6 +97,16 @@ export interface IReactApp<
     readonly userState: UserState<D>;
 
     /**
+     * Is screen size down 'sm'
+     */
+    smDown?: boolean;
+
+    /**
+     * Is screen size up 'md'
+     */
+    mdUp?: boolean;
+
+    /**
      * Set page data
      * @param data Page data
      */

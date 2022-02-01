@@ -37,6 +37,7 @@ export * from './mu/texts/DateText';
 export * from './mu/texts/MoneyText';
 export * from './mu/texts/NumberText';
 
+export * from './mu/AuditDisplay';
 export * from './mu/ButtonLink';
 export * from './mu/ComboBox';
 export * from './mu/CountdownButton';
@@ -54,6 +55,7 @@ export * from './mu/IconButtonLink';
 export * from './mu/InputField';
 export * from './mu/ItemList';
 export * from './mu/ListItemRightIcon';
+export * from './mu/ListMoreDisplay';
 export * from './mu/LoadingButton';
 export * from './mu/MaskInput';
 export * from './mu/MobileListItemRenderer';
