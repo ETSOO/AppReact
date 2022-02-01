@@ -1,7 +1,7 @@
 import { Utils } from '@etsoo/shared';
-import { HelpOutline } from '@mui/icons-material';
 import {
     Button,
+    Divider,
     Table,
     TableBody,
     TableCell,
@@ -160,12 +160,18 @@ export function AuditDisplay(props: AuditDisplayProps) {
                 </React.Fragment>
             );
         },
+        headerTitle = (
+            <React.Fragment>
+                {getLabel('audits')}
+                <Divider />
+            </React.Fragment>
+        ),
         ...rest
     } = props;
 
     // Layout
     return (
-        <ListMoreDisplay {...rest}>
+        <ListMoreDisplay headerTitle={headerTitle} {...rest}>
             {(data, index) => (
                 <div key={data.id} style={getItemStyle(index, theme)}>
                     {itemRenderer(data, index)}
