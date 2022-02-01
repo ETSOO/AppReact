@@ -78,6 +78,9 @@ export function AuditDisplay(props: AuditDisplayProps) {
     // Theme
     const theme = useTheme();
 
+    // Label
+    const dataComparisonLabel = getLabel('dataComparison');
+
     // Show data comparison
     const showDataComparison = (data: AuditLineUpdateData) => {
         if (typeof globalApp === 'undefined') return;
@@ -126,7 +129,7 @@ export function AuditDisplay(props: AuditDisplayProps) {
             undefined,
             undefined,
             NotificationMessageType.Info,
-            { fullScreen: globalApp.smDown, inputs }
+            { fullScreen: globalApp.smDown, inputs, title: dataComparisonLabel }
         );
     };
 
@@ -142,21 +145,24 @@ export function AuditDisplay(props: AuditDisplayProps) {
         itemRenderer = (data) => {
             return (
                 <React.Fragment>
-                    {formatDate(data.creation) +
-                        ', [' +
-                        getLabel(data.action) +
-                        '], ' +
-                        data.user}
                     {data.changes != null && (
                         <Button
                             variant="outlined"
                             size="small"
                             onClick={() => showDataComparison(data.changes!)}
-                            sx={{ marginLeft: theme.spacing(1) }}
+                            sx={{
+                                marginLeft: theme.spacing(1),
+                                float: 'right'
+                            }}
                         >
-                            {getLabel('dataComparison')}
+                            {dataComparisonLabel}
                         </Button>
                     )}
+                    {formatDate(data.creation) +
+                        ', [' +
+                        getLabel(data.action) +
+                        '], ' +
+                        data.user}
                 </React.Fragment>
             );
         },
