@@ -69,8 +69,9 @@ export class ServiceApp<
 
     /**
      * Go to the login page
+     * @param tryLogin Try to login again
      */
-    override toLoginPage() {
+    override toLoginPage(tryLogin?: boolean) {
         const coreUrl = this.settings.webUrl;
         window.location.href =
             coreUrl +
@@ -79,7 +80,8 @@ export class ServiceApp<
             '&' +
             DomUtils.CultureField +
             '=' +
-            this.culture;
+            this.culture +
+            (tryLogin ? '' : '&tryLogin=false');
     }
 
     /**
