@@ -17,7 +17,7 @@ export interface SelectBoolProps
  */
 export function SelectBool(props: SelectBoolProps) {
     // Destruct
-    const { search = true, ...rest } = props;
+    const { search = true, autoAddBlankItem = search, ...rest } = props;
 
     // Options
     const options: IdLabelDto<string>[] = [
@@ -25,7 +25,7 @@ export function SelectBool(props: SelectBoolProps) {
         { id: 'true', label: globalApp.get('yes')! }
     ];
 
-    if (search) Utils.addBlankItem(options);
+    if (autoAddBlankItem) Utils.addBlankItem(options);
 
     // Layout
     return <SelectEx options={options} search={search} {...rest} />;

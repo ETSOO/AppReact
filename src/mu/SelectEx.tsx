@@ -22,6 +22,11 @@ import { Utils } from '@etsoo/shared';
 export interface SelectExProps<T extends {}>
     extends Omit<SelectProps, 'labelId' | 'input' | 'native'> {
     /**
+     * Auto add blank item
+     */
+    autoAddBlankItem?: boolean;
+
+    /**
      * Id field, default is id
      */
     idField?: string & keyof T;
@@ -82,6 +87,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
         name,
         options = [],
         search = false,
+        autoAddBlankItem = search,
         value,
         onChange,
         ...rest
@@ -172,7 +178,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
             loadData().then((result) => {
                 if (result == null || !isMounted.current) return;
                 if (onLoadData) onLoadData(result);
-                if (search) {
+                if (autoAddBlankItem) {
                     Utils.addBlankItem(result, idField, labelField);
                 }
                 setOptions(result);

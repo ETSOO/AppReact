@@ -14,6 +14,11 @@ import { SearchField } from './SearchField';
 export interface ComboBoxProps<T extends {}>
     extends AutocompleteExtendedProps<T> {
     /**
+     * Auto add blank item
+     */
+    autoAddBlankItem?: boolean;
+
+    /**
      * Data readonly
      */
     dataReadonly?: boolean;
@@ -48,6 +53,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
     // Destruct
     const {
         search = false,
+        autoAddBlankItem = search,
         idField = 'id',
         idValue,
         inputError,
@@ -156,7 +162,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
             loadData().then((result) => {
                 if (result == null || !isMounted.current) return;
                 if (onLoadData) onLoadData(result);
-                if (search) {
+                if (autoAddBlankItem) {
                     SharedUtils.addBlankItem(result, idField, labelField);
                 }
                 setOptions(result);
