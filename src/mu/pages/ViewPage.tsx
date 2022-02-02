@@ -103,6 +103,8 @@ function getItemField<T>(
         itemLabel: React.ReactNode,
         gridProps: GridProps = {};
 
+    let xs = 6;
+
     if (Array.isArray(field)) {
         const [fieldData, fieldType, renderProps] = field;
         itemData = GridDataFormat(data[fieldData], fieldType, renderProps);
@@ -114,7 +116,7 @@ function getItemField<T>(
             dataType,
             label: fieldLabel,
             renderProps,
-            singleRow = false,
+            singleRow,
             ...rest
         } = field;
 
@@ -122,6 +124,8 @@ function getItemField<T>(
             ...rest,
             ...(singleRow && { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 })
         };
+
+        if (singleRow === false) xs = 12;
 
         // Field data
         if (typeof fieldData === 'function') itemData = fieldData(data);
@@ -144,7 +148,7 @@ function getItemField<T>(
     return [
         itemData,
         itemLabel,
-        { xs: 12, sm: 6, md: 6, lg: 4, xl: 3, ...gridProps }
+        { xs, sm: 6, md: 6, lg: 4, xl: 3, ...gridProps }
     ];
 }
 

@@ -153,6 +153,7 @@ export function AuditDisplay(props: AuditDisplayProps) {
                             onClick={() => showDataComparison(data.changes!)}
                             sx={{
                                 marginLeft: theme.spacing(1),
+                                marginTop: theme.spacing(-0.5),
                                 float: 'right'
                             }}
                         >
@@ -171,7 +172,7 @@ export function AuditDisplay(props: AuditDisplayProps) {
         },
         headerTitle = (
             <React.Fragment>
-                {getLabel('audits')}
+                <Typography>{getLabel('audits')}</Typography>
                 <Divider />
             </React.Fragment>
         ),
