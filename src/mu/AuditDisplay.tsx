@@ -8,6 +8,7 @@ import {
     TableHead,
     TableRow,
     Theme,
+    Typography,
     useTheme
 } from '@mui/material';
 import React, { CSSProperties } from 'react';
@@ -126,17 +127,17 @@ export function AuditDisplay(props: AuditDisplayProps) {
         );
 
         globalApp.notifier.alert(
-            undefined,
+            [undefined, dataComparisonLabel],
             undefined,
             NotificationMessageType.Info,
-            { fullScreen: globalApp.smDown, inputs, title: dataComparisonLabel }
+            { fullScreen: globalApp.smDown, inputs }
         );
     };
 
     // Destruct
     const {
         getItemStyle = (index, theme) => ({
-            padding: theme.spacing(1),
+            padding: [theme.spacing(1.5), theme.spacing(1)].join(' '),
             background:
                 index % 2 === 0
                     ? theme.palette.grey[100]
@@ -158,11 +159,13 @@ export function AuditDisplay(props: AuditDisplayProps) {
                             {dataComparisonLabel}
                         </Button>
                     )}
-                    {formatDate(data.creation) +
-                        ', [' +
-                        getLabel(data.action) +
-                        '], ' +
-                        data.user}
+                    <Typography>
+                        {formatDate(data.creation) +
+                            ', [' +
+                            getLabel(data.action) +
+                            '], ' +
+                            data.user}
+                    </Typography>
                 </React.Fragment>
             );
         },
