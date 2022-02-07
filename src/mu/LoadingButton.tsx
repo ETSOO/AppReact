@@ -38,9 +38,6 @@ export function LoadingButton(props: LoadingButtonProps) {
         endIcon
     );
 
-    // Button ref
-    const buttonRef = React.createRef<HTMLButtonElement>();
-
     // Check if the component is mounted
     const isMounted = React.useRef(true);
 
@@ -54,13 +51,9 @@ export function LoadingButton(props: LoadingButtonProps) {
     return (
         <Button
             disabled={loading}
-            ref={buttonRef}
             endIcon={localEndIcon}
             onClick={async (event) => {
                 if (onClick) {
-                    // Disable the button
-                    buttonRef.current!.disabled = true;
-
                     // Update state
                     setLoading(true);
 
@@ -73,9 +66,6 @@ export function LoadingButton(props: LoadingButtonProps) {
                     // It's necessary to check the component is mounted now
                     if (isMounted.current) {
                         setLoading(false);
-
-                        // Enable the button
-                        buttonRef.current!.disabled = false;
                     }
                 }
             }}

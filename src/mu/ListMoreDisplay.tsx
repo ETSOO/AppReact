@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import {
     Card,
     CardActions,
@@ -7,31 +8,48 @@ import {
     CircularProgress
 } from '@mui/material';
 import React from 'react';
-import { globalApp, LoadingButton } from '..';
+import { globalApp } from '../app/ReactApp';
 import {
+    GridData,
+    GridDataGet,
     GridLoadDataProps,
     GridLoader,
     GridLoaderStates
 } from '../components/GridLoader';
+import { LoadingButton } from './LoadingButton';
 
 /**
  * ListMoreDisplay props
  */
-export interface ListMoreDisplayProps<T> extends CardProps, GridLoader<T> {
+export interface ListMoreDisplayProps<
+    T,
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
+> extends CardProps,
+        GridLoader<T> {
     /**
      * Children to display the list
      */
     children: (data: T, index: number) => React.ReactNode;
 
     /**
-     * More button label
+     * Search field template
      */
-    moreLabel?: string;
+    fieldTemplate?: F;
+
+    /**
+     * Header renderer
+     */
+    headerRenderer?: (reset: (data?: GridData) => void) => React.ReactNode;
 
     /**
      * Header title
      */
     headerTitle?: React.ReactNode;
+
+    /**
+     * More button label
+     */
+    moreLabel?: string;
 }
 
 type states<T> = {
@@ -44,18 +62,23 @@ type states<T> = {
  * @param props Props
  * @returns Component
  */
-export function ListMoreDisplay<T extends {}>(props: ListMoreDisplayProps<T>) {
+export function ListMoreDisplay<
+    T extends {},
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
+>(props: ListMoreDisplayProps<T, F>) {
     // Destruct
     const {
         autoLoad = true,
         children,
         defaultOrderBy,
+        headerRenderer,
         headerTitle,
         loadBatchSize,
         loadData,
         moreLabel = typeof globalApp === 'undefined'
             ? undefined
             : globalApp.get('more') + '...',
+        fieldTemplate,
         threshold,
         ...rest
     } = props;
@@ -82,7 +105,7 @@ export function ListMoreDisplay<T extends {}>(props: ListMoreDisplayProps<T>) {
     );
 
     // Load data
-    const loadDataLocal = async () => {
+    const loadDataLocal = async (reset: boolean = false) => {
         // Prevent multiple loadings
         if (!ref.hasNextPage || ref.isNextPageLoading) return;
 
@@ -100,7 +123,9 @@ export function ListMoreDisplay<T extends {}>(props: ListMoreDisplayProps<T>) {
             data
         };
 
-        const items = await loadData(loadProps);
+        const mergedData = GridDataGet(loadProps, fieldTemplate);
+
+        const items = await loadData(mergedData);
         if (items == null || ref.isMounted === false) {
             return;
         }
@@ -113,12 +138,26 @@ export function ListMoreDisplay<T extends {}>(props: ListMoreDisplayProps<T>) {
         ref.hasNextPage = hasNextPage;
 
         // Update rows
-        if (states.items == null) setStates({ items, completed: !hasNextPage });
+        if (states.items == null || reset)
+            setStates({ items, completed: !hasNextPage });
         else
             setStates({
                 items: [...states.items, ...items],
                 completed: !hasNextPage
             });
+    };
+
+    const reset = (data?: GridData) => {
+        // Update the form data
+        ref.data = data;
+
+        // Reset page number
+        ref.isNextPageLoading = false;
+        ref.currentPage = 0;
+        ref.hasNextPage = true;
+
+        // Load data
+        loadDataLocal();
     };
 
     React.useEffect(() => {
@@ -135,23 +174,28 @@ export function ListMoreDisplay<T extends {}>(props: ListMoreDisplayProps<T>) {
     if (states.items == null) return <CircularProgress size={20} />;
 
     return (
-        <Card {...rest}>
-            <CardHeader title={headerTitle}></CardHeader>
-            <CardContent
-                sx={{
-                    paddingTop: 0,
-                    paddingBottom: states.completed ? 0 : 'inherit'
-                }}
-            >
-                {states.items.map((item, index) => children(item, index))}
-            </CardContent>
-            {!states.completed && (
-                <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    <LoadingButton onClick={async () => await loadDataLocal()}>
-                        {moreLabel}
-                    </LoadingButton>
-                </CardActions>
-            )}
-        </Card>
+        <React.Fragment>
+            {headerRenderer && headerRenderer(reset)}
+            <Card {...rest}>
+                <CardHeader title={headerTitle}></CardHeader>
+                <CardContent
+                    sx={{
+                        paddingTop: 0,
+                        paddingBottom: states.completed ? 0 : 'inherit'
+                    }}
+                >
+                    {states.items.map((item, index) => children(item, index))}
+                </CardContent>
+                {!states.completed && (
+                    <CardActions sx={{ justifyContent: 'flex-end' }}>
+                        <LoadingButton
+                            onClick={async () => await loadDataLocal()}
+                        >
+                            {moreLabel}
+                        </LoadingButton>
+                    </CardActions>
+                )}
+            </Card>
+        </React.Fragment>
     );
 }
