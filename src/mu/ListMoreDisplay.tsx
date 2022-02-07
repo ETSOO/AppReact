@@ -68,10 +68,10 @@ export function ListMoreDisplay<
 >(props: ListMoreDisplayProps<T, F>) {
     // Destruct
     const {
-        autoLoad = true,
         children,
         defaultOrderBy,
         headerRenderer,
+        autoLoad = headerRenderer == null,
         headerTitle,
         loadBatchSize,
         loadData,
@@ -157,7 +157,7 @@ export function ListMoreDisplay<
         ref.hasNextPage = true;
 
         // Load data
-        loadDataLocal();
+        loadDataLocal(true);
     };
 
     React.useEffect(() => {
