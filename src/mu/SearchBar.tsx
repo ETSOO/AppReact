@@ -397,6 +397,11 @@ export function SearchBar(props: SearchBarProps) {
                             alignItems="stretch"
                             spacing={2}
                             padding={2}
+                            sx={{
+                                '& > :not(style)': {
+                                    minWidth: '100px'
+                                }
+                            }}
                         >
                             {moreItems}
                         </Stack>
