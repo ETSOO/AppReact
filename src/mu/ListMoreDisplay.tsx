@@ -170,9 +170,6 @@ export function ListMoreDisplay<
         };
     }, []);
 
-    // Loading
-    if (states.items == null) return <CircularProgress size={20} />;
-
     return (
         <React.Fragment>
             {headerRenderer && headerRenderer(reset)}
@@ -184,7 +181,11 @@ export function ListMoreDisplay<
                         paddingBottom: states.completed ? 0 : 'inherit'
                     }}
                 >
-                    {states.items.map((item, index) => children(item, index))}
+                    {states.items == null ? (
+                        <CircularProgress size={20} />
+                    ) : (
+                        states.items.map((item, index) => children(item, index))
+                    )}
                 </CardContent>
                 {!states.completed && (
                     <CardActions sx={{ justifyContent: 'flex-end' }}>
