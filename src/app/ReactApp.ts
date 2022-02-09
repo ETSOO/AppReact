@@ -1,5 +1,6 @@
 import {
     ActionResultError,
+    BridgeUtils,
     CoreApp,
     createClient,
     IActionResult,
@@ -270,6 +271,9 @@ export class ReactApp<
                 promptOK: 'ok'
             }
         });
+
+        // Notify host
+        BridgeUtils.host?.changeCulture(culture.name);
 
         // Document title
         document.title = this.get(this.name) ?? this.name;
