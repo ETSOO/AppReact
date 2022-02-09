@@ -38,6 +38,7 @@ export * from './mu/texts/MoneyText';
 export * from './mu/texts/NumberText';
 
 export * from './mu/AuditDisplay';
+export * from './mu/BridgeCloseButton';
 export * from './mu/ButtonLink';
 export * from './mu/ComboBox';
 export * from './mu/CountdownButton';
