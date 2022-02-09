@@ -12,7 +12,7 @@ export interface BridgeCloseButtonProps extends IconButtonProps {
      * Validate the host
      * @param host Host
      */
-    validate(host: IBridgeHost): boolean;
+    validate?(host: IBridgeHost): boolean;
 }
 
 /**
@@ -51,8 +51,8 @@ export function BridgeCloseButton(props: BridgeCloseButtonProps) {
             onClick={onClickLocal}
             sx={{
                 position: 'absolute',
-                top: (theme) => theme.spacing(1),
-                right: (theme) => theme.spacing(1)
+                top: (theme) => theme.spacing(0.5),
+                right: (theme) => theme.spacing(0.5)
             }}
             {...rest}
         >
