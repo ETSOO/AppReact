@@ -1,4 +1,5 @@
 import {
+    BridgeUtils,
     createClient,
     IApi,
     IApiPayload,
@@ -72,16 +73,16 @@ export class ServiceApp<
      * @param tryLogin Try to login again
      */
     override toLoginPage(tryLogin?: boolean) {
-        const coreUrl = this.settings.webUrl;
-        window.location.href =
-            coreUrl +
-            '?serviceId=' +
-            this.settings.serviceId +
-            '&' +
-            DomUtils.CultureField +
-            '=' +
-            this.culture +
-            (tryLogin ? '' : '&tryLogin=false');
+        const parameters = `?serviceId=${this.settings.serviceId}&${
+            DomUtils.CultureField
+        }=${this.culture}${tryLogin ? '' : '&tryLogin=false'}`;
+
+        if (BridgeUtils.host == null) {
+            const coreUrl = this.settings.webUrl;
+            window.location.href = coreUrl + parameters;
+        } else {
+            BridgeUtils.host.loadApp('core', parameters);
+        }
     }
 
     /**
