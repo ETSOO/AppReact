@@ -14,6 +14,7 @@ import {
     NotificationReturn
 } from '@etsoo/notificationbase';
 import { DataTypes, WindowStorage } from '@etsoo/shared';
+import { History, navigate } from '@reach/router';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -99,6 +100,11 @@ export interface IReactApp<
     readonly userState: UserState<D>;
 
     /**
+     * Router history
+     */
+    readonly history?: History;
+
+    /**
      * Is screen size down 'sm'
      */
     smDown?: boolean;
@@ -168,6 +174,11 @@ export class ReactApp<
     readonly cultureState: CultureState;
 
     /**
+     * Router history
+     */
+    readonly history?: History;
+
+    /**
      * Page state
      */
     readonly pageState: PageState<P>;
@@ -210,6 +221,10 @@ export class ReactApp<
             new WindowStorage(),
             name
         );
+        this.history =
+            window.location.hostname === ''
+                ? Utils.getMemoryHistory()
+                : undefined;
         this.cultureState = new CultureState(settings.currentCulture);
         this.pageState = new PageState<P>();
 
@@ -355,7 +370,7 @@ export class ReactApp<
      * @param url Url
      */
     override redirectTo(url: string) {
-        Utils.getMemoryHistory().navigate(url);
+        (this.history == null ? navigate : this.history.navigate)(url);
     }
 
     /**
