@@ -157,6 +157,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         }
     };
 
+    // When value change
     React.useEffect(() => {
         if (loadData) {
             loadData().then((result) => {
@@ -168,7 +169,9 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
                 setOptions(result);
             });
         }
+    }, [localValue]);
 
+    React.useEffect(() => {
         return () => {
             isMounted.current = false;
         };

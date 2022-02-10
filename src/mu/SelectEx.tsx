@@ -165,15 +165,8 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
     // Refs
     const divRef = React.useRef<HTMLDivElement>();
 
-    // When layout ready
+    // When value change
     React.useEffect(() => {
-        const input = divRef.current?.querySelector('input');
-        const inputChange = (event: Event) => {
-            // Reset case
-            if (event.cancelable) setValueState(multiple ? [] : '');
-        };
-        input?.addEventListener('change', inputChange);
-
         if (loadData) {
             loadData().then((result) => {
                 if (result == null || !isMounted.current) return;
@@ -184,6 +177,16 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
                 setOptions(result);
             });
         }
+    }, [localValue]);
+
+    // When layout ready
+    React.useEffect(() => {
+        const input = divRef.current?.querySelector('input');
+        const inputChange = (event: Event) => {
+            // Reset case
+            if (event.cancelable) setValueState(multiple ? [] : '');
+        };
+        input?.addEventListener('change', inputChange);
 
         return () => {
             isMounted.current = false;
