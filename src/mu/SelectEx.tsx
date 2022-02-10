@@ -211,7 +211,11 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
             </InputLabel>
             <Select
                 ref={divRef}
-                value={localOptions.length > 0 ? valueState ?? '' : ''}
+                value={
+                    localOptions.some((option) => itemChecked(getId(option)))
+                        ? valueState ?? ''
+                        : ''
+                }
                 input={<OutlinedInput notched label={label} />}
                 labelId={labelId}
                 name={name}

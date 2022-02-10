@@ -14,6 +14,7 @@ import {
     NotificationReturn
 } from '@etsoo/notificationbase';
 import { DataTypes, WindowStorage } from '@etsoo/shared';
+import { redirectTo } from '@reach/router';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -347,6 +348,14 @@ export class ReactApp<
                 inputs: progress
             }
         );
+    }
+
+    /**
+     * Redirect to the Url
+     * @param url Url
+     */
+    override redirectTo(url: string) {
+        redirectTo(url);
     }
 
     /**

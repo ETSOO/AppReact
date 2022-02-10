@@ -47,10 +47,12 @@ export function BridgeCloseButton(props: BridgeCloseButtonProps) {
     return (
         <IconButton
             aria-label="close"
-            color="primary"
+            color="secondary"
             onClick={onClickLocal}
+            title={title}
             sx={{
                 position: 'absolute',
+                zIndex: (theme) => theme.zIndex.appBar + 1,
                 top: (theme) => theme.spacing(0.5),
                 right: (theme) => theme.spacing(0.5)
             }}
