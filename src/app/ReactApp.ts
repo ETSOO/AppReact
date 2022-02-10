@@ -223,7 +223,7 @@ export class ReactApp<
         );
         this.history =
             window.location.hostname === ''
-                ? Utils.getMemoryHistory()
+                ? Utils.getMemoryHistory(window.location.href)
                 : undefined;
         this.cultureState = new CultureState(settings.currentCulture);
         this.pageState = new PageState<P>();

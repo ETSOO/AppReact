@@ -28,11 +28,13 @@ export namespace Utils {
 
     /**
      * Get memory history
+     * @param initialPath Initial path
      * @returns History
      */
-    export function getMemoryHistory() {
+    export function getMemoryHistory(initialPath: string = '/') {
+        console.log('getMemoryHistory', initialPath);
         if (memoryHistory == null) {
-            memoryHistory = createHistory(createMemorySource('/'));
+            memoryHistory = createHistory(createMemorySource(initialPath));
         }
         return memoryHistory;
     }
