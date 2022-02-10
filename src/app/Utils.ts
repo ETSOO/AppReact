@@ -1,9 +1,14 @@
+import { createHistory, createMemorySource, History } from '@reach/router';
 import React from 'react';
 
 /**
  * React utils
  */
 export namespace Utils {
+    // Memory history
+    // https://github.com/reach/router/issues/225
+    let memoryHistory: History | null;
+
     /**
      * Format input value
      * @param value Input value
@@ -19,6 +24,17 @@ export namespace Utils {
         if (Array.isArray(value)) return value;
 
         return String(value);
+    }
+
+    /**
+     * Get memory history
+     * @returns History
+     */
+    export function getMemoryHistory() {
+        if (memoryHistory == null) {
+            memoryHistory = createHistory(createMemorySource('/'));
+        }
+        return memoryHistory;
     }
 
     /**

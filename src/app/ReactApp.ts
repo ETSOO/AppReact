@@ -14,7 +14,6 @@ import {
     NotificationReturn
 } from '@etsoo/notificationbase';
 import { DataTypes, WindowStorage } from '@etsoo/shared';
-import { navigate } from '@reach/router';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -35,6 +34,7 @@ import {
 } from '../states/UserState';
 import { InputDialogProps } from './InputDialogProps';
 import { Labels } from './Labels';
+import { Utils } from './Utils';
 
 /**
  * Global application
@@ -355,7 +355,7 @@ export class ReactApp<
      * @param url Url
      */
     override redirectTo(url: string) {
-        navigate(url);
+        Utils.getMemoryHistory().navigate(url);
     }
 
     /**
