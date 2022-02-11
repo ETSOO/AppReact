@@ -31,9 +31,11 @@ export namespace Utils {
      * @param initialPath Initial path
      * @returns History
      */
-    export function getMemoryHistory(initialPath: string = '/') {
+    export function getMemoryHistory(initialPath?: string | null) {
         if (memoryHistory == null) {
-            memoryHistory = createHistory(createMemorySource(initialPath));
+            memoryHistory = createHistory(
+                createMemorySource(initialPath ?? '/')
+            );
         }
         return memoryHistory;
     }

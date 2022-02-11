@@ -219,41 +219,16 @@ export class ReactApp<
             new WindowStorage(),
             name
         );
+
         this.history =
-            window.location.hostname === ''
-                ? Utils.getMemoryHistory(this.getHostUrl(window.location.href))
-                : undefined;
+            BridgeUtils.host == null
+                ? undefined
+                : Utils.getMemoryHistory(BridgeUtils.host.getStartUrl());
+
         this.cultureState = new CultureState(settings.currentCulture);
         this.pageState = new PageState<P>();
 
         globalApp = this;
-    }
-
-    /**
-     * Get parsed Url under bridge host
-     * @param url Url
-     * @returns Parsed Url
-     */
-    protected getHostUrl(url: string) {
-        return this.getHostUrlBase(url, 'core');
-    }
-
-    /**
-     * Get parsed Url under bridge host
-     * @param url Url
-     * @param name App name in the host environment
-     * @returns Parsed Url
-     */
-    protected getHostUrlBase(url: string, name: string) {
-        if (url.startsWith('/')) return url;
-
-        const identifier = `/${name}/`;
-        const pos = url.indexOf(identifier);
-        if (pos === -1) return '/';
-
-        return url
-            .substring(pos + identifier.length - 1)
-            .replace('/index.html', '/'); // Router take / as start
     }
 
     /**

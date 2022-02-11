@@ -69,12 +69,14 @@ export class ServiceApp<
     }
 
     /**
-     * Get parsed Url under bridge host
-     * @param url Url
-     * @returns Parsed Url
+     * Load SmartERP core
      */
-    protected override getHostUrl(url: string) {
-        return this.getHostUrlBase(url, 's' + this.settings.serviceId);
+    loadSmartERP() {
+        if (BridgeUtils.host == null) {
+            window.location.href = this.settings.webUrl;
+        } else {
+            BridgeUtils.host.loadApp('core');
+        }
     }
 
     /**

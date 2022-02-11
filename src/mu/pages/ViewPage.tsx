@@ -7,6 +7,7 @@ import {
     Typography
 } from '@mui/material';
 import React from 'react';
+import { Labels } from '../../app/Labels';
 import { globalApp } from '../../app/ReactApp';
 import {
     GridColumnRenderProps,
@@ -14,6 +15,7 @@ import {
 } from '../../components/GridColumn';
 import { GridDataFormat } from '../GridDataFormat';
 import { MUGlobal } from '../MUGlobal';
+import { PullToRefreshUI } from '../PullToRefreshUI';
 import { CommonPage } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
 
@@ -80,6 +82,11 @@ export interface ViewPageProps<T extends {}>
      * Load data
      */
     loadData: () => PromiseLike<T | undefined>;
+
+    /**
+     * Pull to refresh data
+     */
+    pullToRefresh?: boolean;
 
     /**
      * Support refresh
@@ -167,11 +174,18 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
         supportRefresh = true,
         fabColumnDirection = true,
         supportBack = true,
+        pullToRefresh = true,
         ...rest
     } = props;
 
     // Data
     const [data, setData] = React.useState<T>();
+
+    // Labels
+    const labels = Labels.CommonPage;
+
+    // Container
+    const pullContainer = '#page-container';
 
     // Load data
     const refresh = async () => {
@@ -245,6 +259,23 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
                         </Stack>
                     )}
                     {Utils.getResult(children, data, refresh)}
+                    {pullToRefresh && (
+                        <PullToRefreshUI
+                            mainElement={pullContainer}
+                            triggerElement={pullContainer}
+                            instructionsPullToRefresh={labels.pullToRefresh}
+                            instructionsReleaseToRefresh={
+                                labels.releaseToRefresh
+                            }
+                            instructionsRefreshing={labels.refreshing}
+                            onRefresh={refresh}
+                            shouldPullToRefresh={() => {
+                                const container =
+                                    document.querySelector(pullContainer);
+                                return !container?.scrollTop;
+                            }}
+                        />
+                    )}
                 </React.Fragment>
             )}
         </CommonPage>
