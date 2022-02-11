@@ -9,6 +9,7 @@ export namespace Labels {
      */
     export const CommonPage = {
         add: 'Add',
+        back: 'Back',
         delete: 'Delete',
         more: 'More',
         pullToRefresh: 'Pull down to refresh',

@@ -6,6 +6,7 @@ import { CommonPage, CommonPageScrollContainer } from './CommonPage';
 import { CommonPageProps } from './CommonPageProps';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { BackButton } from '../BackButton';
 
 /**
  * Add / Edit page props
@@ -25,6 +26,12 @@ export interface EditPageProps extends Omit<CommonPageProps, 'onSubmit'> {
      * On delete callback
      */
     onDelete?: () => Promise<void> | void;
+
+    /**
+     * Support back click
+     * @default true
+     */
+    supportBack?: boolean;
 }
 
 /**
@@ -40,6 +47,7 @@ export function EditPage(props: EditPageProps) {
         onSubmit,
         paddings = MUGlobal.pagePaddings,
         scrollContainer = CommonPageScrollContainer,
+        supportBack = true,
         ...rest
     } = props;
 
@@ -91,6 +99,7 @@ export function EditPage(props: EditPageProps) {
                     >
                         {labels.save}
                     </Button>
+                    {supportBack && <BackButton title={labels.back} />}
                 </Grid>
             </form>
         </CommonPage>

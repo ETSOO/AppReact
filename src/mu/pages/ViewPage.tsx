@@ -165,6 +165,8 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
         loadData,
         paddings = MUGlobal.pagePaddings,
         supportRefresh = true,
+        fabColumnDirection = true,
+        supportBack = true,
         ...rest
     } = props;
 
@@ -184,7 +186,9 @@ export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
             onRefresh={supportRefresh ? refresh : undefined}
             onUpdate={supportRefresh ? undefined : refresh}
             {...rest}
-            scrollContainer={global}
+            scrollContainer={globalThis}
+            fabColumnDirection={fabColumnDirection}
+            supportBack={supportBack}
         >
             {data == null ? (
                 <LinearProgress />

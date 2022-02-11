@@ -20,7 +20,7 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
     fabSize?: CustomFabSize;
 
     /**
-     * Fab flex column direction?
+     * Fab flex column direction, undefined to hide it
      */
     fabColumnDirection?: boolean;
 
@@ -58,6 +58,11 @@ export interface CommonPageProps extends Omit<ContainerProps, 'id'> {
      * Scroll container
      */
     scrollContainer?: HTMLElement | object;
+
+    /**
+     * Support back click
+     */
+    supportBack?: boolean;
 
     /**
      * State last changed fields

@@ -1,6 +1,6 @@
 import { BridgeUtils, IBridgeHost } from '@etsoo/appscript';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, IconButtonProps } from '@mui/material';
+import { Box, BoxProps, IconButton, IconButtonProps } from '@mui/material';
 import React from 'react';
 import { globalApp } from '../app/ReactApp';
 
@@ -8,6 +8,11 @@ import { globalApp } from '../app/ReactApp';
  * Bridge close button props
  */
 export interface BridgeCloseButtonProps extends IconButtonProps {
+    /**
+     * Box props
+     */
+    boxProps?: BoxProps;
+
     /**
      * Validate the host
      * @param host Host
@@ -23,6 +28,7 @@ export interface BridgeCloseButtonProps extends IconButtonProps {
 export function BridgeCloseButton(props: BridgeCloseButtonProps) {
     // Destruct
     const {
+        boxProps,
         onClick,
         title = typeof globalApp === 'undefined'
             ? 'Close'
@@ -45,20 +51,15 @@ export function BridgeCloseButton(props: BridgeCloseButtonProps) {
     };
 
     return (
-        <IconButton
-            aria-label="close"
-            color="secondary"
-            onClick={onClickLocal}
-            title={title}
-            sx={{
-                position: 'absolute',
-                zIndex: (theme) => theme.zIndex.appBar + 1,
-                top: (theme) => theme.spacing(0.5),
-                right: (theme) => theme.spacing(0.5)
-            }}
-            {...rest}
-        >
-            <CloseIcon />
-        </IconButton>
+        <Box {...boxProps}>
+            <IconButton
+                aria-label="close"
+                onClick={onClickLocal}
+                title={title}
+                {...rest}
+            >
+                <CloseIcon />
+            </IconButton>
+        </Box>
     );
 }

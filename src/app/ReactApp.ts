@@ -56,12 +56,10 @@ export function ReactAppStateDetector(props: IStateProps) {
     const { targetFields, update } = props;
 
     // Context
-    const { state } =
+    const { state = {} } =
         globalApp == null
-            ? ({ state: {} } as UserCalls<IUser>)
-            : React.useContext(
-                  (globalApp.userState as UserState<IUser>).context
-              );
+            ? ({} as UserCalls<IUser>)
+            : React.useContext(globalApp.userState.context);
 
     // Ready
     React.useEffect(() => {

@@ -8,6 +8,7 @@ import { MoreFab } from '../MoreFab';
 import { ReactAppStateDetector } from '../../app/ReactApp';
 import { Container, Fab } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { BackButton } from '../BackButton';
 
 /**
  * Default scroll container
@@ -34,6 +35,7 @@ export function CommonPage(props: CommonPageProps) {
         onUpdateAll,
         paddings = MUGlobal.pagePaddings,
         scrollContainer,
+        supportBack = false,
         targetFields,
         sx = {},
         ...rest
@@ -115,6 +117,9 @@ export function CommonPage(props: CommonPageProps) {
                         title={labels.more}
                         actions={moreActions}
                     />
+                    {supportBack && (
+                        <BackButton title={labels.back} size={fabSize} />
+                    )}
                 </FabBox>
                 {children}
             </Container>
