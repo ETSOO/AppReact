@@ -300,10 +300,16 @@ export class ServiceApp<
 
     /**
      * Try login
+     * @param data Additional data
+     * @param showLoading Show loading bar or not
+     * @returns Result
      */
-    override async tryLogin<D extends {} = {}>(data?: D) {
+    override async tryLogin<D extends {} = {}>(
+        data?: D,
+        showLoading?: boolean
+    ) {
         // Reset user state
-        const result = await super.tryLogin(data);
+        const result = await super.tryLogin(data, showLoading);
         if (!result) return false;
 
         // Refresh token
@@ -323,6 +329,7 @@ export class ServiceApp<
                 });
             },
             data,
+            showLoading,
             relogin: true
         });
     }
