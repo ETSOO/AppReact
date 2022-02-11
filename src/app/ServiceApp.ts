@@ -69,6 +69,15 @@ export class ServiceApp<
     }
 
     /**
+     * Get parsed Url under bridge host
+     * @param url Url
+     * @returns Parsed Url
+     */
+    protected override getHostUrl(url: string) {
+        return this.getHostUrlBase(url, 's' + this.settings.serviceId);
+    }
+
+    /**
      * Go to the login page
      * @param tryLogin Try to login again
      */

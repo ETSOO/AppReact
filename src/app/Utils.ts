@@ -32,7 +32,6 @@ export namespace Utils {
      * @returns History
      */
     export function getMemoryHistory(initialPath: string = '/') {
-        console.log('getMemoryHistory', initialPath);
         if (memoryHistory == null) {
             memoryHistory = createHistory(createMemorySource(initialPath));
         }
