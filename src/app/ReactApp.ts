@@ -253,7 +253,9 @@ export class ReactApp<
         const pos = url.indexOf(identifier);
         if (pos === -1) return '/';
 
-        return url.substring(pos + identifier.length - 1);
+        return url
+            .substring(pos + identifier.length - 1)
+            .replace('/index.html', '/'); // Router take / as start
     }
 
     /**
