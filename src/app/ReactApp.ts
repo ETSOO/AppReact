@@ -14,7 +14,7 @@ import {
     NotificationReturn
 } from '@etsoo/notificationbase';
 import { DataTypes, WindowStorage } from '@etsoo/shared';
-import { History, navigate } from '@reach/router';
+import { History } from '@reach/router';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -370,7 +370,8 @@ export class ReactApp<
      * @param url Url
      */
     override redirectTo(url: string) {
-        (this.history == null ? navigate : this.history.navigate)(url);
+        const navigate = ReactUtils.getNavigateFn();
+        navigate(url);
     }
 
     /**
