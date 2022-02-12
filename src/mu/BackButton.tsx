@@ -2,7 +2,6 @@ import { IconButton, IconButtonProps, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import React from 'react';
 import { ReactUtils } from '../app/ReactUtils';
-import { BridgeUtils } from '@etsoo/appscript';
 
 /**
  * BackButton props
@@ -34,11 +33,6 @@ export function BackButton(props: BackButtonProps) {
         // Navigate
         const navigate = ReactUtils.getNavigateFn();
         await navigate(-1);
-
-        const history = ReactUtils.getMemoryHistory();
-        if (history) {
-            console.log(history);
-        }
     };
 
     return (

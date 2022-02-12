@@ -50,6 +50,13 @@ export namespace ReactUtils {
      * @returns NavigateFn
      */
     export function getNavigateFn() {
+        console.log(
+            'getNavigateFn',
+            memoryHistory,
+            memoryHistory?.navigate,
+            memoryHistory?.navigate === navigate
+        );
+
         if (memoryHistory == null) return navigate;
         return memoryHistory.navigate;
     }
