@@ -3,7 +3,7 @@ import { Box, Stack, SxProps, Theme } from '@mui/material';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
 import { Labels } from '../app/Labels';
-import { Utils } from '../app/Utils';
+import { ReactUtils } from '../app/ReactUtils';
 import { GridColumn } from '../components/GridColumn';
 import {
     GridDataGet,
@@ -326,7 +326,7 @@ export function ResponsibleContainer<
                     mRef={mRefs}
                     onClick={(event, data) =>
                         quickAction &&
-                        Utils.isSafeClick(event) &&
+                        ReactUtils.isSafeClick(event) &&
                         quickAction(data)
                     }
                     oRef={(element) => {

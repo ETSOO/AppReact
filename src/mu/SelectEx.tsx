@@ -1,4 +1,3 @@
-import { Utils as AppUtils } from '../app/Utils';
 import {
     Checkbox,
     FormControl,
@@ -15,6 +14,7 @@ import { MUGlobal } from './MUGlobal';
 import { IdLabelDto } from '@etsoo/appscript';
 import { ListItemRightIcon } from './ListItemRightIcon';
 import { Utils } from '@etsoo/shared';
+import { ReactUtils } from '../app/ReactUtils';
 
 /**
  * Extended select component props
@@ -145,7 +145,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
             const input = divRef.current?.querySelector('input');
             if (input) {
                 // Different value, trigger change event
-                AppUtils.triggerChange(input, id as string, false);
+                ReactUtils.triggerChange(input, id as string, false);
             }
         }
     };

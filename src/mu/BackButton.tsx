@@ -1,7 +1,7 @@
 import { IconButton, IconButtonProps, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import React from 'react';
-import { useNavigate } from '@reach/router';
+import { ReactUtils } from '../app/ReactUtils';
 
 /**
  * BackButton props
@@ -18,7 +18,7 @@ export function BackButton(props: BackButtonProps) {
     const { color = 'primary', size = 'small', onClick, ...rest } = props;
 
     // Navigate
-    const navigate = useNavigate();
+    const navigate = ReactUtils.getNavigateFn();
 
     // Theme
     const theme = useTheme();

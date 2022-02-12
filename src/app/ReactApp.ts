@@ -35,7 +35,7 @@ import {
 } from '../states/UserState';
 import { InputDialogProps } from './InputDialogProps';
 import { Labels } from './Labels';
-import { Utils } from './Utils';
+import { ReactUtils } from './ReactUtils';
 
 /**
  * Global application
@@ -223,7 +223,7 @@ export class ReactApp<
         this.history =
             BridgeUtils.host == null
                 ? undefined
-                : Utils.getMemoryHistory(BridgeUtils.host.getStartUrl());
+                : ReactUtils.getMemoryHistory(BridgeUtils.host.getStartUrl());
 
         this.cultureState = new CultureState(settings.currentCulture);
         this.pageState = new PageState<P>();

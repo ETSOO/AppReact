@@ -2,9 +2,9 @@ import { Button, Drawer, IconButton, Stack, useTheme } from '@mui/material';
 import React from 'react';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useDimensions } from '../uses/useDimensions';
-import { Utils as AppUtils } from '../app/Utils';
 import { DomUtils } from '@etsoo/shared';
 import { Labels } from '../app/Labels';
+import { ReactUtils } from '../app/ReactUtils';
 
 /**
  * Search bar props
@@ -48,7 +48,7 @@ const resetForm = (form: HTMLFormElement) => {
 
             // Ignore readOnly without data-reset=true inputs
             if (!input.readOnly || input.dataset.reset === 'true') {
-                AppUtils.triggerChange(input, '', true);
+                ReactUtils.triggerChange(input, '', true);
             }
             continue;
         }

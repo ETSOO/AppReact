@@ -1,10 +1,15 @@
-import { createHistory, createMemorySource, History } from '@reach/router';
+import {
+    createHistory,
+    createMemorySource,
+    History,
+    navigate
+} from '@reach/router';
 import React from 'react';
 
 /**
  * React utils
  */
-export namespace Utils {
+export namespace ReactUtils {
     // Memory history
     // https://github.com/reach/router/issues/225
     let memoryHistory: History | null;
@@ -38,6 +43,15 @@ export namespace Utils {
             );
         }
         return memoryHistory;
+    }
+
+    /**
+     * Get navigate function, works with memory history
+     * @returns NavigateFn
+     */
+    export function getNavigateFn() {
+        if (memoryHistory == null) return navigate;
+        return memoryHistory.navigate;
     }
 
     /**

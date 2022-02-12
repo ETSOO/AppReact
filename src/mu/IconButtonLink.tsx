@@ -1,6 +1,6 @@
 import { IconButton, IconButtonProps } from '@mui/material';
-import { useNavigate } from '@reach/router';
 import React from 'react';
+import { ReactUtils } from '../app/ReactUtils';
 
 /**
  * IconButtonLink props
@@ -22,7 +22,7 @@ export function IconButtonLink(props: IconButtonLinkProps) {
     const { href, ...rest } = props;
 
     // Navigate
-    const navigate = useNavigate();
+    const navigate = ReactUtils.getNavigateFn();
 
     // Layout
     return <IconButton {...rest} onClick={() => navigate(href)} />;

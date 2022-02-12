@@ -2,11 +2,11 @@ import { IdLabelDto } from '@etsoo/appscript';
 import { Keyboard } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
-import { Utils } from '../app/Utils';
 import { Utils as SharedUtils } from '@etsoo/shared';
 import { AutocompleteExtendedProps } from './AutocompleteExtendedProps';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
+import { ReactUtils } from '../app/ReactUtils';
 
 /**
  * ComboBox props
@@ -152,7 +152,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
 
             if (newValue !== input.value) {
                 // Different value, trigger change event
-                Utils.triggerChange(input, newValue, false);
+                ReactUtils.triggerChange(input, newValue, false);
             }
         }
     };

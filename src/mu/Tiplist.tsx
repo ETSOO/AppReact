@@ -2,7 +2,7 @@ import { IdLabelDto } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
-import { Utils } from '../app/Utils';
+import { ReactUtils } from '../app/ReactUtils';
 import { AutocompleteExtendedProps } from './AutocompleteExtendedProps';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
@@ -152,7 +152,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
 
             if (input && input.value !== '') {
                 // Different value, trigger change event
-                Utils.triggerChange(input, '', false);
+                ReactUtils.triggerChange(input, '', false);
             }
 
             if (states.options.length > 0) {
@@ -186,7 +186,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
             const newValue = DataTypes.getStringValue(value, idField) ?? '';
             if (newValue !== input.value) {
                 // Different value, trigger change event
-                Utils.triggerChange(input, newValue, false);
+                ReactUtils.triggerChange(input, newValue, false);
             }
         }
     };
