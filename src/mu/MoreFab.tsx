@@ -5,7 +5,6 @@ import {
     Divider,
     Fab,
     IconButton,
-    Link as MLink,
     ListItemIcon,
     ListItemText,
     Menu,
@@ -23,7 +22,12 @@ export interface MoreFabProps extends CustomFabProps {
     /**
      * Actions
      */
-    actions?: ListItemReact[];
+    actions?: (ListItemReact | boolean)[];
+
+    /**
+     * Dray arrow
+     */
+    drawArrow?: boolean;
 
     /**
      * Main icon
@@ -54,6 +58,16 @@ export interface MoreFabProps extends CustomFabProps {
     transformOrigin?: PopoverOrigin;
 }
 
+function getActions(input: (ListItemReact | boolean)[]): ListItemReact[] {
+    // Actions
+    const actions: ListItemReact[] = [];
+    input.forEach((action) => {
+        if (typeof action === 'boolean') return;
+        actions.push(action);
+    });
+    return actions;
+}
+
 /**
  * More fab
  * @returns Component
@@ -62,6 +76,7 @@ export function MoreFab(props: MoreFabProps) {
     // Destruct
     const {
         actions,
+        drawArrow = true,
         anchorOrigin = {
             vertical: 'top',
             horizontal: 'right'
@@ -69,7 +84,34 @@ export function MoreFab(props: MoreFabProps) {
         color = 'primary',
         icon = <MoreHorizIcon />,
         iconButton = false,
-        PaperProps,
+        PaperProps = drawArrow
+            ? {
+                  elevation: 0,
+                  sx: {
+                      overflow: 'visible',
+                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                      mt: -0.4,
+                      '& .MuiAvatar-root': {
+                          width: 32,
+                          height: 32,
+                          ml: -0.5,
+                          mr: 1
+                      },
+                      '&:before': {
+                          content: '""',
+                          display: 'block',
+                          position: 'absolute',
+                          top: 0,
+                          right: 14,
+                          width: 10,
+                          height: 10,
+                          bgcolor: 'background.paper',
+                          transform: 'translateY(-50%) rotate(45deg)',
+                          zIndex: 0
+                      }
+                  }
+              }
+            : undefined,
         size,
         title,
         transformOrigin = {
@@ -97,8 +139,11 @@ export function MoreFab(props: MoreFabProps) {
     // No actions
     if (actions == null || actions.length == 0) return <React.Fragment />;
 
+    // Actions
+    const actionsLocal = getActions(actions);
+
     // Has any icon
-    const hasIcon = actions.some((action) => action.icon != null);
+    const hasIcon = actionsLocal.some((action) => action.icon != null);
 
     // Main
     const main = iconButton ? (
@@ -129,7 +174,7 @@ export function MoreFab(props: MoreFabProps) {
                 onClose={handleClose}
                 PaperProps={PaperProps}
             >
-                {actions.map(({ label, icon, action }, index) =>
+                {actionsLocal.map(({ label, icon, action }, index) =>
                     label === '-' ? (
                         <Divider key={index} />
                     ) : (
