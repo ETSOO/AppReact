@@ -137,6 +137,9 @@ export function ListMoreDisplay<
         ref.isNextPageLoading = false;
         ref.hasNextPage = hasNextPage;
 
+        // Next page
+        ref.currentPage = currentPage + 1;
+
         // Update rows
         if (states.items == null || reset)
             setStates({ items, completed: !hasNextPage });
