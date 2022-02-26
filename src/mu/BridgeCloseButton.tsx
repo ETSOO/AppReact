@@ -40,7 +40,11 @@ export function BridgeCloseButton(props: BridgeCloseButtonProps) {
     // Host
     const host = BridgeUtils.host;
 
-    if (host == null || (validate && validate(host) === false)) {
+    if (
+        host == null ||
+        !host.closable() ||
+        (validate && validate(host) === false)
+    ) {
         return <React.Fragment />;
     }
 
