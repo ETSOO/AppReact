@@ -1,3 +1,4 @@
+import { ExtendUtils } from '@etsoo/shared';
 import React from 'react';
 
 /**
@@ -5,31 +6,24 @@ import React from 'react';
  * @param action Action function
  * @param milliseconds Interval of milliseconds
  */
-export const useTimeout = (action: Function, milliseconds: number) => {
-    // Time out seed
-    let seed = 0;
-
-    // Cancel function
-    const cancel = () => {
-        if (seed > 0) {
-            clearTimeout(seed);
-            seed = 0;
-        }
-    };
+export const useTimeout = (
+    action: (...args: any[]) => void,
+    milliseconds: number
+) => {
+    // Delayed
+    const d = ExtendUtils.delayedExecutor(action, milliseconds);
 
     // Merge into the life cycle
     React.useEffect(() => {
-        seed = window.setTimeout(() => {
-            action.call(null);
-        }, milliseconds);
+        d.call();
 
         return () => {
-            cancel();
+            d.clear();
         };
     }, []);
 
     // Return cancel method
     return {
-        cancel
+        cancel: d.clear
     };
 };

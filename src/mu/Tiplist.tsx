@@ -3,6 +3,7 @@ import { DataTypes } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { ReactUtils } from '../app/ReactUtils';
+import { useDelayedExecutor } from '../uses/useDelayedExecutor';
 import { AutocompleteExtendedProps } from './AutocompleteExtendedProps';
 import { InputField } from './InputField';
 import { SearchField } from './SearchField';
@@ -95,7 +96,6 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
 
     // State
     const [state] = React.useState<{
-        loadDataSeed?: number;
         idLoaded?: boolean;
         idSet?: boolean;
     }>({});
@@ -125,24 +125,12 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
         // Stop bubble
         event.stopPropagation();
 
-        // Clear any seed
-        if (state.loadDataSeed != null) {
-            clearTimeout(state.loadDataSeed);
-        }
-
-        // Delay 480 for loading data
-        state.loadDataSeed = window.setTimeout(
-            loadDataDirect,
-            480,
-            event.currentTarget.value
-        );
+        // Call with delay
+        delayed.call(undefined, event.currentTarget.value);
     };
 
     // Directly load data
     const loadDataDirect = (keyword?: string, id?: DataTypes.IdType) => {
-        // Reset seed value
-        state.loadDataSeed = undefined;
-
         // Reset options
         // setOptions([]);
 
@@ -176,6 +164,8 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
         });
     };
 
+    const delayed = useDelayedExecutor(loadDataDirect, 480);
+
     const setInputValue = (value: T | null) => {
         stateUpdate({ value });
 
@@ -207,12 +197,8 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
 
     React.useEffect(() => {
         return () => {
-            // Clear any seed
-            if (state.loadDataSeed != null) {
-                clearTimeout(state.loadDataSeed);
-            }
-
             isMounted.current = false;
+            delayed.clear();
         };
     }, []);
 

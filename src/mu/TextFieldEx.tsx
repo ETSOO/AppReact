@@ -9,6 +9,7 @@ import { MUGlobal } from './MUGlobal';
 import { Clear, Visibility } from '@mui/icons-material';
 import useCombinedRefs from '../uses/useCombinedRefs';
 import { Keyboard } from '@etsoo/shared';
+import { useDelayedExecutor } from '../uses/useDelayedExecutor';
 
 /**
  * Extended text field props
@@ -193,7 +194,10 @@ export const TextFieldEx = React.forwardRef<
     );
 
     const isMounted = React.useRef(true);
-    const delaySeed = React.useRef(0);
+    const delayed =
+        onChange != null && changeDelay != null && changeDelay >= 1
+            ? useDelayedExecutor(onChange, changeDelay)
+            : undefined;
 
     const onChangeEx = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -218,16 +222,13 @@ export const TextFieldEx = React.forwardRef<
             return;
         }
 
-        if (delaySeed.current > 0) window.clearTimeout(delaySeed.current);
-        delaySeed.current = window.setTimeout(() => {
-            if (isMounted.current) onChange(event);
-        }, changeDelay);
+        delayed?.call(undefined, event);
     };
 
     React.useEffect(() => {
         return () => {
             isMounted.current = false;
-            window.clearTimeout(delaySeed.current);
+            delayed?.clear();
         };
     }, []);
 

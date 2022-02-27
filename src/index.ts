@@ -101,6 +101,7 @@ export * from './states/UserState';
 
 // uses
 export * from './uses/useCombinedRefs';
+export * from './uses/useDelayedExecutor';
 export * from './uses/useDimensions';
 export * from './uses/useTimeout';
 export * from './uses/useWindowSize';

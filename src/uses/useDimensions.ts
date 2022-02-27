@@ -1,10 +1,10 @@
 import { DomUtils } from '@etsoo/shared';
 import React from 'react';
+import { useDelayedExecutor } from './useDelayedExecutor';
 
 interface states {
     count: number;
     indices: number[];
-    seed?: number;
 }
 
 /**
@@ -28,6 +28,45 @@ export function useDimensions(
         count: 0,
         indices: []
     });
+
+    // Dimentions
+    const dimensions =
+        React.useRef<[React.RefCallback<Element>, Element?, DOMRect?][]>();
+    if (dimensions.current == null) {
+        // Init
+        const init: [React.RefCallback<Element>, Element?, DOMRect?][] = [];
+        for (let e = 0; e < elements; e++) {
+            init.push(
+                ((index): [React.RefCallback<Element>] => {
+                    return [
+                        (instance) => {
+                            if (instance != null) {
+                                // Current element
+                                const currentElement = init[index][1];
+
+                                if (currentElement != null) {
+                                    // Same target, return
+                                    if (currentElement == instance) return;
+
+                                    // Cancel observation
+                                    resizeObserver.unobserve(currentElement);
+                                }
+
+                                // Update element
+                                init[index][1] = instance;
+
+                                // Start observe
+                                resizeObserver.observe(instance);
+                            }
+                        }
+                    ];
+                })(e)
+            );
+        }
+        dimensions.current = init;
+    }
+
+    const delayed = useDelayedExecutor(setState, miliseconds);
 
     // Observer
     const resizeObserver = new ResizeObserver((entries) => {
@@ -62,21 +101,9 @@ export function useDimensions(
 
         // Update state
         if (indices.length > 0) {
-            const update = { count: state.count + 1, indices, seed: undefined };
-            if (miliseconds > 0) {
-                if (state.seed != null) {
-                    clearTimeout(state.seed);
-                }
-                state.seed = window.setTimeout(
-                    (localUpdate: states) => {
-                        setState(localUpdate);
-                    },
-                    miliseconds,
-                    update
-                );
-            } else {
-                setState(update);
-            }
+            // Count only for unique update
+            const update = { count: state.count + 1, indices };
+            delayed.call(undefined, update);
         }
     });
 
@@ -111,21 +138,15 @@ export function useDimensions(
         );
     }
 
-    // Dimensions
-    const [dimensions] = React.useState(init);
-
     // Layout ready
     React.useEffect(() => {
         return () => {
             // Clear the observer
             resizeObserver.disconnect();
-
-            if (state.seed != null) {
-                clearTimeout(state.seed);
-            }
+            delayed.clear();
         };
     }, []);
 
     // Return
-    return { dimensions, state };
+    return { dimensions: dimensions.current, state };
 }

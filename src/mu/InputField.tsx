@@ -1,5 +1,6 @@
 import { TextField, TextFieldProps } from '@mui/material';
 import React from 'react';
+import { useDelayedExecutor } from '../uses/useDelayedExecutor';
 import { MUGlobal } from './MUGlobal';
 
 /**
@@ -42,7 +43,10 @@ export function InputField(props: InputFieldProps) {
     if (readOnly != null) InputProps.readOnly = readOnly;
 
     const isMounted = React.useRef(true);
-    const delaySeed = React.useRef(0);
+    const delayed =
+        onChange != null && changeDelay != null && changeDelay >= 1
+            ? useDelayedExecutor(onChange, changeDelay)
+            : undefined;
 
     const onChangeEx = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -54,16 +58,13 @@ export function InputField(props: InputFieldProps) {
             return;
         }
 
-        if (delaySeed.current > 0) window.clearTimeout(delaySeed.current);
-        delaySeed.current = window.setTimeout(() => {
-            if (isMounted.current) onChange(event);
-        }, changeDelay);
+        delayed?.call(undefined, event);
     };
 
     React.useEffect(() => {
         return () => {
             isMounted.current = false;
-            window.clearTimeout(delaySeed.current);
+            delayed?.clear();
         };
     }, []);
 

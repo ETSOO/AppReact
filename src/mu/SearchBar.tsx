@@ -5,6 +5,7 @@ import { useDimensions } from '../uses/useDimensions';
 import { DomUtils } from '@etsoo/shared';
 import { Labels } from '../app/Labels';
 import { ReactUtils } from '../app/ReactUtils';
+import { useDelayedExecutor } from '..';
 
 /**
  * Search bar props
@@ -103,7 +104,6 @@ export function SearchBar(props: SearchBarProps) {
     const state = React.useRef<{
         form?: HTMLFormElement;
         moreForm?: HTMLFormElement;
-        submitSeed?: number;
         lastMaxWidth: number;
         hasMore: boolean;
     }>({ hasMore: true, lastMaxWidth: 9999 }).current;
@@ -256,7 +256,7 @@ export function SearchBar(props: SearchBarProps) {
 
         if (state.form == null) state.form = event.currentTarget;
 
-        handleSubmit();
+        delayed.call();
     };
 
     // Handle more button click
@@ -270,8 +270,21 @@ export function SearchBar(props: SearchBarProps) {
 
         if (state.moreForm == null) state.moreForm = event.currentTarget;
 
-        handleSubmit();
+        delayed.call();
     };
+
+    // Submit at once
+    const handleSubmitInstant = (reset: boolean = false) => {
+        // Prepare data
+        const data = new FormData(state.form);
+        if (state.moreForm != null) {
+            DomUtils.mergeFormData(data, new FormData(state.moreForm));
+        }
+
+        onSubmit(data, reset);
+    };
+
+    const delayed = useDelayedExecutor(handleSubmitInstant, 480);
 
     // Reset
     const handleReset = () => {
@@ -283,41 +296,13 @@ export function SearchBar(props: SearchBarProps) {
         handleSubmitInstant(true);
     };
 
-    // Submit
-    const handleSubmit = (delay = 480) => {
-        if (state.submitSeed != null) {
-            clearTimeout(state.submitSeed);
-        }
-
-        // Delay the change
-        state.submitSeed = window.setTimeout(handleSubmitInstant, delay);
-    };
-
-    // Submit at once
-    const handleSubmitInstant = (reset: boolean = false) => {
-        // Reset timeout
-        state.submitSeed = undefined;
-
-        // Prepare data
-        const data = new FormData(state.form);
-        if (state.moreForm != null) {
-            DomUtils.mergeFormData(data, new FormData(state.moreForm));
-        }
-
-        onSubmit(data, reset);
-    };
-
-    // First loading
-    React.useEffect(() => {
-        return () => {
-            // Clear the seeds
-            if (state.submitSeed != null) clearTimeout(state.submitSeed);
-        };
-    }, []);
-
     React.useEffect(() => {
         // Delayed way
-        handleSubmit(100);
+        delayed.call(100);
+
+        return () => {
+            delayed.clear();
+        };
     }, [className]);
 
     // Layout

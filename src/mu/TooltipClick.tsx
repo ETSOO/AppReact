@@ -1,5 +1,6 @@
 import { ClickAwayListener, Tooltip, TooltipProps } from '@mui/material';
 import React from 'react';
+import { useDelayedExecutor } from '../uses/useDelayedExecutor';
 
 /**
  * Tooltip with click visibility props
@@ -36,32 +37,22 @@ export function TooltipClick(props: TooltipClickProps) {
     // State
     const [localTitle, setTitle] = React.useState(title);
     const [open, setOpen] = React.useState(false);
-    const leaveSeed = React.useRef(0);
+
+    const delayed =
+        leaveDelay > 0
+            ? useDelayedExecutor(() => setOpen(false), leaveDelay)
+            : undefined;
 
     // Callback for open the tooltip
     const openTooltip = (newTitle?: string) => {
         setOpen(true);
         if (newTitle) setTitle(newTitle);
-
-        if (leaveDelay > 0) {
-            clearLeaveSeed();
-            leaveSeed.current = window.setTimeout(
-                () => setOpen(false),
-                leaveDelay
-            );
-        }
-    };
-
-    const clearLeaveSeed = () => {
-        if (leaveSeed.current > 0) {
-            window.clearTimeout(leaveSeed.current);
-            leaveSeed.current = 0;
-        }
+        delayed?.call();
     };
 
     React.useEffect(() => {
         return () => {
-            clearLeaveSeed();
+            delayed?.clear();
         };
     }, []);
 
