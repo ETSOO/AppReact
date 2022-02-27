@@ -72,6 +72,8 @@ export function useDimensions(
     const resizeObserver = new ResizeObserver((entries) => {
         // Update Rect
         const indices: number[] = [];
+        const init = dimensions.current!;
+
         entries.forEach((entry) => {
             const index = init.findIndex((item) => item[1] === entry.target);
             if (index !== -1) {
@@ -106,37 +108,6 @@ export function useDimensions(
             delayed.call(undefined, update);
         }
     });
-
-    // Init
-    const init: [React.RefCallback<Element>, Element?, DOMRect?][] = [];
-    for (let e = 0; e < elements; e++) {
-        init.push(
-            ((index): [React.RefCallback<Element>] => {
-                return [
-                    (instance) => {
-                        if (instance != null) {
-                            // Current element
-                            const currentElement = init[index][1];
-
-                            if (currentElement != null) {
-                                // Same target, return
-                                if (currentElement == instance) return;
-
-                                // Cancel observation
-                                resizeObserver.unobserve(currentElement);
-                            }
-
-                            // Update element
-                            init[index][1] = instance;
-
-                            // Start observe
-                            resizeObserver.observe(instance);
-                        }
-                    }
-                ];
-            })(e)
-        );
-    }
 
     // Layout ready
     React.useEffect(() => {
