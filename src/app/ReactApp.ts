@@ -10,6 +10,7 @@ import {
     IUserData
 } from '@etsoo/appscript';
 import {
+    NotificationMessageType,
     NotificationRenderProps,
     NotificationReturn
 } from '@etsoo/notificationbase';
@@ -224,6 +225,16 @@ export class ReactApp<
             BridgeUtils.host == null
                 ? undefined
                 : ReactUtils.getMemoryHistory(BridgeUtils.host.getStartUrl());
+
+        if (BridgeUtils.host) {
+            BridgeUtils.host.onUpdate((app, version) => {
+                this.notifier.message(
+                    NotificationMessageType.Success,
+                    this.get('updateTip') + `(${[app, version].join(', ')})`,
+                    this.get('updateReady')
+                );
+            });
+        }
 
         this.cultureState = new CultureState(settings.currentCulture);
         this.pageState = new PageState<P>();
