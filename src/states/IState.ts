@@ -1,5 +1,5 @@
 import { IAction, IState, UserKey } from '@etsoo/appscript';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 /**
  * State UI creator
@@ -49,5 +49,13 @@ export interface IProviderUpdate<A extends IAction> {
  * State provider props
  */
 export interface IProviderProps<A extends IAction> {
+    /**
+     * Children
+     */
+    children?: ReactNode | undefined;
+
+    /**
+     * Update callback
+     */
     update?: IProviderUpdate<A>;
 }

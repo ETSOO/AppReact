@@ -163,7 +163,7 @@ export abstract class NotifierReact
     protected constructor() {
         super((notification, dismiss) => {
             // Make sure the state update is set
-            this.stateUpdate!({ notification, dismiss });
+            if (this.stateUpdate) this.stateUpdate({ notification, dismiss });
         });
     }
 

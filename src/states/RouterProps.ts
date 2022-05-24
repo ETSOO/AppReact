@@ -1,6 +1,5 @@
 import { DataTypes } from '@etsoo/shared';
 import { RouteComponentProps } from '@reach/router';
-import { Props } from 'react-input-mask';
 
 /**
  * Add / Edit page router props, include 'id' (/:id) or none when adding query parameter

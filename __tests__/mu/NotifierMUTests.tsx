@@ -1,7 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
 import { INotification, NotificationMessageType, NotifierMU } from '../../src';
+
+// Without it will popup error:
+// The current testing environment is not configured to support act
+(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 // Root
 const root = document.body;
@@ -10,7 +14,12 @@ root.append(container);
 
 // The state provider
 const Provider = NotifierMU.setup();
-ReactDOM.render(<Provider />, container);
+const reactRoot = createRoot(container); // createRoot(container!) if you use TypeScript
+
+act(() => {
+    // Concorrent renderer needs act block
+    reactRoot.render(<Provider />);
+});
 
 // Notifier
 const notifier = NotifierMU.instance;

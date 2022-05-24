@@ -58,7 +58,7 @@ type ViewPageFieldType<T> =
  * View page props
  */
 export interface ViewPageProps<T extends {}>
-    extends Exclude<CommonPageProps, 'children'> {
+    extends Omit<CommonPageProps, 'children'> {
     /**
      * Actions
      */

@@ -24,7 +24,7 @@ import { LoadingButton } from './LoadingButton';
 export interface ListMoreDisplayProps<
     T,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
-> extends CardProps,
+> extends Omit<CardProps, 'children'>,
         GridLoader<T> {
     /**
      * Children to display the list

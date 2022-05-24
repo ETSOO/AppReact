@@ -487,8 +487,10 @@ export class NotifierMU extends NotifierReact {
      */
     static setup(className = 'notifier-mu') {
         // Create an instance
-        NotifierReact.updateInstance(new NotifierMU());
-        return NotifierReact.instance.createProvider(className);
+        const instance = new NotifierMU();
+        const provider = instance.createProvider(className);
+        NotifierReact.updateInstance(instance);
+        return provider;
     }
 
     // Calculate origin from align property

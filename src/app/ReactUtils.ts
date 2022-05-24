@@ -65,8 +65,8 @@ export namespace ReactUtils {
                     // Go(-1), a, index = 0
                     // View c, index = 1, directly push is wrong
                     if (index < stack.length) {
-                        stack.splice(index, stack.length - index);
-                        states.splice(index, stack.length - index);
+                        stack.splice(index);
+                        states.splice(index);
                     }
 
                     stack.push({
