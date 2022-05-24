@@ -27,7 +27,9 @@ export class State {
         const context = React.createContext(calls);
 
         // State context provider
-        const provider: React.FunctionComponent<P> = (props) => {
+        const provider: React.FunctionComponent<React.PropsWithChildren<P>> = (
+            props
+        ) => {
             // Destruct
             const { children, update } = props;
 

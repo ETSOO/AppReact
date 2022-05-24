@@ -50,11 +50,6 @@ export interface IProviderUpdate<A extends IAction> {
  */
 export interface IProviderProps<A extends IAction> {
     /**
-     * Children
-     */
-    children?: ReactNode | undefined;
-
-    /**
      * Update callback
      */
     update?: IProviderUpdate<A>;
