@@ -58,12 +58,12 @@ export class PageState<D extends IPageData> {
     /**
      * Context
      */
-    readonly context: React.Context<PageCalls<D>>;
+    readonly context;
 
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent<PageProviderProps<D>>;
+    readonly provider;
 
     /**
      * Constructor

@@ -37,13 +37,15 @@ export function FabBox(props: FabBoxProps) {
         : { marginLeft: spaceGap };
 
     // Default style
-    Object.assign(sx, {
-        position: 'fixed',
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: columnDirection ? 'column' : 'row',
-        '& > :not(style) + :not(style)': margin
-    });
+    if (typeof sx === 'object') {
+        Object.assign(sx as any, {
+            position: 'fixed',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: columnDirection ? 'column' : 'row',
+            '& > :not(style) + :not(style)': margin
+        });
+    }
 
     return <Box sx={sx} {...rest} />;
 }

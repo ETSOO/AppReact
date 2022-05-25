@@ -37,14 +37,9 @@ export function CommonPage(props: CommonPageProps) {
         scrollContainer,
         supportBack = false,
         targetFields,
-        sx = {},
+        sx = { padding: paddings },
         ...rest
     } = props;
-
-    // Merge style
-    Object.assign(sx, {
-        padding: paddings
-    });
 
     // Fab padding
     const fabPadding = MUGlobal.increase(

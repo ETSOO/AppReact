@@ -46,12 +46,12 @@ export class CultureState {
     /**
      * Context
      */
-    readonly context: React.Context<CultureCalls>;
+    readonly context;
 
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent<CultureProviderProps>;
+    readonly provider;
 
     /**
      * Constructor

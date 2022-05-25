@@ -58,12 +58,12 @@ export class UserState<D extends IUser> {
     /**
      * Context
      */
-    readonly context: React.Context<UserCalls<D>>;
+    readonly context;
 
     /**
      * Provider
      */
-    readonly provider: React.FunctionComponent<UserProviderProps<D>>;
+    readonly provider;
 
     /**
      * Constructor
