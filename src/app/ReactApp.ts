@@ -15,7 +15,6 @@ import {
     NotificationReturn
 } from '@etsoo/notificationbase';
 import { DataTypes, WindowStorage } from '@etsoo/shared';
-import { History } from '@reach/router';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
@@ -37,6 +36,7 @@ import {
 import { InputDialogProps } from './InputDialogProps';
 import { Labels } from './Labels';
 import { ReactUtils } from './ReactUtils';
+import { createBrowserHistory, createMemoryHistory, History } from 'history';
 
 /**
  * Global application
@@ -101,7 +101,7 @@ export interface IReactApp<
     /**
      * Router history
      */
-    readonly history?: History;
+    readonly history: History;
 
     /**
      * Is screen size down 'sm'
@@ -175,7 +175,7 @@ export class ReactApp<
     /**
      * Router history
      */
-    readonly history?: History;
+    readonly history: History;
 
     /**
      * Page state
@@ -221,12 +221,12 @@ export class ReactApp<
             name
         );
 
-        this.history =
-            BridgeUtils.host == null
-                ? undefined
-                : ReactUtils.getMemoryHistory(BridgeUtils.host.getStartUrl());
-
         if (BridgeUtils.host) {
+            const startUrl = BridgeUtils.host.getStartUrl();
+            this.history = createMemoryHistory({
+                initialEntries: startUrl == null ? undefined : [startUrl]
+            });
+
             BridgeUtils.host.onUpdate((app, version) => {
                 this.notifier.message(
                     NotificationMessageType.Success,
@@ -234,6 +234,8 @@ export class ReactApp<
                     this.get('updateReady')
                 );
             });
+        } else {
+            this.history = createBrowserHistory();
         }
 
         this.cultureState = new CultureState(settings.currentCulture);
@@ -381,8 +383,7 @@ export class ReactApp<
      * @param url Url
      */
     override redirectTo(url: string) {
-        const navigate = ReactUtils.getNavigateFn();
-        navigate(url);
+        this.history.push(url);
     }
 
     /**

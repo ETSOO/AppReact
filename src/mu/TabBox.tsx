@@ -1,7 +1,7 @@
 import { Utils } from '@etsoo/shared';
 import { Box, BoxProps, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
-import { Link } from '@reach/router';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 /**
  * Tab with box panel props

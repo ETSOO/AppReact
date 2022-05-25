@@ -1,7 +1,7 @@
 import { IconButton, IconButtonProps, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import React from 'react';
-import { ReactUtils } from '../app/ReactUtils';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * BackButton props
@@ -20,6 +20,9 @@ export function BackButton(props: BackButtonProps) {
     // Theme
     const theme = useTheme();
 
+    // Navigate
+    const navigate = useNavigate();
+
     // Color
     const pColor =
         color != 'inherit' && color != 'default' && color in theme.palette
@@ -31,8 +34,7 @@ export function BackButton(props: BackButtonProps) {
         if (onClick) onClick(event);
 
         // Navigate
-        const navigate = ReactUtils.getNavigateFn();
-        await navigate(-1);
+        navigate(-1);
     };
 
     return (

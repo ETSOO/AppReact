@@ -2,13 +2,13 @@ import { Link, LinkProps } from '@mui/material';
 import {
     Link as RouterLink,
     LinkProps as RouterLinkProps
-} from '@reach/router';
+} from 'react-router-dom';
 import React from 'react';
 
 /**
  * Router Link props
  */
-export type RLinkProps = LinkProps & RouterLinkProps<{}>;
+export type RLinkProps = LinkProps & RouterLinkProps;
 
 /**
  * Router Link

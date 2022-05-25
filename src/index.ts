@@ -95,7 +95,6 @@ export * from '@etsoo/notificationbase';
 export * from './states/CultureState';
 export * from './states/IState';
 export * from './states/PageState';
-export * from './states/RouterProps';
 export * from './states/State';
 export * from './states/UserState';
 

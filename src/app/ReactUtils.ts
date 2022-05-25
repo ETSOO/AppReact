@@ -1,98 +1,9 @@
-import { createHistory, History, HistorySource, navigate } from '@reach/router';
 import React from 'react';
-
-type MemoryHistorySource = HistorySource & {
-    history: {
-        get entries(): any;
-        get index(): number;
-        go(to: number): void;
-    };
-};
 
 /**
  * React utils
  */
 export namespace ReactUtils {
-    // Memory history
-    // https://github.com/reach/router/issues/225
-    let memoryHistory: History | null;
-
-    /**
-     * Cretae memory source to fix go back bug
-     * @param initialPath Initial path
-     */
-    export function createMemorySource(
-        initialPath: string = '/'
-    ): MemoryHistorySource {
-        const searchIndex = initialPath.indexOf('?');
-        const pathname =
-            searchIndex > -1
-                ? initialPath.substring(0, searchIndex)
-                : initialPath;
-
-        const initialLocation: any = {
-            pathname,
-            search: searchIndex > -1 ? initialPath.substring(searchIndex) : ''
-        };
-
-        let index = 0;
-
-        const stack = [initialLocation];
-        const states = [null];
-
-        return {
-            get location() {
-                return stack[index];
-            },
-            addEventListener(name, fn) {},
-            removeEventListener(name, fn) {},
-            history: {
-                get entries() {
-                    return stack;
-                },
-                get index() {
-                    return index;
-                },
-                get state() {
-                    return states[index];
-                },
-                pushState(state, _, uri) {
-                    const [pathname, search = ''] = uri.split('?');
-                    index++;
-
-                    // View a, index = 0
-                    // View b, index = 1
-                    // Go(-1), a, index = 0
-                    // View c, index = 1, directly push is wrong
-                    if (index < stack.length) {
-                        stack.splice(index);
-                        states.splice(index);
-                    }
-
-                    stack.push({
-                        pathname,
-                        search: search.length ? `?${search}` : search
-                    });
-                    states.push(state);
-                },
-                replaceState(state, _, uri) {
-                    const [pathname, search = ''] = uri.split('?');
-                    stack[index] = { pathname, search };
-                    states[index] = state;
-                },
-                go(to: number) {
-                    const newIndex = index + to;
-
-                    if (newIndex < 0 || newIndex > states.length - 1) {
-                        return;
-                    }
-
-                    index = newIndex;
-                }
-            }
-        };
-    }
-
     /**
      * Format input value
      * @param value Input value
@@ -108,29 +19,6 @@ export namespace ReactUtils {
         if (Array.isArray(value)) return value;
 
         return String(value);
-    }
-
-    /**
-     * Get memory history
-     * @param initialPath Initial path
-     * @returns History
-     */
-    export function getMemoryHistory(initialPath?: string | null) {
-        if (memoryHistory == null) {
-            memoryHistory = createHistory(
-                createMemorySource(initialPath ?? '/')
-            );
-        }
-        return memoryHistory;
-    }
-
-    /**
-     * Get navigate function, works with memory history
-     * @returns NavigateFn
-     */
-    export function getNavigateFn() {
-        if (memoryHistory == null) return navigate;
-        return memoryHistory.navigate;
     }
 
     /**

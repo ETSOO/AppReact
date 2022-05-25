@@ -1,7 +1,6 @@
 import { Button, ButtonProps } from '@mui/material';
 import React from 'react';
-import { ReactUtils } from '../app/ReactUtils';
-
+import { useNavigate } from 'react-router-dom';
 /**
  * ButtonLink props
  */
@@ -22,7 +21,7 @@ export function ButtonLink(props: ButtonLinkProps) {
     const { href, ...rest } = props;
 
     // Navigate
-    const navigate = ReactUtils.getNavigateFn();
+    const navigate = useNavigate();
 
     const onClick = href.includes('://')
         ? () => window.open(href, '_blank')
