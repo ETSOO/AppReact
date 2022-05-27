@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.5.35",
+    "version": "1.5.36",
     "description": "TypeScript ReactJs framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -76,10 +76,10 @@
     },
     "devDependencies": {
         "@babel/cli": "^7.17.10",
-        "@babel/core": "^7.18.0",
-        "@babel/plugin-transform-runtime": "^7.18.0",
-        "@babel/preset-env": "^7.18.0",
-        "@babel/runtime-corejs3": "^7.18.0",
+        "@babel/core": "^7.18.2",
+        "@babel/plugin-transform-runtime": "^7.18.2",
+        "@babel/preset-env": "^7.18.2",
+        "@babel/runtime-corejs3": "^7.18.3",
         "@types/jest": "^27.5.1",
         "@types/react-test-renderer": "^18.0.0",
         "@typescript-eslint/eslint-plugin": "^5.26.0",

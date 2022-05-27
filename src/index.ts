@@ -14,6 +14,7 @@ export * from './app/ServiceApp';
 // components
 export * from './components/GridColumn';
 export * from './components/GridLoader';
+export * from './components/HRouter';
 export * from './components/ListItemReact';
 export * from './components/ScrollerGrid';
 export * from './components/ScrollerList';
