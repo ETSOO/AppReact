@@ -102,5 +102,6 @@ export * from './states/UserState';
 export * from './uses/useCombinedRefs';
 export * from './uses/useDelayedExecutor';
 export * from './uses/useDimensions';
+export * from './uses/useParamsEx';
 export * from './uses/useTimeout';
 export * from './uses/useWindowSize';
