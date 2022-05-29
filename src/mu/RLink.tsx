@@ -1,20 +1,27 @@
 import { Link, LinkProps } from '@mui/material';
-import {
-    Link as RouterLink,
-    LinkProps as RouterLinkProps
-} from 'react-router-dom';
 import React from 'react';
-
-/**
- * Router Link props
- */
-export type RLinkProps = LinkProps & RouterLinkProps;
+import { globalApp } from '../app/ReactApp';
 
 /**
  * Router Link
  * @param props Props
  * @returns Component
  */
-export function RLink(props: RLinkProps) {
-    return <Link component={RouterLink} {...props} />;
+export function RLink(props: LinkProps) {
+    // Destruct
+    const { href, onClick, ...rest } = props;
+
+    // Click handler
+    const onClickLocl = (
+        event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    ) => {
+        if (onClick) onClick(event);
+
+        if (href && globalApp) {
+            globalApp.history.push(href);
+        }
+    };
+
+    // Component
+    return <Link {...rest} onClick={onClickLocl} />;
 }
