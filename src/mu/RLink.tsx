@@ -7,21 +7,28 @@ import { globalApp } from '../app/ReactApp';
  * @param props Props
  * @returns Component
  */
-export function RLink(props: LinkProps) {
-    // Destruct
-    const { href, onClick, ...rest } = props;
+export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
+    (props, ref) => {
+        // Destruct
+        const { href, onClick, ...rest } = props;
 
-    // Click handler
-    const onClickLocl = (
-        event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-    ) => {
-        if (onClick) onClick(event);
+        // Click handler
+        const onClickLocl = (
+            event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+        ) => {
+            if (onClick) onClick(event);
 
-        if (href && globalApp) {
-            globalApp.history.push(href);
-        }
-    };
+            if (!event.isDefaultPrevented && href && globalApp) {
+                // Router push
+                globalApp.history.push(href);
 
-    // Component
-    return <Link {...rest} onClick={onClickLocl} />;
-}
+                // Cancel further processing
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        };
+
+        // Component
+        return <Link {...rest} onClick={onClickLocl} href={href} ref={ref} />;
+    }
+);
