@@ -37,7 +37,7 @@ export function CommonPage(props: CommonPageProps) {
         scrollContainer,
         supportBack = false,
         targetFields,
-        sx = { padding: paddings },
+        sx = {},
         ...rest
     } = props;
 
@@ -46,6 +46,11 @@ export function CommonPage(props: CommonPageProps) {
         MUGlobal.pagePaddings,
         fabPaddingAdjust
     );
+
+    if (typeof sx === 'object' && sx != null && !Reflect.has(sx, 'padding')) {
+        // Set default padding
+        Reflect.set(sx, 'padding', paddings);
+    }
 
     // Labels
     const labels = Labels.CommonPage;
