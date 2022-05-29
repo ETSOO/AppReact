@@ -10,7 +10,7 @@ import { globalApp } from '../app/ReactApp';
 export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
     (props, ref) => {
         // Destruct
-        const { href, onClick, ...rest } = props;
+        const { href, target, onClick, ...rest } = props;
 
         // Click handler
         const onClickLocl = (
@@ -18,17 +18,30 @@ export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
         ) => {
             if (onClick) onClick(event);
 
-            if (!event.isDefaultPrevented && href && globalApp) {
-                // Router push
-                globalApp.history.push(href);
-
+            if (
+                !event.isDefaultPrevented() &&
+                href &&
+                (!target || target === '_self') && // Let browser handle "target=_blank" etc
+                globalApp
+            ) {
                 // Cancel further processing
                 event.preventDefault();
                 event.stopPropagation();
+
+                // Router push
+                globalApp.history.push(href);
             }
         };
 
         // Component
-        return <Link {...rest} onClick={onClickLocl} href={href} ref={ref} />;
+        return (
+            <Link
+                {...rest}
+                onClick={onClickLocl}
+                href={href}
+                target={target}
+                ref={ref}
+            />
+        );
     }
 );
