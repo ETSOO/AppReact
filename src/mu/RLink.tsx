@@ -24,9 +24,8 @@ export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
                 (!target || target === '_self') && // Let browser handle "target=_blank" etc
                 globalApp
             ) {
-                // Cancel further processing
+                // Prevent href action
                 event.preventDefault();
-                event.stopPropagation();
 
                 // Router push
                 globalApp.history.push(href);
