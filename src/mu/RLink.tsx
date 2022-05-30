@@ -4,19 +4,29 @@ import { globalApp } from '../app/ReactApp';
 import { useDelayedExecutor } from '../uses/useDelayedExecutor';
 
 /**
+ * Router Link properties
+ */
+export type RLinkProps = LinkProps & {
+    delay?: number;
+};
+
+/**
  * Router Link
  * @param props Props
  * @returns Component
  */
-export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
+export const RLink = React.forwardRef<HTMLAnchorElement, RLinkProps>(
     (props, ref) => {
         // Destruct
-        const { href, target, onClick, ...rest } = props;
+        const { delay = 0, href, target, onClick, ...rest } = props;
 
-        const delayed = useDelayedExecutor((href: string) => {
-            // Router push
-            globalApp.history.push(href);
-        }, 100);
+        const delayed =
+            delay > 0
+                ? useDelayedExecutor((href: string) => {
+                      // Router push
+                      globalApp.history.push(href);
+                  }, delay)
+                : null;
 
         // Click handler
         const onClickLocl = (
@@ -32,12 +42,14 @@ export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
             ) {
                 // Prevent href action
                 event.preventDefault();
-                delayed.call(undefined, href);
+
+                if (delayed != null) delayed.call(undefined, href);
+                else globalApp.history.push(href);
             }
         };
 
         React.useEffect(() => {
-            return () => delayed.clear();
+            return () => delayed?.clear();
         }, [delayed]);
 
         // Component
