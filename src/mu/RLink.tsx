@@ -1,6 +1,7 @@
 import { Link, LinkProps } from '@mui/material';
 import React from 'react';
 import { globalApp } from '../app/ReactApp';
+import { useDelayedExecutor } from '../uses/useDelayedExecutor';
 
 /**
  * Router Link
@@ -11,6 +12,11 @@ export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
     (props, ref) => {
         // Destruct
         const { href, target, onClick, ...rest } = props;
+
+        const delayed = useDelayedExecutor((href: string) => {
+            // Router push
+            globalApp.history.push(href);
+        }, 100);
 
         // Click handler
         const onClickLocl = (
@@ -26,11 +32,13 @@ export const RLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
             ) {
                 // Prevent href action
                 event.preventDefault();
-
-                // Router push
-                globalApp.history.push(href);
+                delayed.call(undefined, href);
             }
         };
+
+        React.useEffect(() => {
+            return () => delayed.clear();
+        }, [delayed]);
 
         // Component
         return (
