@@ -320,6 +320,9 @@ export class ServiceApp<
                 // Success
                 if (result === true) return;
 
+                // Clear cache
+                this.clearCacheData();
+
                 const message = this.formatRefreshTokenResult(result);
                 if (message == null) {
                     this.loginFailed();
