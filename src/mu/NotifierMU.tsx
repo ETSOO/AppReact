@@ -144,6 +144,7 @@ export class NotificationMU extends NotificationReact {
         const {
             okLabel = labels.confirmYes,
             cancelLabel = labels.confirmNo,
+            cancelButton = true,
             inputs,
             fullScreen,
             fullWidth = true,
@@ -170,12 +171,14 @@ export class NotificationMU extends NotificationReact {
                     {inputs}
                 </DialogContent>
                 <DialogActions>
-                    <LoadingButton
-                        color="secondary"
-                        onClick={async () => await this.returnValue(false)}
-                    >
-                        {cancelLabel}
-                    </LoadingButton>
+                    {cancelButton && (
+                        <LoadingButton
+                            color="secondary"
+                            onClick={async () => await this.returnValue(false)}
+                        >
+                            {cancelLabel}
+                        </LoadingButton>
+                    )}
                     <LoadingButton
                         color="primary"
                         onClick={async () => await this.returnValue(true)}
@@ -230,6 +233,7 @@ export class NotificationMU extends NotificationReact {
         const {
             cancelLabel = labels.promptCancel,
             okLabel = labels.promptOK,
+            cancelButton = true,
             inputs,
             type,
             fullScreen,
@@ -370,15 +374,17 @@ export class NotificationMU extends NotificationReact {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button
-                            color="secondary"
-                            onClick={() => {
-                                if (this.onReturn) this.onReturn(undefined);
-                                this.dismiss();
-                            }}
-                        >
-                            {cancelLabel}
-                        </Button>
+                        {cancelButton && (
+                            <Button
+                                color="secondary"
+                                onClick={() => {
+                                    if (this.onReturn) this.onReturn(undefined);
+                                    this.dismiss();
+                                }}
+                            >
+                                {cancelLabel}
+                            </Button>
+                        )}
                         <LoadingButton
                             color="primary"
                             autoFocus

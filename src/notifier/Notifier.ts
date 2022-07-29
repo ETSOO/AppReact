@@ -45,6 +45,11 @@ export interface NotificationReactCallProps extends NotificationCallProps {
     okLabel?: string;
 
     /**
+     * false to hide cancel button
+     */
+    cancelButton?: boolean;
+
+    /**
      * Cancel label
      */
     cancelLabel?: string;
