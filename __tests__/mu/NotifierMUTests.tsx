@@ -78,6 +78,33 @@ test('Confirm tests', async () => {
     jest.runOnlyPendingTimers();
 });
 
+test('Confirm tests without cancel button', async () => {
+    // Click
+    const handleClick = jest.fn();
+
+    act(() => {
+        // Add the notification
+        notifier.confirm('Confirm message', undefined, handleClick, {
+            cancelButton: false
+        });
+    });
+
+    // Button
+    const button = root.getElementsByTagName('button');
+
+    expect(button.length).toBe(1);
+    expect(button[0].innerHTML).toContain('OK');
+
+    await act(async () => {
+        button[0].click();
+    });
+
+    expect(handleClick).toBeCalled();
+
+    // Fast forward
+    jest.runOnlyPendingTimers();
+});
+
 test('Prompt tests', async () => {
     // Click
     const handleClick = jest.fn((result: boolean) => {
