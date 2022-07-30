@@ -359,13 +359,15 @@ export class NotificationMU extends NotificationReact {
                 fullScreen={fullScreen}
             >
                 <form
-                    onSubmit={(event) =>
+                    onSubmit={(event) => {
+                        event.preventDefault();
                         (
                             event.currentTarget.elements.namedItem(
                                 'okButton'
                             ) as HTMLButtonElement
-                        )?.click()
-                    }
+                        )?.click();
+                        return false;
+                    }}
                 >
                     <IconDialogTitle className="draggable-dialog-title">
                         <Info color="primary" />
