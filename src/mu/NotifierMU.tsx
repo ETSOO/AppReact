@@ -358,7 +358,15 @@ export class NotificationMU extends NotificationReact {
                 maxWidth={maxWidth}
                 fullScreen={fullScreen}
             >
-                <form>
+                <form
+                    onSubmit={(event) =>
+                        (
+                            event.currentTarget.elements.namedItem(
+                                'okButton'
+                            ) as HTMLButtonElement
+                        )?.click()
+                    }
+                >
                     <IconDialogTitle className="draggable-dialog-title">
                         <Info color="primary" />
                         <span className="dialogTitle">{title}</span>
@@ -389,6 +397,7 @@ export class NotificationMU extends NotificationReact {
                             color="primary"
                             autoFocus
                             onClick={handleSubmit}
+                            name="okButton"
                             {...primaryButton}
                         >
                             {okLabel}

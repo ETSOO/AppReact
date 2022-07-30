@@ -134,6 +134,33 @@ test('Prompt tests', async () => {
     jest.runOnlyPendingTimers();
 });
 
+test('Prompt tests with form submit', async () => {
+    // Click
+    const handleClick = jest.fn((result: boolean) => {
+        expect(result).toBeTruthy();
+    });
+
+    act(() => {
+        // Add the notification
+        notifier.prompt<boolean>('Prompt message', handleClick, undefined, {
+            type: 'switch',
+            required: false
+        });
+    });
+
+    await act(async () => {
+        (
+            root
+                .getElementsByTagName('form')[0]
+                .elements.namedItem('okButton') as HTMLButtonElement
+        )?.click();
+    });
+
+    expect(handleClick).toBeCalled();
+
+    jest.runOnlyPendingTimers();
+});
+
 test('Message tests', (done) => {
     // Callback
     const callback = jest.fn(() => done());
