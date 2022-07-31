@@ -1,6 +1,7 @@
 import {
     BridgeUtils,
     createClient,
+    IActionResult,
     IApi,
     IApiPayload,
     RefreshTokenProps,
@@ -11,7 +12,7 @@ import { CoreConstants } from './CoreConstants';
 import { IServiceAppSettings } from './IServiceAppSettings';
 import { IServicePageData } from './IServicePage';
 import { IServiceUser, ServiceLoginResult } from './IServiceUser';
-import { ISmartERPUser, SmartERPLoginResult } from './ISmartERPUser';
+import { ISmartERPUser } from './ISmartERPUser';
 import { ReactApp } from './ReactApp';
 import { RefreshTokenRQ } from './RefreshTokenRQ';
 
@@ -126,8 +127,11 @@ export class ServiceApp<
             ...data
         };
 
+        // Login result type
+        type LoginResult = IActionResult<U>;
+
         // Payload
-        const payload: IApiPayload<SmartERPLoginResult, any> = {
+        const payload: IApiPayload<LoginResult, any> = {
             showLoading,
             config: { headers: { [CoreConstants.TokenHeaderRefresh]: token } },
             onError: (error) => {
@@ -140,7 +144,7 @@ export class ServiceApp<
 
         // Success callback
         const success = async (
-            result: SmartERPLoginResult,
+            result: LoginResult,
             failCallback?: (result: RefreshTokenResult) => void
         ) => {
             // Token
@@ -197,7 +201,7 @@ export class ServiceApp<
         };
 
         // Call API
-        const result = await this.api.put<SmartERPLoginResult>(
+        const result = await this.api.put<LoginResult>(
             'Auth/RefreshToken',
             rq,
             payload
@@ -221,7 +225,7 @@ export class ServiceApp<
                         rq.pwd = this.encrypt(this.hash(pwd));
 
                         // Submit again
-                        const result = await this.api.put<SmartERPLoginResult>(
+                        const result = await this.api.put<LoginResult>(
                             'Auth/RefreshToken',
                             rq,
                             payload

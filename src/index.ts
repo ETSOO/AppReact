@@ -1,4 +1,5 @@
 // app
+export * from './app/CommonApp';
 export * from './app/CoreConstants';
 export * from './app/InputDialogProps';
 export * from './app/IServiceAppSettings';
