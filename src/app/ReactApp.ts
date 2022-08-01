@@ -18,7 +18,10 @@ import { DataTypes, WindowStorage } from '@etsoo/shared';
 import React from 'react';
 import { NotifierMU } from '../mu/NotifierMU';
 import { ProgressCount } from '../mu/ProgressCount';
-import { NotificationReactCallProps } from '../notifier/Notifier';
+import {
+    INotificationReact,
+    NotificationReactCallProps
+} from '../notifier/Notifier';
 import { CultureAction, CultureState } from '../states/CultureState';
 import { IStateProps } from '../states/IState';
 import {
@@ -433,8 +436,8 @@ export class ReactApp<
         message,
         callback,
         ...rest
-    }: InputDialogProps): void {
-        this.notifier.prompt<HTMLFormElement | undefined>(
+    }: InputDialogProps): INotificationReact {
+        return this.notifier.prompt<HTMLFormElement | undefined>(
             message,
             callback,
             title,
