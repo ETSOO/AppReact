@@ -6,8 +6,7 @@ import {
     IActionResult,
     IAppSettings,
     ICoreApp,
-    IUser,
-    IUserData
+    IUser
 } from '@etsoo/appscript';
 import {
     NotificationMessageType,
@@ -94,7 +93,7 @@ export interface IReactApp<
     S extends IAppSettings,
     D extends IUser,
     P extends IPageData
-> extends ICoreApp<S, React.ReactNode, NotificationReactCallProps> {
+> extends ICoreApp<D, S, React.ReactNode, NotificationReactCallProps> {
     /**
      * User state
      */
@@ -142,7 +141,7 @@ export class ReactApp<
         D extends IUser,
         P extends IPageData
     >
-    extends CoreApp<S, React.ReactNode, NotificationReactCallProps>
+    extends CoreApp<D, S, React.ReactNode, NotificationReactCallProps>
     implements IReactApp<S, D, P>
 {
     private static _notifierProvider: React.FunctionComponent<NotificationRenderProps>;
@@ -453,7 +452,7 @@ export class ReactApp<
      * @param dispatch User state dispatch
      */
     override userLogin(
-        user: IUserData,
+        user: D,
         refreshToken: string,
         keep?: boolean,
         dispatch?: boolean
