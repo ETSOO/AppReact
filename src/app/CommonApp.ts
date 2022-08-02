@@ -200,11 +200,6 @@ export abstract class CommonApp<
         return success(result, callback);
     }
 
-    private loginFailed() {
-        this.userUnauthorized();
-        this.toLoginPage();
-    }
-
     /**
      * Try login
      * @param data Additional data
@@ -221,19 +216,7 @@ export abstract class CommonApp<
 
         // Refresh token
         return await this.refreshToken({
-            callback: (result) => {
-                if (result === true) return;
-
-                const message = this.formatRefreshTokenResult(result);
-                if (message == null) {
-                    this.loginFailed();
-                    return;
-                }
-
-                this.notifier.alert(message, () => {
-                    this.loginFailed();
-                });
-            },
+            callback: (result) => this.doRefreshTokenResult(result),
             data,
             showLoading,
             relogin: true

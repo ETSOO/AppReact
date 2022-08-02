@@ -271,11 +271,6 @@ export class ServiceApp<
         return await success(result, callback);
     }
 
-    private loginFailed() {
-        this.userUnauthorized();
-        this.toLoginPage();
-    }
-
     /**
      * Service decrypt message
      * @param messageEncrypted Encrypted message
@@ -320,23 +315,7 @@ export class ServiceApp<
 
         // Refresh token
         return await this.refreshToken({
-            callback: (result) => {
-                // Success
-                if (result === true) return;
-
-                // Clear cache
-                this.clearCacheData();
-
-                const message = this.formatRefreshTokenResult(result);
-                if (message == null) {
-                    this.loginFailed();
-                    return;
-                }
-
-                this.notifier.alert(message, () => {
-                    this.loginFailed();
-                });
-            },
+            callback: (result) => this.doRefreshTokenResult(result),
             data,
             showLoading,
             relogin: true
