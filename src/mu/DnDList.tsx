@@ -1,11 +1,6 @@
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { DataTypes } from '@etsoo/shared';
 import React, { CSSProperties } from 'react';
-import {
-    DragDropContext,
-    Draggable,
-    Droppable,
-    DropResult
-} from 'react-beautiful-dnd';
 
 /**
  * DnD list props
@@ -121,20 +116,15 @@ export function DnDList<
     };
 
     // Drag end handler
-    const onDragEndLocal = (result: DropResult) => {
-        // Dropped outside the list
-        if (!result.destination) {
-            return;
-        }
-
+    const onDragEndLocal = (result: DragEndEvent) => {
         // Clone
         const newItems = [...items];
 
         // Removed item
-        const [removed] = newItems.splice(result.source.index, 1);
+        // const [removed] = newItems.splice(result.source.index, 1);
 
         // Insert to the destination index
-        newItems.splice(result.destination.index, 0, removed);
+        // newItems.splice(result.destination.index, 0, removed);
 
         // Update the state
         changeItems(newItems);
@@ -259,61 +249,7 @@ export function DnDList<
                         })}
                     </div>
                 ) : (
-                    <DragDropContext onDragEnd={onDragEndLocal}>
-                        <Droppable droppableId={name}>
-                            {(provided, snapshot) => (
-                                <div
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                    style={getListStyle(
-                                        snapshot.isDraggingOver
-                                    )}
-                                >
-                                    {items.map((item, index) => {
-                                        // Id
-                                        const id = DataTypes.convert(
-                                            item[labelField],
-                                            'string'
-                                        );
-                                        if (id == null) return;
-
-                                        return (
-                                            <Draggable
-                                                key={id}
-                                                draggableId={id}
-                                                index={index}
-                                            >
-                                                {(provided, snapshot) => (
-                                                    <div
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        style={{
-                                                            ...getItemStyle(
-                                                                snapshot.isDragging,
-                                                                index
-                                                            ),
-                                                            ...provided
-                                                                .draggableProps
-                                                                .style
-                                                        }}
-                                                    >
-                                                        {children(
-                                                            item,
-                                                            index,
-                                                            deleteItem,
-                                                            editItem
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        );
-                                    })}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                    <DndContext onDragEnd={onDragEndLocal}></DndContext>
                 )}
             </Component>
             {sideRenderer &&
