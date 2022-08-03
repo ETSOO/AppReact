@@ -1,6 +1,56 @@
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import {
+    DndContext,
+    DragEndEvent,
+    DragOverlay,
+    UniqueIdentifier,
+    useDraggable
+} from '@dnd-kit/core';
 import { DataTypes } from '@etsoo/shared';
 import React, { CSSProperties } from 'react';
+
+/**
+ * DnD list item props
+ */
+export interface DnDItemProps<D extends {}> {
+    /**
+     * Unique id
+     */
+    id: UniqueIdentifier;
+
+    /**
+     * Children
+     */
+    children: React.ReactNode;
+
+    /**
+     * Item data
+     */
+    data?: D;
+
+    /**
+     * Disabled or not
+     */
+    disabled?: boolean;
+
+    /**
+     * Inline style
+     */
+    style?: CSSProperties;
+}
+
+/**
+ * DnD list item
+ * @param props Props
+ */
+export function DnDItem<D extends {}>(props: DnDItemProps<D>) {
+    const { children, style, ...rest } = props;
+    const { attributes, listeners, setNodeRef } = useDraggable(rest);
+    return (
+        <div style={style} ref={setNodeRef} {...listeners} {...attributes}>
+            {children}
+        </div>
+    );
+}
 
 /**
  * DnD list props
@@ -119,6 +169,8 @@ export function DnDList<
     const onDragEndLocal = (result: DragEndEvent) => {
         // Clone
         const newItems = [...items];
+
+        console.log(result);
 
         // Removed item
         // const [removed] = newItems.splice(result.source.index, 1);
@@ -249,7 +301,34 @@ export function DnDList<
                         })}
                     </div>
                 ) : (
-                    <DndContext onDragEnd={onDragEndLocal}></DndContext>
+                    <DndContext onDragEnd={onDragEndLocal}>
+                        {items.map((item, index) => {
+                            // Id
+                            const id = DataTypes.convert(
+                                item[labelField],
+                                'string'
+                            );
+                            if (id == null) return;
+
+                            return (
+                                <DnDItem<D>
+                                    id={id}
+                                    key={id}
+                                    data={item}
+                                    data-index={index}
+                                    style={getItemStyle(false, index)}
+                                >
+                                    {children(
+                                        item,
+                                        index,
+                                        deleteItem,
+                                        editItem
+                                    )}
+                                </DnDItem>
+                            );
+                        })}
+                        <DragOverlay></DragOverlay>
+                    </DndContext>
                 )}
             </Component>
             {sideRenderer &&
