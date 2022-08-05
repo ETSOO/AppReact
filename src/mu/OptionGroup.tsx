@@ -104,7 +104,7 @@ export function OptionGroup<
     // Get option value
     // D type should be the source id type
     const getOptionValue = (option: T): D | null => {
-        const value = DataTypes.getIdValue(option, idField);
+        const value = DataTypes.getValue(option, idField);
         if (value == null) return null;
         return value as D;
     };

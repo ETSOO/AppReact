@@ -299,7 +299,7 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
         innerItemRenderer,
         itemSize,
         itemKey = (index: number, data: T) =>
-            DataTypes.getIdValue(data, idField) ?? index,
+            DataTypes.getValue(data, idField) ?? index,
         itemRenderer = (itemProps) => {
             const [itemHeight, space, margins] = calculateItemSize(
                 itemProps.index

@@ -441,7 +441,7 @@ export function TableEx<T extends Record<string, unknown>>(
 
                             // Row id field value
                             const rowId =
-                                DataTypes.getIdValue(row, idField) ?? rowIndex;
+                                DataTypes.getValue(row, idField) ?? rowIndex;
 
                             // Selected or not
                             const isItemSelected = selectable
