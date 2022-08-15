@@ -91,6 +91,7 @@ export function DialogButton(props: DialogButtonProps) {
         inputs,
         maxWidth,
         onClick,
+        title,
         ...rest
     } = props;
 
@@ -118,14 +119,14 @@ export function DialogButton(props: DialogButtonProps) {
     return (
         <React.Fragment>
             {icon == null ? (
-                <Button {...rest} onClick={onClickLocal}>
+                <Button {...rest} title={title} onClick={onClickLocal}>
                     {children}
                 </Button>
             ) : (
                 <IconButton
                     {...rest}
                     onClick={onClickLocal}
-                    title={children?.toString()}
+                    title={title ?? children?.toString()}
                 >
                     {icon}
                 </IconButton>
@@ -144,9 +145,7 @@ export function DialogButton(props: DialogButtonProps) {
                     event.stopPropagation();
                 }}
             >
-                <DialogTitle>
-                    {dialogTitle ? dialogTitle : children}
-                </DialogTitle>
+                <DialogTitle>{dialogTitle ?? title ?? children}</DialogTitle>
                 <DialogContent>
                     <DialogContentText component={contentPre ? 'pre' : 'span'}>
                         {content}
