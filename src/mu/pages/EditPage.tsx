@@ -28,6 +28,11 @@ export interface EditPageProps extends Omit<CommonPageProps, 'onSubmit'> {
     onDelete?: () => Promise<void> | void;
 
     /**
+     * Submit button disabled or not
+     */
+    submitDisabled?: boolean;
+
+    /**
      * Support back click
      * @default true
      */
@@ -48,6 +53,7 @@ export function EditPage(props: EditPageProps) {
         paddings = MUGlobal.pagePaddings,
         scrollContainer = CommonPageScrollContainer,
         supportBack = true,
+        submitDisabled = false,
         ...rest
     } = props;
 
@@ -96,6 +102,7 @@ export function EditPage(props: EditPageProps) {
                         type="submit"
                         startIcon={<SaveIcon />}
                         sx={{ flexGrow: 1 }}
+                        disabled={submitDisabled}
                     >
                         {labels.save}
                     </Button>
