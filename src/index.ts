@@ -19,6 +19,7 @@ export * from './components/HRouter';
 export * from './components/ListItemReact';
 export * from './components/ScrollerGrid';
 export * from './components/ScrollerList';
+export * from './components/ShowDataComparison';
 
 // mu
 export * from './mu/pages/CommonPage';

@@ -1,27 +1,12 @@
 import { Utils } from '@etsoo/shared';
-import {
-    Button,
-    Divider,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Theme,
-    Typography,
-    useTheme
-} from '@mui/material';
+import { Button, Divider, Theme, Typography, useTheme } from '@mui/material';
 import React, { CSSProperties } from 'react';
-import { globalApp, NotificationMessageType } from '..';
+import { globalApp } from '..';
+import {
+    AuditLineUpdateData,
+    ShowDataComparison
+} from '../components/ShowDataComparison';
 import { ListMoreDisplay, ListMoreDisplayProps } from './ListMoreDisplay';
-
-/**
- * Audit line update data model
- */
-export interface AuditLineUpdateData {
-    oldData: Record<string, unknown>;
-    newData: Record<string, unknown>;
-}
 
 /**
  * Audit line data model
@@ -52,7 +37,6 @@ export interface AuditDisplayProps
 
 // Get label
 const getLabel = (key: string) => {
-    if (typeof globalApp === 'undefined') return key;
     return globalApp.get(Utils.formatInitial(key)) ?? key;
 };
 
@@ -60,14 +44,6 @@ const getLabel = (key: string) => {
 const formatDate = (date: Date) => {
     if (typeof globalApp === 'undefined') return date.toUTCString();
     return globalApp.formatDate(date, 'ds');
-};
-
-// Format value
-const formatValue = (value: unknown) => {
-    if (value == null) return '';
-    if (value instanceof Date && typeof globalApp !== 'undefined')
-        return globalApp.formatDate(value, 'ds');
-    return `${value}`;
 };
 
 /**
@@ -79,60 +55,8 @@ export function AuditDisplay(props: AuditDisplayProps) {
     // Theme
     const theme = useTheme();
 
-    // Label
-    const dataComparisonLabel = getLabel('dataComparison');
-
-    // Show data comparison
-    const showDataComparison = (data: AuditLineUpdateData) => {
-        if (typeof globalApp === 'undefined') return;
-
-        const keys = new Set([
-            ...Object.keys(data.oldData),
-            ...Object.keys(data.newData)
-        ]);
-
-        const rows = Array.from(keys).map((field) => ({
-            field,
-            oldValue: data.oldData[field],
-            newValue: data.newData[field]
-        }));
-
-        const inputs = (
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>{getLabel('field')}</TableCell>
-                        <TableCell align="right">
-                            {getLabel('oldValue')}
-                        </TableCell>
-                        <TableCell align="right">
-                            {getLabel('newValue')}
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.field}>
-                            <TableCell>{getLabel(row.field)}</TableCell>
-                            <TableCell align="right">
-                                {formatValue(row.oldValue)}
-                            </TableCell>
-                            <TableCell align="right">
-                                {formatValue(row.newValue)}
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        );
-
-        globalApp.notifier.alert(
-            [undefined, dataComparisonLabel],
-            undefined,
-            NotificationMessageType.Info,
-            { fullScreen: globalApp.smDown, inputs }
-        );
-    };
+    // Title
+    var title = getLabel('dataComparison');
 
     // Destruct
     const {
@@ -144,20 +68,21 @@ export function AuditDisplay(props: AuditDisplayProps) {
                     : theme.palette.grey[50]
         }),
         itemRenderer = (data) => {
+            const changes = data.changes;
             return (
                 <React.Fragment>
-                    {data.changes != null && (
+                    {changes != null && (
                         <Button
                             variant="outlined"
                             size="small"
-                            onClick={() => showDataComparison(data.changes!)}
+                            onClick={() => ShowDataComparison(changes, title)}
                             sx={{
                                 marginLeft: theme.spacing(1),
                                 marginTop: theme.spacing(-0.5),
                                 float: 'right'
                             }}
                         >
-                            {dataComparisonLabel}
+                            {title}
                         </Button>
                     )}
                     <Typography>

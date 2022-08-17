@@ -1,5 +1,7 @@
 import React from 'react';
 import { Avatar } from '@mui/material';
+import { BusinessUtils } from '@etsoo/appscript';
+import { globalApp } from '../app/ReactApp';
 
 /**
  * User avatar props
@@ -11,38 +13,15 @@ export interface UserAvatarProps {
     src?: string;
 
     /**
+     * Format title
+     */
+    formatTitle?: (title?: string) => string;
+
+    /**
      * Title of the user
      */
     title?: string;
 }
-
-const transformTitle = (title?: string): [string | undefined, number] => {
-    // Just return for empty cases
-    if (title == null || title === '') return [undefined, 0];
-
-    // split with words
-    const items = title.trim().split(/\s+/g);
-
-    if (items.length === 1) {
-        // 2-3 Chinese names
-        const titleLen = title.length;
-        if (titleLen < 4) return [title.toUpperCase(), titleLen];
-
-        // Return ME for simplicity
-        return ['ME', 2];
-    }
-
-    // First letter of each item
-    var firstLetters = items
-        .map((item) => item[0])
-        .join('')
-        .toUpperCase();
-
-    const flen = firstLetters.length;
-    if (flen < 4) return [firstLetters, flen];
-
-    return ['ME', 2];
-};
 
 /**
  * User avatar
@@ -51,10 +30,23 @@ const transformTitle = (title?: string): [string | undefined, number] => {
  */
 export function UserAvatar(props: UserAvatarProps) {
     // Destruct
-    const { src, title } = props;
+    const {
+        src,
+        title,
+        formatTitle = (title?: string) => {
+            return BusinessUtils.formatAvatarTitle(
+                title,
+                3,
+                typeof globalApp === 'undefined'
+                    ? 'ME'
+                    : globalApp.get<string>('me')
+            );
+        }
+    } = props;
 
     // Format
-    const [formatedTitle, count] = transformTitle(title);
+    const fTitle = formatTitle(title);
+    const count = fTitle.length;
 
     return (
         <Avatar
@@ -66,7 +58,7 @@ export function UserAvatar(props: UserAvatarProps) {
                 fontSize: count <= 2 ? '15px' : '12px'
             }}
         >
-            {formatedTitle}
+            {fTitle}
         </Avatar>
     );
 }
