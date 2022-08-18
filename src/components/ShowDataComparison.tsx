@@ -74,9 +74,13 @@ export const ShowDataComparison = (
         <Table>
             <TableHead>
                 <TableRow>
-                    <TableCell>{getLabel('field')}</TableCell>
-                    <TableCell align="right">{getLabel('oldValue')}</TableCell>
-                    <TableCell align="right">{getLabel('newValue')}</TableCell>
+                    <TableCell width="18%">{getLabel('field')}</TableCell>
+                    <TableCell width="41%" align="right">
+                        {getLabel('oldValue')}
+                    </TableCell>
+                    <TableCell width="41%" align="right">
+                        {getLabel('newValue')}
+                    </TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
