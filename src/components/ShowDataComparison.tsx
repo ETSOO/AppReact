@@ -18,6 +18,21 @@ export interface AuditLineUpdateData {
     newData: Record<string, unknown>;
 }
 
+/**
+ * Check obj is instance of AuditLineUpdateData
+ * @param obj Input
+ * @returns Result
+ */
+export function IsAuditLineUpdateData(obj: any): obj is AuditLineUpdateData {
+    return (
+        typeof obj === 'object' &&
+        'oldData' in obj &&
+        typeof obj.oldData === 'object' &&
+        'newData' in obj &&
+        typeof obj.newData === 'object'
+    );
+}
+
 // Format value
 const formatValue = (value: unknown) => {
     if (value == null) return '';
