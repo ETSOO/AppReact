@@ -254,8 +254,7 @@ export class ReactApp<
         result: IActionResult,
         callback?: NotificationReturn<void>
     ) {
-        this.formatResult(result);
-        const message = ActionResultError.format(result);
+        const message = this.formatResult(result);
         if (message.endsWith(')')) {
             const startPos = message.lastIndexOf('(');
             if (startPos > 0) {
