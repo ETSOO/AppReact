@@ -90,6 +90,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
         autoAddBlankItem = search,
         value,
         onChange,
+        fullWidth,
         ...rest
     } = props;
 
@@ -198,6 +199,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
     return (
         <FormControl
             size={search ? MUGlobal.searchFieldSize : MUGlobal.inputFieldSize}
+            fullWidth={fullWidth}
         >
             <InputLabel
                 id={labelId}
@@ -237,6 +239,7 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
                         .join(', ');
                 }}
                 sx={{ minWidth: '150px' }}
+                fullWidth={fullWidth}
                 {...rest}
             >
                 {localOptions.map((option) => {
