@@ -1,5 +1,11 @@
 import { NumberUtils } from '@etsoo/shared';
-import { Breakpoint, Theme } from '@mui/material';
+import {
+    Breakpoint,
+    ListItemButtonProps,
+    ListItemProps,
+    Theme
+} from '@mui/material';
+import { RLink } from './RLink';
 
 /**
  * Mouse event handler with data
@@ -52,6 +58,39 @@ export class MUGlobal {
      * Page default paddings
      */
     static pagePaddings = { xs: 2, sm: 3 };
+
+    /**
+     * Get menu item props
+     * @param path Current path
+     * @param href Item's href
+     * @returns Props
+     */
+    static getMenuItem(path: string, href: string) {
+        let selected = false;
+
+        if (path === href) {
+            // Exact match, most common case
+            selected = true;
+        } else if (href.endsWith('*')) {
+            href = href.slice(0, -1);
+            selected = path.startsWith(href);
+        } else if (href.endsWith('/all')) {
+            selected = path.startsWith(href.slice(0, -3));
+        }
+
+        return {
+            component: RLink,
+            selected,
+            href,
+            sx: {
+                ...(selected && {
+                    '.MuiListItemIcon-root': {
+                        color: (theme) => theme.palette.primary.main
+                    }
+                })
+            }
+        } as ListItemButtonProps;
+    }
 
     /**
      * Update object number properties with half of it

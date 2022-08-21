@@ -6,6 +6,17 @@ const updateFunc = (value: number) => `${value * 8}px`;
 // Arrange
 const paddings = { sx: 2, sm: 3, key: 'a' };
 
+test('getMenuItem tests', () => {
+    // Assert
+    expect(
+        MUGlobal.getMenuItem('/user/add', '/user/all').selected
+    ).toBeTruthy();
+    expect(MUGlobal.getMenuItem('/user/add', '/user/*').selected).toBeTruthy();
+    expect(
+        MUGlobal.getMenuItem('/user/add', '/user/edit').selected
+    ).toBeFalsy();
+});
+
 test('half tests', () => {
     // Act
     const result = MUGlobal.half(paddings);
