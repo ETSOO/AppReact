@@ -1,10 +1,5 @@
 import { NumberUtils } from '@etsoo/shared';
-import {
-    Breakpoint,
-    ListItemButtonProps,
-    ListItemProps,
-    Theme
-} from '@mui/material';
+import { Breakpoint, ListItemButtonProps, Theme } from '@mui/material';
 import { RLink } from './RLink';
 
 /**
