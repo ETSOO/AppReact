@@ -98,9 +98,7 @@ const calculateBatchSize = (
  * @param props Props
  * @returns Component
  */
-export const ScrollerList = <T extends Record<string, any>>(
-    props: ScrollerListProps<T>
-) => {
+export const ScrollerList = <T extends {}>(props: ScrollerListProps<T>) => {
     // Destruct
     const {
         autoLoad = true,

@@ -32,9 +32,10 @@ import { SearchBar } from './SearchBar';
  */
 export interface ResponsibleContainerProps<
     T extends {},
-    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 > extends Omit<
-        DataGridExProps<T>,
+        DataGridExProps<T, D>,
         | 'height'
         | 'itemKey'
         | 'loadData'
@@ -163,8 +164,9 @@ function defaultContainerBoxSx(
  */
 export function ResponsibleContainer<
     T extends {},
-    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
->(props: ResponsibleContainerProps<T, F>) {
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: ResponsibleContainerProps<T, F, D>) {
     // Destruct
     const {
         adjustHeight,
@@ -319,7 +321,7 @@ export function ResponsibleContainer<
 
         return [
             <Box className="ListBox" sx={{ height: heightLocal }}>
-                <ScrollerListEx<T>
+                <ScrollerListEx<T, D>
                     autoLoad={!hasFields}
                     height={heightLocal}
                     loadData={localLoadData}

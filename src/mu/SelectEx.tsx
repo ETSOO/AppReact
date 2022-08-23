@@ -30,7 +30,7 @@ export interface SelectExProps<
     /**
      * Id field
      */
-    idField: D;
+    idField: T extends DataTypes.IdLabelItem ? D | undefined : D;
 
     /**
      * Item icon renderer
@@ -40,7 +40,9 @@ export interface SelectExProps<
     /**
      * Label field
      */
-    labelField: ((option: T) => string) | D;
+    labelField:
+        | ((option: T) => string)
+        | (T extends DataTypes.IdLabelItem ? D | undefined : D);
 
     /**
      * Load data callback
@@ -80,10 +82,10 @@ export function SelectEx<
     // Destruct
     const {
         defaultValue,
-        idField,
+        idField = 'id' as D,
         itemIconRenderer,
         label,
-        labelField,
+        labelField = 'label' as D,
         loadData,
         onItemClick,
         onLoadData,

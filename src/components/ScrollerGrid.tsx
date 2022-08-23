@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import {
     Align,
@@ -25,8 +26,10 @@ export interface ScrollerGridItemRendererProps<T>
 /**
  * Scroller vertical grid props
  */
-export interface ScrollerGridProps<T>
-    extends GridLoader<T>,
+export interface ScrollerGridProps<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> extends GridLoader<T>,
         Omit<
             VariableSizeGridProps<T>,
             'children' | 'rowCount' | 'rowHeight' | 'ref'
@@ -54,7 +57,7 @@ export interface ScrollerGridProps<T>
      * Id field
      * @default id
      */
-    idField?: string & keyof T;
+    idField?: D;
 
     /**
      * Item renderer

@@ -15,7 +15,7 @@ export interface AutocompleteExtendedProps<
     /**
      * Id field, default is id
      */
-    idField: D;
+    idField: T extends DataTypes.IdLabelItem ? D | undefined : D;
 
     /**
      * Id value

@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { Utils } from '@etsoo/shared';
+import { DataTypes, Utils } from '@etsoo/shared';
 import {
     Box,
     BoxProps,
@@ -30,9 +30,7 @@ import { MouseEventWithDataHandler } from './MUGlobal';
 /**
  * Footer item renderer props
  */
-export interface DataGridExFooterItemRendererProps<
-    T extends Record<string, any>
-> {
+export interface DataGridExFooterItemRendererProps<T extends {}> {
     column: GridColumn<T>;
     index: number;
     states: GridLoaderStates<T>;
@@ -43,9 +41,11 @@ export interface DataGridExFooterItemRendererProps<
 /**
  * Extended DataGrid with VariableSizeGrid props
  */
-export interface DataGridExProps<T extends Record<string, any>>
-    extends Omit<
-        ScrollerGridProps<T>,
+export interface DataGridExProps<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> extends Omit<
+        ScrollerGridProps<T, D>,
         'itemRenderer' | 'columnCount' | 'columnWidth' | 'width'
     > {
     /**
@@ -210,9 +210,10 @@ export function DataGridExCalColumns<T>(columns: GridColumn<T>[]) {
  * @param props Props
  * @returns Component
  */
-export function DataGridEx<T extends Record<string, any>>(
-    props: DataGridExProps<T>
-) {
+export function DataGridEx<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: DataGridExProps<T, D>) {
     // Theme
     const theme = useTheme();
 
@@ -360,7 +361,7 @@ export function DataGridEx<T extends Record<string, any>>(
         footerItemRenderer = DataGridRenderers.defaultFooterItemRenderer,
         hideFooter = false,
         hoverColor = '#f6f9fb',
-        idField = 'id',
+        idField = 'id' as D,
         mRef = React.createRef(),
         onClick,
         onDoubleClick,
@@ -372,7 +373,7 @@ export function DataGridEx<T extends Record<string, any>>(
 
     if (checkable) {
         const cbColumn: GridColumn<T> = {
-            field: 'selected',
+            field: 'selected' as any, // Avoid validation from data model
             header: '',
             sortable: false,
             width: 50,

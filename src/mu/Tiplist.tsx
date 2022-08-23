@@ -34,13 +34,14 @@ interface States<T extends {}> {
  * @param props Props
  * @returns Component
  */
-export function Tiplist<T extends {}, D extends DataTypes.Keys<T>>(
-    props: TiplistProps<T, D>
-) {
+export function Tiplist<
+    T extends {} = DataTypes.IdLabelItem,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: TiplistProps<T, D>) {
     // Destruct
     const {
         search = false,
-        idField,
+        idField = 'id' as D,
         idValue,
         inputAutoComplete = 'off',
         inputError,
@@ -69,7 +70,8 @@ export function Tiplist<T extends {}, D extends DataTypes.Keys<T>>(
     if (localValue === undefined) localValue = null;
 
     // One time calculation for input's default value (uncontrolled)
-    const localIdValue = idValue ?? (localValue && localValue[idField]);
+    const localIdValue =
+        idValue ?? DataTypes.getValue(localValue, idField ?? 'id');
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(

@@ -117,8 +117,10 @@ export type ScrollerListExItemSize =
 /**
  * Extended ScrollerList Props
  */
-export interface ScrollerListExProps<T>
-    extends Omit<ScrollerListProps<T>, 'itemRenderer' | 'itemSize'> {
+export interface ScrollerListExProps<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> extends Omit<ScrollerListProps<T>, 'itemRenderer' | 'itemSize'> {
     /**
      * Alternating colors for odd/even rows
      */
@@ -127,7 +129,7 @@ export interface ScrollerListExProps<T>
     /**
      * Id field
      */
-    idField?: string & keyof T;
+    idField?: D;
 
     /**
      * Inner item renderer
@@ -260,9 +262,10 @@ function defaultItemRenderer<T>({
  * @param props Props
  * @returns Component
  */
-export function ScrollerListEx<T extends Record<string, unknown>>(
-    props: ScrollerListExProps<T>
-) {
+export function ScrollerListEx<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: ScrollerListExProps<T, D>) {
     // Selected item ref
     const selectedItem = React.useRef<[HTMLDivElement, T]>();
 
@@ -295,11 +298,11 @@ export function ScrollerListEx<T extends Record<string, unknown>>(
     const {
         alternatingColors = [undefined, undefined],
         className,
-        idField = 'id',
+        idField = 'id' as D,
         innerItemRenderer,
         itemSize,
         itemKey = (index: number, data: T) =>
-            DataTypes.getValue(data, idField) ?? index,
+            DataTypes.getIdValue1(data, idField) ?? index,
         itemRenderer = (itemProps) => {
             const [itemHeight, space, margins] = calculateItemSize(
                 itemProps.index

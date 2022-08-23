@@ -1,5 +1,4 @@
-import { IdLabelDto } from '@etsoo/appscript';
-import { Utils } from '@etsoo/shared';
+import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
 import { globalApp } from '..';
 import { SelectEx, SelectExProps } from './SelectEx';
@@ -8,7 +7,10 @@ import { SelectEx, SelectExProps } from './SelectEx';
  * SelectBool props
  */
 export interface SelectBoolProps
-    extends Omit<SelectExProps<IdLabelDto<string>>, 'options' | 'loadData'> {}
+    extends Omit<
+        SelectExProps<DataTypes.IdLabelItem<string>>,
+        'options' | 'loadData'
+    > {}
 
 /**
  * SelectBool (yes/no)
@@ -20,7 +22,7 @@ export function SelectBool(props: SelectBoolProps) {
     const { search = true, autoAddBlankItem = search, ...rest } = props;
 
     // Options
-    const options: IdLabelDto<string>[] = [
+    const options: DataTypes.IdLabelItem<string>[] = [
         { id: 'false', label: globalApp.get('no')! },
         { id: 'true', label: globalApp.get('yes')! }
     ];
@@ -29,7 +31,7 @@ export function SelectBool(props: SelectBoolProps) {
 
     // Layout
     return (
-        <SelectEx<IdLabelDto<string>>
+        <SelectEx<DataTypes.IdLabelItem<string>>
             options={options}
             search={search}
             {...rest}

@@ -27,7 +27,7 @@ export interface ComboBoxProps<
     /**
      * Label field
      */
-    labelField: D;
+    labelField: T extends DataTypes.IdLabelItem ? D | undefined : D;
 
     /**
      * Load data callback
@@ -58,7 +58,7 @@ export function ComboBox<
     const {
         search = false,
         autoAddBlankItem = search,
-        idField,
+        idField = 'id' as D,
         idValue,
         inputError,
         inputHelperText,
@@ -68,7 +68,7 @@ export function ComboBox<
         inputVariant,
         defaultValue,
         label,
-        labelField,
+        labelField = 'label' as D,
         loadData,
         onLoadData,
         name,

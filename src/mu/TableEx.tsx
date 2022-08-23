@@ -47,8 +47,10 @@ export interface TableExMethodRef extends GridMethodRef {
 /**
  * Extended table props
  */
-export interface TableExProps<T extends Record<string, any>>
-    extends TableProps,
+export interface TableExProps<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> extends TableProps,
         GridLoader<T> {
     /**
      * Alternating colors for odd/even rows
@@ -68,7 +70,7 @@ export interface TableExProps<T extends Record<string, any>>
     /**
      * Id field
      */
-    idField?: string & keyof T;
+    idField?: D;
 
     /**
      * Max height
@@ -101,13 +103,12 @@ export interface TableExProps<T extends Record<string, any>>
  * @param props Props
  * @returns Component
  */
-export function TableEx<T extends Record<string, unknown>>(
-    props: TableExProps<T>
-) {
+export function TableEx<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: TableExProps<T, D>) {
     // Theme
     const theme = useTheme();
-
-    type keyType = string & keyof T;
 
     // Destruct
     const {
@@ -116,7 +117,7 @@ export function TableEx<T extends Record<string, unknown>>(
         columns,
         defaultOrderBy,
         headerColors = [undefined, undefined],
-        idField = 'id' as keyType,
+        idField = 'id' as D,
         loadBatchSize,
         loadData,
         maxHeight,
@@ -451,7 +452,10 @@ export function TableEx<T extends Record<string, unknown>>(
                                 : false;
 
                             return (
-                                <TableRow key={rowId} selected={isItemSelected}>
+                                <TableRow
+                                    key={rowId as unknown as React.Key}
+                                    selected={isItemSelected}
+                                >
                                     {selectable && (
                                         <TableCell padding="checkbox">
                                             {row && (
@@ -522,10 +526,7 @@ export function TableEx<T extends Record<string, unknown>>(
 
                                             return (
                                                 <TableCell
-                                                    key={
-                                                        rowId.toString() +
-                                                        columnIndex
-                                                    }
+                                                    key={`${rowId}${columnIndex}`}
                                                     {...cellProps}
                                                 >
                                                     {child}

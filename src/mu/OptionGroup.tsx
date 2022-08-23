@@ -1,4 +1,3 @@
-import { IdLabelDto } from '@etsoo/appscript';
 import { DataTypes, Utils } from '@etsoo/shared';
 import {
     Checkbox,
@@ -16,13 +15,13 @@ import React from 'react';
  * OptionGroup props
  */
 export interface OptionGroupProps<
-    T extends Record<string, any> = IdLabelDto,
-    D extends DataTypes.IdType = string
+    T extends {} = DataTypes.IdLabelItem,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 > extends Omit<FormControlProps<'fieldset'>, 'defaultValue'> {
     /**
      * Default value
      */
-    defaultValue?: D | D[];
+    defaultValue?: T[D] | T[D][];
 
     /**
      * Get option label function
@@ -32,7 +31,7 @@ export interface OptionGroupProps<
     /**
      * Id field, default is id
      */
-    idField?: string & keyof T;
+    idField: T extends DataTypes.IdLabelItem ? D | undefined : D;
 
     /**
      * Label
@@ -42,7 +41,7 @@ export interface OptionGroupProps<
     /**
      * Label field, default is label
      */
-    labelField?: string & keyof T;
+    labelField: T extends DataTypes.IdLabelItem ? D | undefined : D;
 
     /**
      * Multiple choose item
@@ -57,7 +56,7 @@ export interface OptionGroupProps<
     /**
      * On value change handler
      */
-    onValueChange?: (value: D | D[] | undefined) => void;
+    onValueChange?: (value: T[D] | T[D][] | undefined) => void;
 
     /**
      * Array of options.
@@ -81,16 +80,16 @@ export interface OptionGroupProps<
  * @returns Component
  */
 export function OptionGroup<
-    T extends Record<string, unknown> = IdLabelDto,
-    D extends DataTypes.IdType = string
+    T extends {} = DataTypes.IdLabelItem,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: OptionGroupProps<T, D>) {
     // Destruct
     const {
         getOptionLabel,
         defaultValue,
-        idField = 'id',
+        idField = 'id' as D,
         label,
-        labelField = 'label',
+        labelField = 'label' as D,
         multiple = false,
         name,
         onValueChange,
@@ -103,10 +102,10 @@ export function OptionGroup<
 
     // Get option value
     // D type should be the source id type
-    const getOptionValue = (option: T): D | null => {
+    const getOptionValue = (option: T): T[D] | null => {
         const value = DataTypes.getValue(option, idField);
         if (value == null) return null;
-        return value as D;
+        return value as T[D];
     };
 
     // Checkbox values
@@ -142,7 +141,7 @@ export function OptionGroup<
                 onChange={(event) => {
                     if (firstOptionValue == null) return;
 
-                    const typeValue = Utils.parseString<D>(
+                    const typeValue = Utils.parseString(
                         event.target.value,
                         firstOptionValue
                     );
@@ -175,7 +174,7 @@ export function OptionGroup<
 
         // Value, convert to string
         // Will fail when type is number
-        const value = getOptionValue(option);
+        const value = getOptionValue(option) as unknown as React.Key;
 
         return (
             <FormControlLabel
@@ -197,7 +196,7 @@ export function OptionGroup<
             value={values[0]}
             onChange={(_event, value) => {
                 if (firstOptionValue == null) return;
-                const typeValue = Utils.parseString<D>(value, firstOptionValue);
+                const typeValue = Utils.parseString(value, firstOptionValue);
                 if (onValueChange) onValueChange(typeValue);
                 setValues([typeValue]);
             }}
