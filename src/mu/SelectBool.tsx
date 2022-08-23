@@ -28,5 +28,11 @@ export function SelectBool(props: SelectBoolProps) {
     if (autoAddBlankItem) Utils.addBlankItem(options);
 
     // Layout
-    return <SelectEx options={options} search={search} {...rest} />;
+    return (
+        <SelectEx<IdLabelDto<string>>
+            options={options}
+            search={search}
+            {...rest}
+        />
+    );
 }

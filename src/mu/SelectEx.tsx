@@ -18,8 +18,10 @@ import { ReactUtils } from '../app/ReactUtils';
 /**
  * Extended select component props
  */
-export interface SelectExProps<T extends {}, D extends DataTypes.Keys<T>>
-    extends Omit<SelectProps, 'labelId' | 'input' | 'native'> {
+export interface SelectExProps<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> extends Omit<SelectProps, 'labelId' | 'input' | 'native'> {
     /**
      * Auto add blank item
      */
@@ -71,9 +73,10 @@ export interface SelectExProps<T extends {}, D extends DataTypes.Keys<T>>
  * @param props Props
  * @returns Component
  */
-export function SelectEx<T extends {}, D extends DataTypes.Keys<T>>(
-    props: SelectExProps<T, D>
-) {
+export function SelectEx<
+    T extends {} = DataTypes.IdLabelItem,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: SelectExProps<T, D>) {
     // Destruct
     const {
         defaultValue,

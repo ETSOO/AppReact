@@ -10,8 +10,10 @@ import { ReactUtils } from '../app/ReactUtils';
 /**
  * ComboBox props
  */
-export interface ComboBoxProps<T extends {}, D extends DataTypes.Keys<T>>
-    extends AutocompleteExtendedProps<T, D> {
+export interface ComboBoxProps<
+    T extends {},
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> extends AutocompleteExtendedProps<T, D> {
     /**
      * Auto add blank item
      */
@@ -48,9 +50,10 @@ export interface ComboBoxProps<T extends {}, D extends DataTypes.Keys<T>>
  * @param props Props
  * @returns Component
  */
-export function ComboBox<T extends {}, D extends DataTypes.Keys<T>>(
-    props: ComboBoxProps<T, D>
-) {
+export function ComboBox<
+    T extends {} = DataTypes.IdLabelItem,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: ComboBoxProps<T, D>) {
     // Destruct
     const {
         search = false,
