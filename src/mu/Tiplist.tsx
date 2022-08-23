@@ -1,4 +1,3 @@
-import { IdLabelDto } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
@@ -11,14 +10,14 @@ import { SearchField } from './SearchField';
 /**
  * Tiplist props
  */
-export interface TiplistProps<T extends {}>
-    extends Omit<AutocompleteExtendedProps<T>, 'open'> {
+export interface TiplistProps<T extends {}, D extends DataTypes.Keys<T>>
+    extends Omit<AutocompleteExtendedProps<T, D>, 'open'> {
     /**
      * Load data callback
      */
     loadData: (
         keyword?: string,
-        id?: DataTypes.IdType
+        id?: T[D]
     ) => PromiseLike<T[] | null | undefined>;
 }
 
@@ -35,11 +34,13 @@ interface States<T extends {}> {
  * @param props Props
  * @returns Component
  */
-export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
+export function Tiplist<T extends {}, D extends DataTypes.Keys<T>>(
+    props: TiplistProps<T, D>
+) {
     // Destruct
     const {
         search = false,
-        idField = 'id',
+        idField,
         idValue,
         inputAutoComplete = 'off',
         inputError,
@@ -68,8 +69,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
     if (localValue === undefined) localValue = null;
 
     // One time calculation for input's default value (uncontrolled)
-    const localIdValue =
-        idValue ?? (localValue && Reflect.get(localValue, idField));
+    const localIdValue = idValue ?? (localValue && localValue[idField]);
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
@@ -86,7 +86,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
 
     // Input value
     const inputValue = React.useMemo(
-        () => states.value && Reflect.get(states.value, idField),
+        () => states.value && states.value[idField],
         [states.value]
     );
 
@@ -130,7 +130,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
     };
 
     // Directly load data
-    const loadDataDirect = (keyword?: string, id?: DataTypes.IdType) => {
+    const loadDataDirect = (keyword?: string, id?: T[D]) => {
         // Reset options
         // setOptions([]);
 
@@ -181,7 +181,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
         }
     };
 
-    if (localIdValue != null && localIdValue !== '') {
+    if (localIdValue != null && (localIdValue as any) !== '') {
         if (state.idLoaded) {
             // Set default
             if (!state.idSet && states.options.length == 1) {
@@ -211,7 +211,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                value={inputValue ?? ''}
+                value={`${inputValue ?? ''}`}
                 readOnly
                 onChange={inputOnChange}
             />
@@ -250,7 +250,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
                             undefined,
                             states.value == null
                                 ? undefined
-                                : Reflect.get(states.value, idField)
+                                : states.value[idField]
                         );
                 }}
                 onClose={() => {
@@ -291,7 +291,7 @@ export function Tiplist<T extends {} = IdLabelDto>(props: TiplistProps<T>) {
                         />
                     )
                 }
-                isOptionEqualToValue={(option: any, value: any) =>
+                isOptionEqualToValue={(option: T, value: T) =>
                     option[idField] === value[idField]
                 }
                 {...rest}

@@ -11,15 +11,14 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { MUGlobal } from './MUGlobal';
-import { IdLabelDto } from '@etsoo/appscript';
 import { ListItemRightIcon } from './ListItemRightIcon';
-import { Utils } from '@etsoo/shared';
+import { DataTypes, Utils } from '@etsoo/shared';
 import { ReactUtils } from '../app/ReactUtils';
 
 /**
  * Extended select component props
  */
-export interface SelectExProps<T extends {}>
+export interface SelectExProps<T extends {}, D extends DataTypes.Keys<T>>
     extends Omit<SelectProps, 'labelId' | 'input' | 'native'> {
     /**
      * Auto add blank item
@@ -27,9 +26,9 @@ export interface SelectExProps<T extends {}>
     autoAddBlankItem?: boolean;
 
     /**
-     * Id field, default is id
+     * Id field
      */
-    idField?: string & keyof T;
+    idField: D;
 
     /**
      * Item icon renderer
@@ -37,9 +36,9 @@ export interface SelectExProps<T extends {}>
     itemIconRenderer?: (id: unknown) => React.ReactNode;
 
     /**
-     * Label field, default is label
+     * Label field
      */
-    labelField?: ((option: T) => string) | (string & keyof T);
+    labelField: ((option: T) => string) | D;
 
     /**
      * Load data callback
@@ -72,14 +71,16 @@ export interface SelectExProps<T extends {}>
  * @param props Props
  * @returns Component
  */
-export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
+export function SelectEx<T extends {}, D extends DataTypes.Keys<T>>(
+    props: SelectExProps<T, D>
+) {
     // Destruct
     const {
         defaultValue,
-        idField = 'id',
+        idField,
         itemIconRenderer,
         label,
-        labelField = 'label',
+        labelField,
         loadData,
         onItemClick,
         onLoadData,
@@ -153,14 +154,14 @@ export function SelectEx<T extends {} = IdLabelDto>(props: SelectExProps<T>) {
 
     // Get option id
     const getId = (option: T) => {
-        return Reflect.get(option, idField);
+        return option[idField] as unknown as React.Key;
     };
 
     // Get option label
     const getLabel = (option: T) => {
         return typeof labelField === 'function'
             ? labelField(option)
-            : Reflect.get(option, labelField);
+            : new String(option[labelField]);
     };
 
     // Refs

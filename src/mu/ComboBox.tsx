@@ -1,5 +1,4 @@
-import { IdLabelDto } from '@etsoo/appscript';
-import { Keyboard } from '@etsoo/shared';
+import { DataTypes, Keyboard } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils as SharedUtils } from '@etsoo/shared';
@@ -11,8 +10,8 @@ import { ReactUtils } from '../app/ReactUtils';
 /**
  * ComboBox props
  */
-export interface ComboBoxProps<T extends {}>
-    extends AutocompleteExtendedProps<T> {
+export interface ComboBoxProps<T extends {}, D extends DataTypes.Keys<T>>
+    extends AutocompleteExtendedProps<T, D> {
     /**
      * Auto add blank item
      */
@@ -26,7 +25,7 @@ export interface ComboBoxProps<T extends {}>
     /**
      * Label field
      */
-    labelField?: string & keyof T;
+    labelField: D;
 
     /**
      * Load data callback
@@ -49,12 +48,14 @@ export interface ComboBoxProps<T extends {}>
  * @param props Props
  * @returns Component
  */
-export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
+export function ComboBox<T extends {}, D extends DataTypes.Keys<T>>(
+    props: ComboBoxProps<T, D>
+) {
     // Destruct
     const {
         search = false,
         autoAddBlankItem = search,
-        idField = 'id',
+        idField,
         idValue,
         inputError,
         inputHelperText,
@@ -64,7 +65,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         inputVariant,
         defaultValue,
         label,
-        labelField = 'label',
+        labelField,
         loadData,
         onLoadData,
         name,
@@ -75,7 +76,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         onChange,
         openOnFocus = true,
         value,
-        getOptionLabel = (option: T) => String(Reflect.get(option, labelField)),
+        getOptionLabel = (option: T) => `${option[labelField]}`,
         sx = { minWidth: '150px' },
         ...rest
     } = props;
@@ -97,7 +98,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
     // Local default value
     let localValue =
         idValue != null
-            ? localOptions.find((o) => Reflect.get(o, idField) === idValue)
+            ? localOptions.find((o) => o[idField] === idValue)
             : defaultValue ?? value;
 
     if (localValue === undefined) localValue = null;
@@ -108,7 +109,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
 
     // Current id value
     // One time calculation for input's default value (uncontrolled)
-    const localIdValue = stateValue && Reflect.get(stateValue, idField);
+    const localIdValue = stateValue && stateValue[idField];
 
     React.useEffect(() => {
         if (localValue != null) setStateValue(localValue);
@@ -147,8 +148,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
         const input = inputRef.current;
         if (input) {
             // Update value
-            const newValue =
-                value != null ? `${Reflect.get(value, idField)}` : '';
+            const newValue = value != null ? `${value[idField]}` : '';
 
             if (newValue !== input.value) {
                 // Different value, trigger change event
@@ -186,7 +186,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
                 type="text"
                 style={{ display: 'none' }}
                 name={name}
-                value={localIdValue ?? ''}
+                value={`${localIdValue ?? ''}`}
                 readOnly
                 onChange={inputOnChange}
             />
@@ -195,7 +195,7 @@ export function ComboBox<T extends {} = IdLabelDto>(props: ComboBoxProps<T>) {
                 value={stateValue}
                 getOptionLabel={getOptionLabel}
                 isOptionEqualToValue={(option: T, value: T) =>
-                    Reflect.get(option, idField) === Reflect.get(value, idField)
+                    option[idField] === value[idField]
                 }
                 onChange={(event, value, reason, details) => {
                     // Set value

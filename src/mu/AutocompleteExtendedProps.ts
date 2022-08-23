@@ -5,20 +5,22 @@ import { ChangeEventHandler } from 'react';
 /**
  * Autocomplete extended props
  */
-export interface AutocompleteExtendedProps<T extends Record<string, unknown>>
-    extends Omit<
+export interface AutocompleteExtendedProps<
+    T extends {},
+    D extends DataTypes.Keys<T>
+> extends Omit<
         AutocompleteProps<T, undefined, false, false>,
         'renderInput' | 'options'
     > {
     /**
      * Id field, default is id
      */
-    idField?: string & keyof T;
+    idField: D;
 
     /**
      * Id value
      */
-    idValue?: DataTypes.IdType;
+    idValue?: T[D];
 
     /**
      * Autocomplete for the input
