@@ -1,4 +1,10 @@
-import { DataTypes, Utils } from '@etsoo/shared';
+import {
+    DataTypes,
+    IdDefaultType,
+    LabelDefaultType,
+    ListType,
+    Utils
+} from '@etsoo/shared';
 import {
     Checkbox,
     FormControl,
@@ -15,8 +21,9 @@ import React from 'react';
  * OptionGroup props
  */
 export type OptionGroupProps<
-    T extends object = DataTypes.IdLabelItem,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    T extends object,
+    D extends DataTypes.Keys<T>,
+    L extends DataTypes.Keys<T, string>
 > = Omit<FormControlProps<'fieldset'>, 'defaultValue'> & {
     /**
      * Default value
@@ -29,9 +36,19 @@ export type OptionGroupProps<
     getOptionLabel?: (option: T) => string;
 
     /**
+     * Id field
+     */
+    idField?: D;
+
+    /**
      * Label
      */
     label?: string;
+
+    /**
+     * Label field
+     */
+    labelField?: L;
 
     /**
      * Multiple choose item
@@ -62,20 +79,7 @@ export type OptionGroupProps<
      * Display group of elements in a compact row
      */
     row?: boolean;
-} & (T extends { id: DataTypes.IdType }
-        ? {
-              idField?: D;
-          }
-        : {
-              idField: D;
-          }) &
-    (T extends { label: string }
-        ? {
-              labelField?: D;
-          }
-        : {
-              labelField: D;
-          });
+};
 
 /**
  * OptionGroup
@@ -83,16 +87,17 @@ export type OptionGroupProps<
  * @returns Component
  */
 export function OptionGroup<
-    T extends object = DataTypes.IdLabelItem,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
->(props: OptionGroupProps<T, D>) {
+    T extends object = ListType,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>,
+    L extends DataTypes.Keys<T, string> = LabelDefaultType<T>
+>(props: OptionGroupProps<T, D, L>) {
     // Destruct
     const {
         getOptionLabel,
         defaultValue,
         idField = 'id' as D,
         label,
-        labelField = 'label' as D,
+        labelField = 'label' as L,
         multiple = false,
         name,
         onValueChange,

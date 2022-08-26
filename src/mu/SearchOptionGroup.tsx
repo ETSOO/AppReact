@@ -1,4 +1,9 @@
-import { DataTypes } from '@etsoo/shared';
+import {
+    DataTypes,
+    IdDefaultType,
+    LabelDefaultType,
+    ListType
+} from '@etsoo/shared';
 import React from 'react';
 import { MUGlobal } from './MUGlobal';
 import { OptionGroup, OptionGroupProps } from './OptionGroup';
@@ -9,9 +14,10 @@ import { OptionGroup, OptionGroupProps } from './OptionGroup';
  * @returns Component
  */
 export function SearchOptionGroup<
-    T extends object = DataTypes.IdLabelItem,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
->(props: OptionGroupProps<T, D>) {
+    T extends object = ListType,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>,
+    L extends DataTypes.Keys<T, string> = LabelDefaultType<T>
+>(props: OptionGroupProps<T, D, L>) {
     // Destruct
     const {
         row = true,
@@ -21,5 +27,5 @@ export function SearchOptionGroup<
     } = props;
 
     // Layout
-    return <OptionGroup<T, D> row={row} size={size} sx={sx} {...rest} />;
+    return <OptionGroup<T, D, L> row={row} size={size} sx={sx} {...rest} />;
 }

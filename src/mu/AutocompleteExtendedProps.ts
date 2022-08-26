@@ -13,6 +13,11 @@ export type AutocompleteExtendedProps<
     'renderInput' | 'options'
 > & {
     /**
+     * Id field
+     */
+    idField?: D;
+
+    /**
      * Id value
      */
     idValue?: T[D];
@@ -75,10 +80,4 @@ export type AutocompleteExtendedProps<
      * Is search field?
      */
     search?: boolean;
-} & (T extends { id: DataTypes.IdType }
-        ? {
-              idField?: D;
-          }
-        : {
-              idField: D;
-          });
+};

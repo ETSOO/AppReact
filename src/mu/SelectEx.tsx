@@ -12,7 +12,13 @@ import {
 import React from 'react';
 import { MUGlobal } from './MUGlobal';
 import { ListItemRightIcon } from './ListItemRightIcon';
-import { DataTypes, Utils } from '@etsoo/shared';
+import {
+    DataTypes,
+    IdDefaultType,
+    LabelDefaultType,
+    ListType,
+    Utils
+} from '@etsoo/shared';
 import { ReactUtils } from '../app/ReactUtils';
 
 /**
@@ -20,7 +26,8 @@ import { ReactUtils } from '../app/ReactUtils';
  */
 export type SelectExProps<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>,
+    L extends DataTypes.Keys<T, string> = LabelDefaultType<T>
 > = Omit<SelectProps, 'labelId' | 'input' | 'native'> & {
     /**
      * Auto add blank item
@@ -28,9 +35,19 @@ export type SelectExProps<
     autoAddBlankItem?: boolean;
 
     /**
+     * Id field
+     */
+    idField?: D;
+
+    /**
      * Item icon renderer
      */
     itemIconRenderer?: (id: unknown) => React.ReactNode;
+
+    /**
+     * Label field
+     */
+    labelField?: L | ((option: T) => string);
 
     /**
      * Load data callback
@@ -56,20 +73,7 @@ export type SelectExProps<
      * Is search case?
      */
     search?: boolean;
-} & (T extends { id: DataTypes.IdType }
-        ? {
-              idField?: D;
-          }
-        : {
-              idField: D;
-          }) &
-    (T extends { label: string }
-        ? {
-              labelField?: ((option: T) => string) | D;
-          }
-        : {
-              labelField: ((option: T) => string) | D;
-          });
+};
 
 /**
  * Extended select component
@@ -77,16 +81,17 @@ export type SelectExProps<
  * @returns Component
  */
 export function SelectEx<
-    T extends object = DataTypes.IdLabelItem,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
->(props: SelectExProps<T, D>) {
+    T extends object = ListType,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>,
+    L extends DataTypes.Keys<T, string> = LabelDefaultType<T>
+>(props: SelectExProps<T, D, L>) {
     // Destruct
     const {
         defaultValue,
         idField = 'id' as D,
         itemIconRenderer,
         label,
-        labelField = 'label' as D,
+        labelField = 'label' as L,
         loadData,
         onItemClick,
         onLoadData,

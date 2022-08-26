@@ -7,5 +7,6 @@ import { SearchPageProps } from './SearchPageProps';
  */
 export type ListPageProps<
     T extends object,
-    F extends DataTypes.BasicTemplate
-> = SearchPageProps<T, F> & Omit<ScrollerListExProps<T>, 'loadData'>;
+    F extends DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T>
+> = SearchPageProps<T, F> & Omit<ScrollerListExProps<T, D>, 'loadData'>;

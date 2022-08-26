@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType, ListType } from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { ReactUtils } from '../app/ReactUtils';
@@ -37,8 +37,8 @@ interface States<T extends object> {
  * @returns Component
  */
 export function Tiplist<
-    T extends object = DataTypes.IdLabelItem,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    T extends object = ListType,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 >(props: TiplistProps<T, D>) {
     // Destruct
     const {

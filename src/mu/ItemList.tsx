@@ -3,17 +3,26 @@ import {
     Dialog,
     DialogTitle,
     List,
-    ListItem,
     ListItemText,
     DialogContent,
-    Button
+    Button,
+    ListItemButton
 } from '@mui/material';
-import { DataTypes } from '@etsoo/shared';
+import {
+    DataTypes,
+    IdDefaultType,
+    LabelDefaultType,
+    ListType
+} from '@etsoo/shared';
 
 /**
  * Item list properties
  */
-export interface ItemListProps<T extends Record<string, unknown>> {
+export interface ItemListProps<
+    T extends object,
+    D extends DataTypes.Keys<T>,
+    L extends DataTypes.Keys<T, string>
+> {
     /**
      * Style class name
      */
@@ -22,12 +31,12 @@ export interface ItemListProps<T extends Record<string, unknown>> {
     /**
      * Id field name
      */
-    idField?: string & keyof T;
+    idField?: D;
 
     /**
      * Label field name or callback
      */
-    labelField?: (string & keyof T) | ((item: T) => string);
+    labelField?: L | ((item: T) => string);
 
     /**
      * Button icon
@@ -47,7 +56,7 @@ export interface ItemListProps<T extends Record<string, unknown>> {
     /**
      * Current selected language
      */
-    selectedValue?: string;
+    selectedValue?: T[D];
 
     /**
      * Button size
@@ -75,15 +84,17 @@ export interface ItemListProps<T extends Record<string, unknown>> {
  * @param props Properties
  */
 export function ItemList<
-    T extends Record<string, unknown> = Record<string, unknown>
->(props: ItemListProps<T>) {
+    T extends object = ListType,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>,
+    L extends DataTypes.Keys<T, string> = LabelDefaultType<T>
+>(props: ItemListProps<T, D, L>) {
     //  properties destructure
     const {
         className,
         color = 'primary',
         items,
-        idField = 'id',
-        labelField = 'label',
+        idField = 'id' as D,
+        labelField = 'label' as L,
         icon,
         onClose,
         selectedValue,
@@ -91,13 +102,6 @@ export function ItemList<
         title,
         variant = 'outlined'
     } = props;
-
-    // Get id
-    const getId = (item: T): string | number => {
-        const id = item[idField];
-        if (typeof id === 'number') return id;
-        return DataTypes.convert(id, 'string') ?? '';
-    };
 
     // Get label
     const getLabel = (item: T): string => {
@@ -113,7 +117,7 @@ export function ItemList<
 
     // Default state
     const defaultItem =
-        items.find((item) => getId(item) === selectedValue) ?? items[0];
+        items.find((item) => item[idField] === selectedValue) ?? items[0];
 
     // Current item
     const [currentItem, setCurrentItem] = React.useState(defaultItem);
@@ -179,18 +183,17 @@ export function ItemList<
                 <DialogContent>
                     <List>
                         {items.map((item) => {
-                            const id = getId(item);
+                            const id = item[idField];
                             return (
-                                <ListItem
-                                    button
-                                    key={id}
-                                    disabled={id === getId(currentItem)}
+                                <ListItemButton
+                                    key={id as unknown as React.Key}
+                                    disabled={id === currentItem[idField]}
                                     onClick={() => closeItemHandler(item)}
                                 >
                                     <ListItemText>
                                         {getLabel(item)}
                                     </ListItemText>
-                                </ListItem>
+                                </ListItemButton>
                             );
                         })}
                     </List>

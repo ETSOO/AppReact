@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { DataTypes, Utils } from '@etsoo/shared';
+import { DataTypes, IdDefaultType, Utils } from '@etsoo/shared';
 import {
     Box,
     BoxProps,
@@ -43,7 +43,7 @@ export type DataGridExFooterItemRendererProps<T extends object> = {
  */
 export type DataGridExProps<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T>
 > = Omit<
     ScrollerGridProps<T, D>,
     'itemRenderer' | 'columnCount' | 'columnWidth' | 'width'
@@ -212,7 +212,7 @@ export function DataGridExCalColumns<T>(columns: GridColumn<T>[]) {
  */
 export function DataGridEx<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 >(props: DataGridExProps<T, D>) {
     // Theme
     const theme = useTheme();

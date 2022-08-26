@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
@@ -17,8 +17,9 @@ import { ListPageProps } from './ListPageProps';
  */
 export function ListPage<
     T extends object,
-    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
->(props: ListPageProps<T, F>) {
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
+>(props: ListPageProps<T, F, D>) {
     // Destruct
     const {
         fields,
@@ -74,7 +75,7 @@ export function ListPage<
                 >
                     <SearchBar fields={fields} onSubmit={onSubmit} />
                 </Box>
-                <ScrollerListEx<T>
+                <ScrollerListEx<T, D>
                     autoLoad={false}
                     loadData={localLoadData}
                     mRef={refs}

@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import React from 'react';
 import { MUGlobal } from '../MUGlobal';
 import { ResponsibleContainer } from '../ResponsibleContainer';
@@ -13,7 +13,7 @@ import { ResponsePageProps } from './ResponsivePageProps';
 export function ResponsivePage<
     T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 >(props: ResponsePageProps<T, F, D>) {
     // Destruct
     const { pageProps = {}, ...rest } = props;

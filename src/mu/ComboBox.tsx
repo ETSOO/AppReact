@@ -1,4 +1,10 @@
-import { DataTypes, Keyboard } from '@etsoo/shared';
+import {
+    DataTypes,
+    IdDefaultType,
+    Keyboard,
+    LabelDefaultType,
+    ListType
+} from '@etsoo/shared';
 import { Autocomplete, AutocompleteRenderInputParams } from '@mui/material';
 import React from 'react';
 import { Utils as SharedUtils } from '@etsoo/shared';
@@ -12,7 +18,8 @@ import { ReactUtils } from '../app/ReactUtils';
  */
 export type ComboBoxProps<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T>,
+    L extends DataTypes.Keys<T, string>
 > = AutocompleteExtendedProps<T, D> & {
     /**
      * Auto add blank item
@@ -23,6 +30,11 @@ export type ComboBoxProps<
      * Data readonly
      */
     dataReadonly?: boolean;
+
+    /**
+     * Label field
+     */
+    labelField?: L;
 
     /**
      * Load data callback
@@ -38,13 +50,7 @@ export type ComboBoxProps<
      * Array of options.
      */
     options?: ReadonlyArray<T>;
-} & (T extends { label: string }
-        ? {
-              labelField?: D;
-          }
-        : {
-              labelField: D;
-          });
+};
 
 /**
  * ComboBox
@@ -52,9 +58,10 @@ export type ComboBoxProps<
  * @returns Component
  */
 export function ComboBox<
-    T extends object = DataTypes.IdLabelItem,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
->(props: ComboBoxProps<T, D>) {
+    T extends object = ListType,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>,
+    L extends DataTypes.Keys<T, string> = LabelDefaultType<T>
+>(props: ComboBoxProps<T, D, L>) {
     // Destruct
     const {
         search = false,
@@ -69,7 +76,7 @@ export function ComboBox<
         inputVariant,
         defaultValue,
         label,
-        labelField = 'label' as D,
+        labelField = 'label' as L,
         loadData,
         onLoadData,
         name,

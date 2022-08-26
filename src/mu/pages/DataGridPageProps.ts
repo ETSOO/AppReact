@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import { DataGridExProps } from '../DataGridEx';
 import { SearchPageProps } from './SearchPageProps';
 
@@ -8,7 +8,7 @@ import { SearchPageProps } from './SearchPageProps';
 export type DataGridPageProps<
     T extends object,
     F extends DataTypes.BasicTemplate,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 > = SearchPageProps<T, F> &
     Omit<DataGridExProps<T, D>, 'loadData' | 'height'> & {
         /**

@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
@@ -17,8 +17,9 @@ import { TablePageProps } from './TablePageProps';
  */
 export function TablePage<
     T extends object,
-    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
->(props: TablePageProps<T, F>) {
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
+>(props: TablePageProps<T, F, D>) {
     // Destruct
     const {
         columns,
@@ -88,7 +89,7 @@ export function TablePage<
             if (!isNaN(paddingBottom)) maxHeight -= paddingBottom;
 
             return (
-                <TableEx<T>
+                <TableEx<T, D>
                     autoLoad={false}
                     columns={columns}
                     loadData={localLoadData}

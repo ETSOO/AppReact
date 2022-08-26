@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import { ListChildComponentProps } from 'react-window';
 import { GridMethodRef } from '../GridMethodRef';
 import {
@@ -13,7 +13,7 @@ import { DataGridPageProps } from './DataGridPageProps';
 export type ResponsePageProps<
     T extends object,
     F extends DataTypes.BasicTemplate,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 > = Omit<
     DataGridPageProps<T, F, D>,
     'mRef' | 'itemKey' | 'onScroll' | 'onItemsRendered'

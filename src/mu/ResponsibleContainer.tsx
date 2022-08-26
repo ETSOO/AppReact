@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import { Box, Stack, SxProps, Theme } from '@mui/material';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
@@ -33,7 +33,7 @@ import { SearchBar } from './SearchBar';
 export type ResponsibleContainerProps<
     T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 > = Omit<
     DataGridExProps<T, D>,
     'height' | 'itemKey' | 'loadData' | 'mRef' | 'onScroll' | 'onItemsRendered'
@@ -160,7 +160,7 @@ function defaultContainerBoxSx(
 export function ResponsibleContainer<
     T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 >(props: ResponsibleContainerProps<T, F, D>) {
     // Destruct
     const {

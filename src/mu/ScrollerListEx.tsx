@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { DataTypes, Utils } from '@etsoo/shared';
+import { DataTypes, IdDefaultType, Utils } from '@etsoo/shared';
 import { useTheme } from '@mui/material';
 import React from 'react';
 import { ListChildComponentProps } from 'react-window';
@@ -119,7 +119,7 @@ export type ScrollerListExItemSize =
  */
 export type ScrollerListExProps<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T>
 > = Omit<ScrollerListProps<T>, 'itemRenderer' | 'itemSize'> & {
     /**
      * Alternating colors for odd/even rows
@@ -265,7 +265,7 @@ function defaultItemRenderer<T>({
  */
 export function ScrollerListEx<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 >(props: ScrollerListExProps<T, D>) {
     // Selected item ref
     const selectedItem = React.useRef<[HTMLDivElement, T]>();

@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import {
     Checkbox,
     Paper,
@@ -49,7 +49,7 @@ export interface TableExMethodRef extends GridMethodRef {
  */
 export type TableExProps<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T>
 > = TableProps &
     GridLoader<T> & {
         /**
@@ -66,6 +66,11 @@ export type TableExProps<
          * Header cells background color and font color
          */
         headerColors?: [string?, string?];
+
+        /**
+         * Id field
+         */
+        idField?: D;
 
         /**
          * Max height
@@ -91,13 +96,7 @@ export type TableExProps<
          * Header and bottom height
          */
         otherHeight?: number;
-    } & (T extends { id: DataTypes.IdType }
-        ? {
-              idField?: D;
-          }
-        : {
-              idField: D;
-          });
+    };
 
 /**
  * Extended Table
@@ -106,7 +105,7 @@ export type TableExProps<
  */
 export function TableEx<
     T extends object,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 >(props: TableExProps<T, D>) {
     // Theme
     const theme = useTheme();

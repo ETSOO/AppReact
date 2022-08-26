@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, IdDefaultType } from '@etsoo/shared';
 import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
@@ -26,7 +26,7 @@ interface LocalStates {
 export function DataGridPage<
     T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
-    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
 >(props: DataGridPageProps<T, F, D>) {
     // Destruct
     const {

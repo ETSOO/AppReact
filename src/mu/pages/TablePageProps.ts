@@ -7,5 +7,6 @@ import { SearchPageProps } from './SearchPageProps';
  */
 export type TablePageProps<
     T extends object,
-    F extends DataTypes.BasicTemplate
-> = SearchPageProps<T, F> & Omit<TableExProps<T>, 'loadData'>;
+    F extends DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T>
+> = SearchPageProps<T, F> & Omit<TableExProps<T, D>, 'loadData'>;
