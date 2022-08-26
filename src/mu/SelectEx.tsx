@@ -18,31 +18,19 @@ import { ReactUtils } from '../app/ReactUtils';
 /**
  * Extended select component props
  */
-export interface SelectExProps<
-    T extends {},
+export type SelectExProps<
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends Omit<SelectProps, 'labelId' | 'input' | 'native'> {
+> = Omit<SelectProps, 'labelId' | 'input' | 'native'> & {
     /**
      * Auto add blank item
      */
     autoAddBlankItem?: boolean;
 
     /**
-     * Id field
-     */
-    idField: T extends DataTypes.IdLabelItem ? D | undefined : D;
-
-    /**
      * Item icon renderer
      */
     itemIconRenderer?: (id: unknown) => React.ReactNode;
-
-    /**
-     * Label field
-     */
-    labelField:
-        | ((option: T) => string)
-        | (T extends DataTypes.IdLabelItem ? D | undefined : D);
 
     /**
      * Load data callback
@@ -68,7 +56,20 @@ export interface SelectExProps<
      * Is search case?
      */
     search?: boolean;
-}
+} & (T extends { id: DataTypes.IdType }
+        ? {
+              idField?: D;
+          }
+        : {
+              idField: D;
+          }) &
+    (T extends { label: string }
+        ? {
+              labelField?: ((option: T) => string) | D;
+          }
+        : {
+              labelField: ((option: T) => string) | D;
+          });
 
 /**
  * Extended select component
@@ -76,7 +77,7 @@ export interface SelectExProps<
  * @returns Component
  */
 export function SelectEx<
-    T extends {} = DataTypes.IdLabelItem,
+    T extends object = DataTypes.IdLabelItem,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: SelectExProps<T, D>) {
     // Destruct

@@ -117,7 +117,7 @@ export namespace DataGridRenderers {
      * @param location Renderer location (column index)
      * @returns Component
      */
-    export function defaultFooterItemRenderer<T>(
+    export function defaultFooterItemRenderer<T extends object>(
         _rows: T[],
         { index, states, checkable }: DataGridExFooterItemRendererProps<T>,
         location: number = 0

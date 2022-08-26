@@ -22,7 +22,7 @@ import { LoadingButton } from './LoadingButton';
  * ListMoreDisplay props
  */
 export interface ListMoreDisplayProps<
-    T,
+    T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
 > extends Omit<CardProps, 'children'>,
         GridLoader<T> {
@@ -63,7 +63,7 @@ type states<T> = {
  * @returns Component
  */
 export function ListMoreDisplay<
-    T extends {},
+    T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
 >(props: ListMoreDisplayProps<T, F>) {
     // Destruct

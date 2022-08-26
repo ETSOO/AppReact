@@ -11,9 +11,10 @@ import { ResponsePageProps } from './ResponsivePageProps';
  * @returns Component
  */
 export function ResponsivePage<
-    T extends {},
-    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
->(props: ResponsePageProps<T, F>) {
+    T extends object,
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: ResponsePageProps<T, F, D>) {
     // Destruct
     const { pageProps = {}, ...rest } = props;
 
@@ -32,7 +33,7 @@ export function ResponsivePage<
             scrollContainer={scrollContainer}
             fabColumnDirection={direction}
         >
-            <ResponsibleContainer<T, F>
+            <ResponsibleContainer<T, F, D>
                 paddings={paddings}
                 containerBoxSx={(paddings, hasField, _dataGrid) => {
                     // Half

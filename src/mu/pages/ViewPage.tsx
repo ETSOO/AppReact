@@ -1,4 +1,4 @@
-import { Utils } from '@etsoo/shared';
+import { DataTypes, Utils } from '@etsoo/shared';
 import {
     Grid,
     GridProps,
@@ -22,7 +22,7 @@ import { CommonPageProps } from './CommonPageProps';
 /**
  * View page display field
  */
-export interface ViewPageField<T extends {}> extends GridProps {
+export interface ViewPageField<T extends object> extends GridProps {
     /**
      * Data field
      */
@@ -49,7 +49,7 @@ export interface ViewPageField<T extends {}> extends GridProps {
     renderProps?: GridColumnRenderProps;
 }
 
-type ViewPageFieldType<T> =
+type ViewPageFieldType<T extends object> =
     | (string & keyof T)
     | [string & keyof T, GridDataType, GridColumnRenderProps?]
     | ViewPageField<T>;
@@ -57,7 +57,7 @@ type ViewPageFieldType<T> =
 /**
  * View page props
  */
-export interface ViewPageProps<T extends {}>
+export interface ViewPageProps<T extends DataTypes.StringRecord>
     extends Omit<CommonPageProps, 'children'> {
     /**
      * Actions
@@ -101,7 +101,7 @@ function formatItemData(fieldData: unknown): string | undefined {
     return `${fieldData}`;
 }
 
-function getItemField<T>(
+function getItemField<T extends object>(
     field: ViewPageFieldType<T>,
     data: T
 ): [React.ReactNode, React.ReactNode, GridProps] {
@@ -163,7 +163,9 @@ function getItemField<T>(
  * View page
  * @param props Props
  */
-export function ViewPage<T extends {}>(props: ViewPageProps<T>) {
+export function ViewPage<T extends DataTypes.StringRecord>(
+    props: ViewPageProps<T>
+) {
     // Destruct
     const {
         actions,

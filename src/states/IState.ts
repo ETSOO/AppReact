@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 /**
  * State UI creator
  */
-export interface IUICreator<S extends IState, A extends IAction, P = {}> {
+export interface IUICreator<S extends IState, A extends IAction, P = object> {
     (state: S, dispatch: React.Dispatch<A>, props: P): React.ReactElement;
 }
 

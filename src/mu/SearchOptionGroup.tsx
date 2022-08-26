@@ -9,7 +9,7 @@ import { OptionGroup, OptionGroupProps } from './OptionGroup';
  * @returns Component
  */
 export function SearchOptionGroup<
-    T extends {} = DataTypes.IdLabelItem,
+    T extends object = DataTypes.IdLabelItem,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: OptionGroupProps<T, D>) {
     // Destruct

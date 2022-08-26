@@ -3,10 +3,10 @@
  * @param refs Refs
  * @returns Callback
  */
-export default function useCombinedRefs(
-    ...refs: (React.Ref<unknown> | undefined)[]
+export default function useCombinedRefs<T>(
+    ...refs: (React.Ref<T> | undefined)[]
 ) {
-    return (target: unknown) => {
+    return (target: T | null) => {
         // Ignore null reference
         if (target == null) return;
 

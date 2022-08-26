@@ -5,6 +5,7 @@ import { SearchPageProps } from './SearchPageProps';
 /**
  * List page props
  */
-export interface ListPageProps<T, F extends DataTypes.BasicTemplate>
-    extends SearchPageProps<T, F>,
-        Omit<ScrollerListExProps<T>, 'loadData'> {}
+export type ListPageProps<
+    T extends object,
+    F extends DataTypes.BasicTemplate
+> = SearchPageProps<T, F> & Omit<ScrollerListExProps<T>, 'loadData'>;

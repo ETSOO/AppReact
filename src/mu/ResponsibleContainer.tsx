@@ -30,19 +30,14 @@ import { SearchBar } from './SearchBar';
 /**
  * ResponsibleContainer props
  */
-export interface ResponsibleContainerProps<
-    T extends {},
+export type ResponsibleContainerProps<
+    T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends Omit<
-        DataGridExProps<T, D>,
-        | 'height'
-        | 'itemKey'
-        | 'loadData'
-        | 'mRef'
-        | 'onScroll'
-        | 'onItemsRendered'
-    > {
+> = Omit<
+    DataGridExProps<T, D>,
+    'height' | 'itemKey' | 'loadData' | 'mRef' | 'onScroll' | 'onItemsRendered'
+> & {
     /**
      * Height will be deducted
      * @param height Current calcuated height
@@ -58,7 +53,7 @@ export interface ResponsibleContainerProps<
      * Container box SX (dataGrid determines the case)
      */
     containerBoxSx?: (
-        paddings: {},
+        paddings: Record<string, string | number>,
         hasFields: boolean,
         dataGrid?: boolean
     ) => SxProps<Theme>;
@@ -120,7 +115,7 @@ export interface ResponsibleContainerProps<
     /**
      * Paddings
      */
-    paddings?: {};
+    paddings?: Record<string, string | number>;
 
     /**
      * Pull to refresh data
@@ -136,7 +131,7 @@ export interface ResponsibleContainerProps<
      * Size ready to read miliseconds span
      */
     sizeReadyMiliseconds?: number;
-}
+};
 
 interface LocalRefs {
     rect?: DOMRect;
@@ -145,7 +140,7 @@ interface LocalRefs {
 }
 
 function defaultContainerBoxSx(
-    paddings: {},
+    paddings: object,
     hasField: boolean,
     _dataGrid?: boolean
 ): SxProps<Theme> {
@@ -163,7 +158,7 @@ function defaultContainerBoxSx(
  * @returns Layout
  */
 export function ResponsibleContainer<
-    T extends {},
+    T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: ResponsibleContainerProps<T, F, D>) {
@@ -288,7 +283,7 @@ export function ResponsibleContainer<
 
             return [
                 <Box className="DataGridBox">
-                    <DataGridEx<T>
+                    <DataGridEx<T, D>
                         autoLoad={!hasFields}
                         height={heightLocal}
                         width={rect.width}

@@ -14,10 +14,10 @@ import React from 'react';
 /**
  * OptionGroup props
  */
-export interface OptionGroupProps<
-    T extends {} = DataTypes.IdLabelItem,
+export type OptionGroupProps<
+    T extends object = DataTypes.IdLabelItem,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends Omit<FormControlProps<'fieldset'>, 'defaultValue'> {
+> = Omit<FormControlProps<'fieldset'>, 'defaultValue'> & {
     /**
      * Default value
      */
@@ -29,19 +29,9 @@ export interface OptionGroupProps<
     getOptionLabel?: (option: T) => string;
 
     /**
-     * Id field, default is id
-     */
-    idField: T extends DataTypes.IdLabelItem ? D | undefined : D;
-
-    /**
      * Label
      */
     label?: string;
-
-    /**
-     * Label field, default is label
-     */
-    labelField: T extends DataTypes.IdLabelItem ? D | undefined : D;
 
     /**
      * Multiple choose item
@@ -72,7 +62,20 @@ export interface OptionGroupProps<
      * Display group of elements in a compact row
      */
     row?: boolean;
-}
+} & (T extends { id: DataTypes.IdType }
+        ? {
+              idField?: D;
+          }
+        : {
+              idField: D;
+          }) &
+    (T extends { label: string }
+        ? {
+              labelField?: D;
+          }
+        : {
+              labelField: D;
+          });
 
 /**
  * OptionGroup
@@ -80,7 +83,7 @@ export interface OptionGroupProps<
  * @returns Component
  */
 export function OptionGroup<
-    T extends {} = DataTypes.IdLabelItem,
+    T extends object = DataTypes.IdLabelItem,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: OptionGroupProps<T, D>) {
     // Destruct

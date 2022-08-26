@@ -10,11 +10,14 @@ import { DataGridPageProps } from './DataGridPageProps';
 /**
  * Response page props
  */
-export interface ResponsePageProps<T, F extends DataTypes.BasicTemplate>
-    extends Omit<
-        DataGridPageProps<T, F>,
-        'mRef' | 'itemKey' | 'onScroll' | 'onItemsRendered'
-    > {
+export type ResponsePageProps<
+    T extends object,
+    F extends DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> = Omit<
+    DataGridPageProps<T, F, D>,
+    'mRef' | 'itemKey' | 'onScroll' | 'onItemsRendered'
+> & {
     /**
      * Min width to show Datagrid
      */
@@ -51,4 +54,4 @@ export interface ResponsePageProps<T, F extends DataTypes.BasicTemplate>
      * Quick action for double click or click under mobile
      */
     quickAction?: (data: T) => void;
-}
+};

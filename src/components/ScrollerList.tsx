@@ -20,7 +20,7 @@ import {
 /**
  * Scroller vertical list props
  */
-export interface ScrollerListProps<T>
+export interface ScrollerListProps<T extends object>
     extends GridLoader<T>,
         Omit<
             ListProps<T>,
@@ -98,7 +98,7 @@ const calculateBatchSize = (
  * @param props Props
  * @returns Component
  */
-export const ScrollerList = <T extends {}>(props: ScrollerListProps<T>) => {
+export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     // Destruct
     const {
         autoLoad = true,

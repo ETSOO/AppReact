@@ -5,7 +5,7 @@ import { GridDataGet, GridLoadDataProps } from '../../components/GridLoader';
 import { ScrollerGridForwardRef } from '../../components/ScrollerGrid';
 import useCombinedRefs from '../../uses/useCombinedRefs';
 import { useDimensions } from '../../uses/useDimensions';
-import { DataGridEx } from '../DataGridEx';
+import { DataGridEx, DataGridExProps } from '../DataGridEx';
 import { MUGlobal } from '../MUGlobal';
 import { SearchBar } from '../SearchBar';
 import { CommonPage } from './CommonPage';
@@ -24,9 +24,10 @@ interface LocalStates {
  * @returns Component
  */
 export function DataGridPage<
-    T,
-    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
->(props: DataGridPageProps<T, F>) {
+    T extends object,
+    F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(props: DataGridPageProps<T, F, D>) {
     // Destruct
     const {
         adjustHeight,
@@ -52,11 +53,14 @@ export function DataGridPage<
         }
     );
 
-    const refs = useCombinedRefs(mRef, (ref: ScrollerGridForwardRef) => {
-        if (ref == null) return;
-        states.ref = ref;
-        //setStates({ ref });
-    });
+    const refs = useCombinedRefs<ScrollerGridForwardRef>(
+        mRef,
+        (ref: ScrollerGridForwardRef | null) => {
+            if (ref == null) return;
+            states.ref = ref;
+            //setStates({ ref });
+        }
+    );
 
     // On submit callback
     const onSubmit = (data: FormData, _reset: boolean) => {
@@ -95,7 +99,7 @@ export function DataGridPage<
         if (gridHeight == null) return;
 
         return (
-            <DataGridEx<T>
+            <DataGridEx<T, D>
                 autoLoad={false}
                 height={gridHeight}
                 loadData={localLoadData}

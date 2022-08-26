@@ -10,10 +10,10 @@ import { ReactUtils } from '../app/ReactUtils';
 /**
  * ComboBox props
  */
-export interface ComboBoxProps<
-    T extends {},
+export type ComboBoxProps<
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends AutocompleteExtendedProps<T, D> {
+> = AutocompleteExtendedProps<T, D> & {
     /**
      * Auto add blank item
      */
@@ -23,11 +23,6 @@ export interface ComboBoxProps<
      * Data readonly
      */
     dataReadonly?: boolean;
-
-    /**
-     * Label field
-     */
-    labelField: T extends DataTypes.IdLabelItem ? D | undefined : D;
 
     /**
      * Load data callback
@@ -43,7 +38,13 @@ export interface ComboBoxProps<
      * Array of options.
      */
     options?: ReadonlyArray<T>;
-}
+} & (T extends { label: string }
+        ? {
+              labelField?: D;
+          }
+        : {
+              labelField: D;
+          });
 
 /**
  * ComboBox
@@ -51,7 +52,7 @@ export interface ComboBoxProps<
  * @returns Component
  */
 export function ComboBox<
-    T extends {} = DataTypes.IdLabelItem,
+    T extends object = DataTypes.IdLabelItem,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: ComboBoxProps<T, D>) {
     // Destruct
@@ -194,7 +195,7 @@ export function ComboBox<
                 onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
-            <Autocomplete
+            <Autocomplete<T, undefined, false, false>
                 value={stateValue}
                 getOptionLabel={getOptionLabel}
                 isOptionEqualToValue={(option: T, value: T) =>

@@ -5,18 +5,13 @@ import { ChangeEventHandler } from 'react';
 /**
  * Autocomplete extended props
  */
-export interface AutocompleteExtendedProps<
-    T extends {},
+export type AutocompleteExtendedProps<
+    T extends object,
     D extends DataTypes.Keys<T>
-> extends Omit<
-        AutocompleteProps<T, undefined, false, false>,
-        'renderInput' | 'options'
-    > {
-    /**
-     * Id field, default is id
-     */
-    idField: T extends DataTypes.IdLabelItem ? D | undefined : D;
-
+> = Omit<
+    AutocompleteProps<T, undefined, false, false>,
+    'renderInput' | 'options'
+> & {
     /**
      * Id value
      */
@@ -80,4 +75,10 @@ export interface AutocompleteExtendedProps<
      * Is search field?
      */
     search?: boolean;
-}
+} & (T extends { id: DataTypes.IdType }
+        ? {
+              idField?: D;
+          }
+        : {
+              idField: D;
+          });

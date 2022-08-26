@@ -67,7 +67,7 @@ export namespace Labels {
      * @param reference Key reference
      */
     export const setLabels = (
-        labels: {},
+        labels: DataTypes.StringRecord,
         reference: setLabelsReference = {}
     ) => {
         Utils.setLabels(CommonPage, labels, reference.commonPage);

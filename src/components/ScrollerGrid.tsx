@@ -10,8 +10,10 @@ import {
 import { GridMethodRef } from '../mu/GridMethodRef';
 import { GridLoadDataProps, GridLoader, GridLoaderStates } from './GridLoader';
 
-export interface ScrollerGridItemRendererProps<T>
-    extends Omit<GridChildComponentProps<T>, 'data'> {
+export type ScrollerGridItemRendererProps<T> = Omit<
+    GridChildComponentProps<T>,
+    'data'
+> & {
     /**
      * Selected items
      */
@@ -21,66 +23,65 @@ export interface ScrollerGridItemRendererProps<T>
      * Data
      */
     data?: T;
-}
+};
 
 /**
  * Scroller vertical grid props
  */
-export interface ScrollerGridProps<
-    T extends {},
+export type ScrollerGridProps<
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends GridLoader<T>,
-        Omit<
-            VariableSizeGridProps<T>,
-            'children' | 'rowCount' | 'rowHeight' | 'ref'
-        > {
-    /**
-     * Default order by asc
-     * @default true
-     */
-    defaultOrderByAsc?: boolean;
+> = GridLoader<T> &
+    Omit<
+        VariableSizeGridProps<T>,
+        'children' | 'rowCount' | 'rowHeight' | 'ref'
+    > & {
+        /**
+         * Default order by asc
+         * @default true
+         */
+        defaultOrderByAsc?: boolean;
 
-    /**
-     * Footer renderer
-     */
-    footerRenderer?: (
-        rows: T[],
-        states: GridLoaderStates<T>
-    ) => React.ReactNode;
+        /**
+         * Footer renderer
+         */
+        footerRenderer?: (
+            rows: T[],
+            states: GridLoaderStates<T>
+        ) => React.ReactNode;
 
-    /**
-     * Header renderer
-     */
-    headerRenderer?: (states: GridLoaderStates<T>) => React.ReactNode;
+        /**
+         * Header renderer
+         */
+        headerRenderer?: (states: GridLoaderStates<T>) => React.ReactNode;
 
-    /**
-     * Id field
-     * @default id
-     */
-    idField?: D;
+        /**
+         * Id field
+         */
+        idField?: D;
 
-    /**
-     * Item renderer
-     */
-    itemRenderer: (
-        props: ScrollerGridItemRendererProps<T>
-    ) => React.ReactElement;
+        /**
+         * Item renderer
+         */
+        itemRenderer: (
+            props: ScrollerGridItemRendererProps<T>
+        ) => React.ReactElement;
 
-    /**
-     * Methods
-     */
-    mRef?: React.Ref<ScrollerGridForwardRef>;
+        /**
+         * Methods
+         */
+        mRef?: React.Ref<ScrollerGridForwardRef>;
 
-    /**
-     * On items select change
-     */
-    onSelectChange?: (selectedItems: T[]) => void;
+        /**
+         * On items select change
+         */
+        onSelectChange?: (selectedItems: T[]) => void;
 
-    /**
-     * Returns the height of the specified row.
-     */
-    rowHeight?: ((index: number) => number) | number;
-}
+        /**
+         * Returns the height of the specified row.
+         */
+        rowHeight?: ((index: number) => number) | number;
+    };
 
 /**
  * Scroller grid forward ref
@@ -146,8 +147,11 @@ export interface ScrollerGridForwardRef extends GridMethodRef {
  * @param props Props
  * @returns Component
  */
-export const ScrollerGrid = <T extends Record<string, unknown>>(
-    props: ScrollerGridProps<T>
+export const ScrollerGrid = <
+    T extends object,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+>(
+    props: ScrollerGridProps<T, D>
 ) => {
     // Destruct
     const {
@@ -157,7 +161,7 @@ export const ScrollerGrid = <T extends Record<string, unknown>>(
         footerRenderer,
         headerRenderer,
         itemRenderer,
-        idField = 'id',
+        idField = 'id' as D,
         loadBatchSize,
         loadData,
         mRef,

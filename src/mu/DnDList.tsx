@@ -79,7 +79,7 @@ export const DnDItemStyle = (
 /**
  * DnD list forward ref
  */
-export interface DnDListRef<D extends {}> {
+export interface DnDListRef<D extends object> {
     /**
      * Add item
      * @param item New item
@@ -109,7 +109,7 @@ export interface DnDListRef<D extends {}> {
 /**
  * DnD sortable list properties
  */
-export interface DnDListPros<D extends {}, K extends DataTypes.Keys<D>> {
+export interface DnDListPros<D extends object, K extends DataTypes.Keys<D>> {
     /**
      * Get list item style callback
      */

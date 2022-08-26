@@ -47,56 +47,57 @@ export interface TableExMethodRef extends GridMethodRef {
 /**
  * Extended table props
  */
-export interface TableExProps<
-    T extends {},
+export type TableExProps<
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends TableProps,
-        GridLoader<T> {
-    /**
-     * Alternating colors for odd/even rows
-     */
-    alternatingColors?: [string?, string?];
+> = TableProps &
+    GridLoader<T> & {
+        /**
+         * Alternating colors for odd/even rows
+         */
+        alternatingColors?: [string?, string?];
 
-    /**
-     * Columns
-     */
-    columns: GridColumn<T>[];
+        /**
+         * Columns
+         */
+        columns: GridColumn<T>[];
 
-    /**
-     * Header cells background color and font color
-     */
-    headerColors?: [string?, string?];
+        /**
+         * Header cells background color and font color
+         */
+        headerColors?: [string?, string?];
 
-    /**
-     * Id field
-     */
-    idField?: D;
+        /**
+         * Max height
+         */
+        maxHeight?: number;
 
-    /**
-     * Max height
-     */
-    maxHeight?: number;
+        /**
+         * Methods
+         */
+        mRef?: React.Ref<TableExMethodRef>;
 
-    /**
-     * Methods
-     */
-    mRef?: React.Ref<TableExMethodRef>;
+        /**
+         * On items select change
+         */
+        onSelectChange?: (selectedItems: T[]) => void;
 
-    /**
-     * On items select change
-     */
-    onSelectChange?: (selectedItems: T[]) => void;
+        /**
+         * Row height
+         */
+        rowHeight?: number;
 
-    /**
-     * Row height
-     */
-    rowHeight?: number;
-
-    /**
-     * Header and bottom height
-     */
-    otherHeight?: number;
-}
+        /**
+         * Header and bottom height
+         */
+        otherHeight?: number;
+    } & (T extends { id: DataTypes.IdType }
+        ? {
+              idField?: D;
+          }
+        : {
+              idField: D;
+          });
 
 /**
  * Extended Table
@@ -104,7 +105,7 @@ export interface TableExProps<
  * @returns Component
  */
 export function TableEx<
-    T extends {},
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: TableExProps<T, D>) {
     // Theme

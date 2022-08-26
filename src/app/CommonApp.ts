@@ -57,7 +57,7 @@ export abstract class CommonApp<
      * Refresh token
      * @param props Props
      */
-    override async refreshToken<D = RefreshTokenRQ>(
+    override async refreshToken<D extends object = RefreshTokenRQ>(
         props?: RefreshTokenProps<D>
     ) {
         // Destruct
@@ -206,7 +206,7 @@ export abstract class CommonApp<
      * @param showLoading Show loading bar or not
      * @returns Result
      */
-    override async tryLogin<D = RefreshTokenRQ>(
+    override async tryLogin<D extends object = RefreshTokenRQ>(
         data?: D,
         showLoading?: boolean
     ) {

@@ -5,8 +5,10 @@ import { CommonPageProps } from './CommonPageProps';
 /**
  * Search page props
  */
-export interface SearchPageProps<T, F extends DataTypes.BasicTemplate>
-    extends Omit<GridLoader<T>, 'loadData'> {
+export type SearchPageProps<
+    T extends object,
+    F extends DataTypes.BasicTemplate
+> = Omit<GridLoader<T>, 'loadData'> & {
     /**
      * Search fields
      */
@@ -34,4 +36,4 @@ export interface SearchPageProps<T, F extends DataTypes.BasicTemplate>
      * @default 100
      */
     sizeReadyMiliseconds?: number;
-}
+};

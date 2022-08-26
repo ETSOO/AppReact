@@ -92,7 +92,7 @@ export class MUGlobal {
      * @param input Input object
      * @returns Updated object
      */
-    static half(input: {}) {
+    static half(input: object) {
         const newObj = { ...input };
         Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number') {
@@ -107,7 +107,7 @@ export class MUGlobal {
      * @param input Input object
      * @returns Updated object
      */
-    static reverse(input: {}) {
+    static reverse(input: object) {
         const newObj = { ...input };
         Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number') {
@@ -124,7 +124,7 @@ export class MUGlobal {
      * @param field Specific field
      * @returns Updated object
      */
-    static increase(input: {}, adjust: number | {}, field?: string) {
+    static increase(input: object, adjust: number | object, field?: string) {
         const newObj = { ...input };
         Object.entries(newObj).forEach(([key, value]) => {
             if (typeof value === 'number') {
@@ -152,7 +152,7 @@ export class MUGlobal {
      */
     static adjustWithTheme(
         size: number,
-        adjust: {},
+        adjust: object,
         updateFunc: (value: number) => string
     ) {
         const newObj = { ...adjust };
@@ -185,7 +185,7 @@ export class MUGlobal {
      * @param theme Theme
      * @returns Result
      */
-    static getSpace(spaces: {}, theme: Theme) {
+    static getSpace(spaces: object, theme: Theme) {
         const start = this.breakpoints.length - 1;
         for (let i = start; i >= 0; i--) {
             const key = this.breakpoints[i];

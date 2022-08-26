@@ -48,12 +48,12 @@ export function GridDataGet<F extends DataTypes.BasicTemplate>(
 /**
  * Grid Json data
  */
-export interface GridJsonData extends Omit<GridLoadDataProps, 'data'> {}
+export type GridJsonData = Omit<GridLoadDataProps, 'data'>;
 
 /**
  * Grid data load props
  */
-export interface GridLoadDataProps {
+export type GridLoadDataProps = {
     /**
      * Current page
      */
@@ -78,12 +78,12 @@ export interface GridLoadDataProps {
      * Data related
      */
     data?: GridData;
-}
+};
 
 /**
  * Grid data loader
  */
-export interface GridLoader<T> {
+export type GridLoader<T extends object> = {
     /**
      * Auto load data, otherwise call reset
      * @default true
@@ -109,12 +109,12 @@ export interface GridLoader<T> {
      * Threshold at which to pre-fetch data; default is half of loadBatchSize
      */
     threshold?: number | undefined;
-}
+};
 
 /**
  * Grid loader states
  */
-export interface GridLoaderStates<T> extends GridLoadDataProps {
+export type GridLoaderStates<T> = GridLoadDataProps & {
     /**
      * Auto load data, otherwise call reset
      * @default true
@@ -150,4 +150,4 @@ export interface GridLoaderStates<T> extends GridLoadDataProps {
      * Selected items of id
      */
     selectedItems: T[];
-}
+};

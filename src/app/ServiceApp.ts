@@ -101,7 +101,7 @@ export class ServiceApp<
      * Refresh token
      * @param props Props
      */
-    override async refreshToken<D = RefreshTokenRQ>(
+    override async refreshToken<D extends object = RefreshTokenRQ>(
         props?: RefreshTokenProps<D>
     ) {
         // Destruct
@@ -305,7 +305,7 @@ export class ServiceApp<
      * @param showLoading Show loading bar or not
      * @returns Result
      */
-    override async tryLogin<D extends {} = {}>(
+    override async tryLogin<D extends object = {}>(
         data?: D,
         showLoading?: boolean
     ) {

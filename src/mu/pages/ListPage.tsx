@@ -16,7 +16,7 @@ import { ListPageProps } from './ListPageProps';
  * @returns Component
  */
 export function ListPage<
-    T extends {},
+    T extends object,
     F extends DataTypes.BasicTemplate = DataTypes.BasicTemplate
 >(props: ListPageProps<T, F>) {
     // Destruct

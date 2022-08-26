@@ -40,7 +40,7 @@ export type GridCellValueType = string | number | Date | boolean | undefined;
 /**
  * Grid cell formatter props
  */
-export interface GridCellFormatterProps<T> {
+export type GridCellFormatterProps<T> = {
     /**
      * Current data
      */
@@ -60,13 +60,12 @@ export interface GridCellFormatterProps<T> {
      * Column index
      */
     columnIndex: number;
-}
+};
 
 /**
  * Grid cell renderer props
  */
-export interface GridCellRendererProps<T, P = any>
-    extends GridCellFormatterProps<T> {
+export type GridCellRendererProps<T, P = any> = GridCellFormatterProps<T> & {
     /**
      * Cell props
      */
@@ -91,12 +90,12 @@ export interface GridCellRendererProps<T, P = any>
      * Render props
      */
     renderProps?: GridColumnRenderProps;
-}
+};
 
 /**
  * Grid header cell renderer props
  */
-export interface GridHeaderCellRendererProps<T, P = any> {
+export type GridHeaderCellRendererProps<T, P = any> = {
     /**
      * Cell props
      */
@@ -116,12 +115,12 @@ export interface GridHeaderCellRendererProps<T, P = any> {
      * States
      */
     states: GridLoaderStates<T>;
-}
+};
 
 /**
  * Grid column render props
  */
-export interface GridColumnRenderProps {
+export type GridColumnRenderProps = {
     /**
      * Culture, like zh-CN
      */
@@ -151,12 +150,12 @@ export interface GridColumnRenderProps {
      * Additional data
      */
     readonly data?: Readonly<Record<string, any>>;
-}
+};
 
 /**
  * Grid column
  */
-export interface GridColumn<T> {
+export type GridColumn<T> = {
     /**
      * The column identifier. It's used to map with row data
      */
@@ -219,4 +218,4 @@ export interface GridColumn<T> {
     headerCellRenderer?: (
         props: GridHeaderCellRendererProps<T>
     ) => React.ReactNode;
-}
+};

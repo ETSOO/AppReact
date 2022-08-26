@@ -122,7 +122,7 @@ export class UserState<D extends IUser> {
         this.provider = provider;
     }
 
-    private getChangedFields(input: {}, init: {}) {
+    private getChangedFields(input: object, init: object) {
         return Utils.objectUpdated(input, init, [
             'authorized',
             'seconds',

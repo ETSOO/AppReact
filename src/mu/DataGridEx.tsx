@@ -30,24 +30,24 @@ import { MouseEventWithDataHandler } from './MUGlobal';
 /**
  * Footer item renderer props
  */
-export interface DataGridExFooterItemRendererProps<T extends {}> {
+export type DataGridExFooterItemRendererProps<T extends object> = {
     column: GridColumn<T>;
     index: number;
     states: GridLoaderStates<T>;
     cellProps: any;
     checkable: boolean;
-}
+};
 
 /**
  * Extended DataGrid with VariableSizeGrid props
  */
-export interface DataGridExProps<
-    T extends {},
+export type DataGridExProps<
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends Omit<
-        ScrollerGridProps<T, D>,
-        'itemRenderer' | 'columnCount' | 'columnWidth' | 'width'
-    > {
+> = Omit<
+    ScrollerGridProps<T, D>,
+    'itemRenderer' | 'columnCount' | 'columnWidth' | 'width'
+> & {
     /**
      * Alternating colors for odd/even rows
      */
@@ -124,7 +124,7 @@ export interface DataGridExProps<
      * Width
      */
     width?: number;
-}
+};
 
 // Borders
 const boldBorder = '2px solid rgba(224, 224, 224, 1)';
@@ -211,7 +211,7 @@ export function DataGridExCalColumns<T>(columns: GridColumn<T>[]) {
  * @returns Component
  */
 export function DataGridEx<
-    T extends {},
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: DataGridExProps<T, D>) {
     // Theme
@@ -443,7 +443,7 @@ export function DataGridEx<
     };
 
     // Reset
-    const reset = (add: {}) => {
+    const reset = (add: object) => {
         refs.current.ref?.reset(add);
     };
 
@@ -633,7 +633,7 @@ export function DataGridEx<
             : undefined;
 
         return (
-            <ScrollerGrid<T>
+            <ScrollerGrid<T, D>
                 className={Utils.mergeClasses(
                     'DataGridEx-Body',
                     'DataGridEx-CustomBar',

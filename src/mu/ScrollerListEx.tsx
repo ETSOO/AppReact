@@ -47,7 +47,7 @@ const createGridStyle = (
 };
 
 // Default margin
-const defaultMargin = (margin: {}, isNarrow?: boolean) => {
+const defaultMargin = (margin: object, isNarrow?: boolean) => {
     const half = MUGlobal.half(margin);
 
     if (isNarrow == null) {
@@ -100,7 +100,7 @@ export interface ScrollerListExInnerItemRendererProps<T>
     /**
      * Default margins
      */
-    margins: {};
+    margins: object;
 }
 
 /**
@@ -110,26 +110,21 @@ export interface ScrollerListExInnerItemRendererProps<T>
  * 3. Dynamic calculation
  */
 export type ScrollerListExItemSize =
-    | ((index: number) => [number, number] | [number, number, {}])
+    | ((index: number) => [number, number] | [number, number, object])
     | [number, number]
-    | [number, {}, boolean?];
+    | [number, object, boolean?];
 
 /**
  * Extended ScrollerList Props
  */
-export interface ScrollerListExProps<
-    T extends {},
+export type ScrollerListExProps<
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
-> extends Omit<ScrollerListProps<T>, 'itemRenderer' | 'itemSize'> {
+> = Omit<ScrollerListProps<T>, 'itemRenderer' | 'itemSize'> & {
     /**
      * Alternating colors for odd/even rows
      */
     alternatingColors?: [string?, string?];
-
-    /**
-     * Id field
-     */
-    idField?: D;
 
     /**
      * Inner item renderer
@@ -142,6 +137,12 @@ export interface ScrollerListExProps<
      * Item renderer
      */
     itemRenderer?: (props: ListChildComponentProps<T>) => React.ReactElement;
+
+    /**
+     * Id field
+     * Failed: D extends { id: DataTypes.IdType } ? { idField?: D } : { idField: D }
+     */
+    idField?: D;
 
     /**
      * Item size, a function indicates its a variable size list
@@ -167,7 +168,7 @@ export interface ScrollerListExProps<
      * Selected color
      */
     selectedColor?: string;
-}
+};
 
 interface defaultItemRendererProps<T> extends ListChildComponentProps<T> {
     /**
@@ -205,7 +206,7 @@ interface defaultItemRendererProps<T> extends ListChildComponentProps<T> {
     /**
      * Default margins
      */
-    margins: {};
+    margins: object;
 
     /**
      * Item selected
@@ -263,7 +264,7 @@ function defaultItemRenderer<T>({
  * @returns Component
  */
 export function ScrollerListEx<
-    T extends {},
+    T extends object,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: ScrollerListExProps<T, D>) {
     // Selected item ref
@@ -331,7 +332,7 @@ export function ScrollerListEx<
 
     // Cache calculation
     const itemSizeResult = React.useMemo(():
-        | [number, number, {}]
+        | [number, number, object]
         | undefined => {
         if (typeof itemSize === 'function') return undefined;
         const [size, spaces, isNarrow] = itemSize;
@@ -350,7 +351,7 @@ export function ScrollerListEx<
     }, [itemSize]);
 
     // Calculate size
-    const calculateItemSize = (index: number): [number, number, {}] => {
+    const calculateItemSize = (index: number): [number, number, object] => {
         // Callback function
         if (typeof itemSize === 'function') {
             const result = itemSize(index);

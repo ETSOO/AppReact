@@ -5,17 +5,20 @@ import { SearchPageProps } from './SearchPageProps';
 /**
  * DataGrid page props
  */
-export interface DataGridPageProps<T, F extends DataTypes.BasicTemplate>
-    extends SearchPageProps<T, F>,
-        Omit<DataGridExProps<T>, 'loadData' | 'height'> {
-    /**
-     * Height will be deducted
-     * @param height Current calcuated height
-     */
-    adjustHeight?: (height: number) => number;
+export type DataGridPageProps<
+    T extends object,
+    F extends DataTypes.BasicTemplate,
+    D extends DataTypes.Keys<T> = DataTypes.Keys<T>
+> = SearchPageProps<T, F> &
+    Omit<DataGridExProps<T, D>, 'loadData' | 'height'> & {
+        /**
+         * Height will be deducted
+         * @param height Current calcuated height
+         */
+        adjustHeight?: (height: number) => number;
 
-    /**
-     * Grid height
-     */
-    height?: number;
-}
+        /**
+         * Grid height
+         */
+        height?: number;
+    };

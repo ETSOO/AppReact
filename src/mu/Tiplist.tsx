@@ -10,8 +10,10 @@ import { SearchField } from './SearchField';
 /**
  * Tiplist props
  */
-export interface TiplistProps<T extends {}, D extends DataTypes.Keys<T>>
-    extends Omit<AutocompleteExtendedProps<T, D>, 'open'> {
+export type TiplistProps<T extends object, D extends DataTypes.Keys<T>> = Omit<
+    AutocompleteExtendedProps<T, D>,
+    'open'
+> & {
     /**
      * Load data callback
      */
@@ -19,10 +21,10 @@ export interface TiplistProps<T extends {}, D extends DataTypes.Keys<T>>
         keyword?: string,
         id?: T[D]
     ) => PromiseLike<T[] | null | undefined>;
-}
+};
 
 // Multiple states
-interface States<T extends {}> {
+interface States<T extends object> {
     open: boolean;
     options: T[];
     value?: T | null;
@@ -35,7 +37,7 @@ interface States<T extends {}> {
  * @returns Component
  */
 export function Tiplist<
-    T extends {} = DataTypes.IdLabelItem,
+    T extends object = DataTypes.IdLabelItem,
     D extends DataTypes.Keys<T> = DataTypes.Keys<T>
 >(props: TiplistProps<T, D>) {
     // Destruct
@@ -67,11 +69,10 @@ export function Tiplist<
 
     // Local value
     let localValue = value ?? defaultValue;
-    if (localValue === undefined) localValue = null;
 
     // One time calculation for input's default value (uncontrolled)
     const localIdValue =
-        idValue ?? DataTypes.getValue(localValue, idField ?? 'id');
+        idValue ?? DataTypes.getValue(localValue, idField as any);
 
     // Changable states
     const [states, stateUpdate] = React.useReducer(
@@ -218,7 +219,7 @@ export function Tiplist<
                 onChange={inputOnChange}
             />
             {/* Previous input will reset first with "disableClearable = false", next input trigger change works */}
-            <Autocomplete
+            <Autocomplete<T, undefined, false, false>
                 filterOptions={(options, _state) => options}
                 value={states.value}
                 options={states.options}
