@@ -14,7 +14,7 @@ root.append(container);
 
 // The state provider
 const Provider = NotifierMU.setup();
-const reactRoot = createRoot(container); // createRoot(container!) if you use TypeScript
+const reactRoot = createRoot(container);
 
 act(() => {
     // Concorrent renderer needs act block

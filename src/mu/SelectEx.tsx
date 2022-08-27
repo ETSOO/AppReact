@@ -42,7 +42,7 @@ export type SelectExProps<
     /**
      * Item icon renderer
      */
-    itemIconRenderer?: (id: unknown) => React.ReactNode;
+    itemIconRenderer?: (id: T[D]) => React.ReactNode;
 
     /**
      * Label field
@@ -57,7 +57,7 @@ export type SelectExProps<
     /**
      * Item click handler
      */
-    onItemClick?: (event: React.MouseEvent, id: unknown) => void;
+    onItemClick?: (event: React.MouseEvent, option: T) => void;
 
     /**
      * On load data handler
@@ -172,7 +172,7 @@ export function SelectEx<
     const getLabel = (option: T) => {
         return typeof labelField === 'function'
             ? labelField(option)
-            : new String(option[labelField]);
+            : (option[labelField] as string);
     };
 
     // Refs
@@ -268,7 +268,7 @@ export function SelectEx<
                             value={id}
                             onClick={(event) => {
                                 if (onItemClick) {
-                                    onItemClick(event, id);
+                                    onItemClick(event, option);
                                     if (event.defaultPrevented) return;
                                 }
                                 if (!multiple) setItemValue(id);
@@ -278,7 +278,7 @@ export function SelectEx<
                             <ListItemText primary={label} />
                             {itemIconRenderer && (
                                 <ListItemRightIcon>
-                                    {itemIconRenderer(id)}
+                                    {itemIconRenderer(option[idField])}
                                 </ListItemRightIcon>
                             )}
                         </MenuItem>
