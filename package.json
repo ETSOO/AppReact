@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.5.82",
+    "version": "1.5.83",
     "description": "TypeScript ReactJs UI Independent Framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -38,7 +38,7 @@
         "青岛亿速思维",
         "上海亿商"
     ],
-    "author": "Etsoo",
+    "author": "ETSOO",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/ETSOO/AppReact/issues"

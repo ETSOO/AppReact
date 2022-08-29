@@ -69,8 +69,13 @@ export class UserState<D extends IUser> {
      * Constructor
      */
     constructor() {
-        const { context, provider } = State.create(
-            (state: D, action: UserAction<D>) => {
+        const { context, provider } = State.create<
+            D,
+            UserAction<D>,
+            UserCalls<D>,
+            UserProviderProps<D>
+        >(
+            (state, action) => {
                 // User reducer
                 switch (action.type) {
                     case UserActionType.Login:
