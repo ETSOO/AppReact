@@ -8,7 +8,7 @@ import {
     ListProps,
     VariableSizeList
 } from 'react-window';
-import useCombinedRefs from '../uses/useCombinedRefs';
+import { useCombinedRefs } from '../uses/useCombinedRefs';
 import {
     GridLoadDataProps,
     GridLoader,
