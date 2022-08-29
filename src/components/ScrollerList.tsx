@@ -8,7 +8,6 @@ import {
     ListProps,
     VariableSizeList
 } from 'react-window';
-import { GridMethodRef } from '../mu/GridMethodRef';
 import useCombinedRefs from '../uses/useCombinedRefs';
 import {
     GridLoadDataProps,
@@ -16,6 +15,7 @@ import {
     GridLoaderStates,
     GridSizeGet
 } from './GridLoader';
+import { GridMethodRef } from './GridMethodRef';
 
 /**
  * Scroller vertical list props
@@ -34,7 +34,7 @@ export interface ScrollerListProps<T extends object>
     /**
      * Methods ref
      */
-    mRef?: React.Ref<ScrollerListForwardRef>;
+    mRef?: React.Ref<ScrollerListForwardRef<T>>;
 
     /**
      * Outer div ref
@@ -77,7 +77,9 @@ interface ScrollerListRef {
 /**
  * Scroller list forward ref
  */
-export interface ScrollerListForwardRef extends GridMethodRef, ScrollerListRef {
+export interface ScrollerListForwardRef<T>
+    extends GridMethodRef<T>,
+        ScrollerListRef {
     /**
      * Refresh latest page data
      */

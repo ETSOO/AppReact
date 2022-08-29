@@ -11,7 +11,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { DataTypes } from '@etsoo/shared';
-import { Theme, useTheme } from '@mui/material';
 import React, { CSSProperties } from 'react';
 
 function SortableItem(props: {
@@ -56,27 +55,6 @@ function SortableItem(props: {
 }
 
 /**
- * DnD item default style
- * @param index Item index
- * @param isDragging Is dragging
- * @param theme Theme
- * @returns Style
- */
-export const DnDItemStyle = (
-    index: number,
-    isDragging: boolean,
-    theme: Theme
-) => ({
-    padding: theme.spacing(1),
-    zIndex: isDragging ? 1 : 'auto',
-    background: isDragging
-        ? theme.palette.primary.light
-        : index % 2 === 0
-        ? theme.palette.grey[100]
-        : theme.palette.grey[50]
-});
-
-/**
  * DnD list forward ref
  */
 export interface DnDListRef<D extends object> {
@@ -113,7 +91,7 @@ export interface DnDListPros<D extends object, K extends DataTypes.Keys<D>> {
     /**
      * Get list item style callback
      */
-    getItemStyle?: (index: number, isDragging: boolean) => CSSProperties;
+    getItemStyle: (index: number, isDragging: boolean) => CSSProperties;
 
     /**
      * Item renderer
@@ -169,16 +147,15 @@ export function DnDList<
     >
 >(props: DnDListPros<D, K>) {
     // Destruct
-    const { keyField, itemRenderer, labelField, mRef, onChange, onDragEnd } =
-        props;
-
-    let getItemStyle = props.getItemStyle;
-    if (getItemStyle == null) {
-        // Theme
-        const theme = useTheme();
-        getItemStyle = (index, isDragging) =>
-            DnDItemStyle(index, isDragging, theme);
-    }
+    const {
+        getItemStyle,
+        keyField,
+        itemRenderer,
+        labelField,
+        mRef,
+        onChange,
+        onDragEnd
+    } = props;
 
     // States
     const [items, setItems] = React.useState<D[]>([]);
@@ -326,7 +303,7 @@ export function DnDList<
                         <SortableItem
                             id={id}
                             key={id}
-                            style={getItemStyle!(index, id === activeId)}
+                            style={getItemStyle(index, id === activeId)}
                             itemRenderer={(nodeRef, actionNodeRef) =>
                                 itemRenderer(
                                     item,

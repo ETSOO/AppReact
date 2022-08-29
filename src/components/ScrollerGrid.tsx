@@ -7,8 +7,8 @@ import {
     VariableSizeGrid,
     VariableSizeGridProps
 } from 'react-window';
-import { GridMethodRef } from '../mu/GridMethodRef';
 import { GridLoadDataProps, GridLoader, GridLoaderStates } from './GridLoader';
+import { GridMethodRef } from './GridMethodRef';
 
 export type ScrollerGridItemRendererProps<T> = Omit<
     GridChildComponentProps<T>,
@@ -70,7 +70,7 @@ export type ScrollerGridProps<
         /**
          * Methods
          */
-        mRef?: React.Ref<ScrollerGridForwardRef>;
+        mRef?: React.Ref<ScrollerGridForwardRef<T>>;
 
         /**
          * On items select change
@@ -86,7 +86,7 @@ export type ScrollerGridProps<
 /**
  * Scroller grid forward ref
  */
-export interface ScrollerGridForwardRef extends GridMethodRef {
+export interface ScrollerGridForwardRef<T> extends GridMethodRef<T> {
     /**
      * Scroll to the specified offsets
      */

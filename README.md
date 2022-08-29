@@ -1,5 +1,5 @@
 # AppReact
-**TypeScript React framework for SmartERP**
+**TypeScript ReactJs UI Independent Framework**
 
 ## Installing
 
@@ -14,3 +14,8 @@ Using yarn:
 ```bash
 $ yarn add @etsoo/react
 ```
+
+## UI Implmentation
+
+- @etsoo/materialui, targeting administration applications
+- @etsoo/bootstrap, targeting websites

@@ -13,7 +13,6 @@ import {
 import { IAction } from '@etsoo/appscript';
 import { State } from '../states/State';
 import { IProviderProps, IUpdate } from '../states/IState';
-import { Breakpoint, ButtonProps } from '@mui/material';
 
 /**
  * React notification call props
@@ -37,7 +36,7 @@ export interface NotificationReactCallProps extends NotificationCallProps {
     /**
      * Max width
      */
-    maxWidth?: Breakpoint | false;
+    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
 
     /**
      * OK label
@@ -62,7 +61,7 @@ export interface NotificationReactCallProps extends NotificationCallProps {
     /**
      * Primary button props
      */
-    primaryButton?: ButtonProps;
+    primaryButton?: {};
 }
 
 /**

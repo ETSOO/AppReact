@@ -18,33 +18,42 @@ export const useWindowSize = () => {
 
     React.useEffect(() => {
         let ticking = false;
-        let lastKnownSize: ISize;
+        let lastSize: ISize;
         let requestAnimationFrameSeed = 0;
 
         const resizeHandler = () => {
-            lastKnownSize = {
+            lastSize = {
                 width: document.documentElement.clientWidth,
                 height: document.documentElement.clientHeight
             };
 
             if (!ticking) {
                 requestAnimationFrameSeed = window.requestAnimationFrame(() => {
-                    setSize(lastKnownSize);
                     ticking = false;
                     requestAnimationFrameSeed = 0;
+
+                    if (
+                        lastSize.width != size.width ||
+                        lastSize.height != size.height
+                    ) {
+                        setSize(lastSize);
+                    }
                 });
                 ticking = true;
             }
         };
 
-        window.addEventListener('resize', resizeHandler);
+        window.addEventListener('resize', resizeHandler, {
+            passive: true,
+            capture: false
+        });
 
         return () => {
             // Cancel animation frame
             if (requestAnimationFrameSeed > 0)
                 window.cancelAnimationFrame(requestAnimationFrameSeed);
 
-            // Remove scroll event
+            // Remove resize event
             window.removeEventListener('resize', resizeHandler);
         };
     }, []);
