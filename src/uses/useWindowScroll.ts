@@ -12,8 +12,8 @@ interface IScrollPos {
 export const useWindowScroll = () => {
     // State
     const [pos, setPos] = React.useState<IScrollPos>({
-        x: window.pageXOffset,
-        y: window.pageYOffset
+        x: window.scrollX,
+        y: window.scrollY
     });
 
     React.useEffect(() => {
@@ -23,8 +23,8 @@ export const useWindowScroll = () => {
 
         const scrollHandler = () => {
             lastPos = {
-                x: window.pageXOffset,
-                y: window.pageYOffset
+                x: window.scrollX,
+                y: window.scrollY
             };
 
             if (!ticking) {
