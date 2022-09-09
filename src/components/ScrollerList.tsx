@@ -1,4 +1,4 @@
-import { Utils } from '@etsoo/shared';
+import { DataTypes, IdDefaultType, Utils } from '@etsoo/shared';
 import React from 'react';
 import {
     Align,
@@ -20,8 +20,10 @@ import { GridMethodRef } from './GridMethodRef';
 /**
  * Scroller vertical list props
  */
-export interface ScrollerListProps<T extends object>
-    extends GridLoader<T>,
+export interface ScrollerListProps<
+    T extends object,
+    D extends DataTypes.Keys<T>
+> extends GridLoader<T>,
         Omit<
             ListProps<T>,
             'ref' | 'outerRef' | 'height' | 'width' | 'children' | 'itemCount'
@@ -50,6 +52,11 @@ export interface ScrollerListProps<T extends object>
      * Width of the list
      */
     width?: number | string;
+
+    /**
+     * Id field
+     */
+    idField?: D;
 
     /**
      * Item renderer
@@ -100,7 +107,12 @@ const calculateBatchSize = (
  * @param props Props
  * @returns Component
  */
-export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
+export const ScrollerList = <
+    T extends object,
+    D extends DataTypes.Keys<T> = IdDefaultType<T>
+>(
+    props: ScrollerListProps<T, D>
+) => {
     // Destruct
     const {
         autoLoad = true,
@@ -111,6 +123,7 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
         mRef,
         oRef,
         style = {},
+        idField = 'id' as D,
         itemRenderer,
         itemSize,
         loadBatchSize = calculateBatchSize(height, itemSize),
@@ -150,7 +163,8 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
         orderBy: defaultOrderBy,
         orderByAsc: defaultOrderByAsc,
         batchSize: GridSizeGet(loadBatchSize, height),
-        selectedItems: []
+        selectedItems: [],
+        idCache: {}
     });
     const state = stateRefs.current;
 
@@ -195,13 +209,28 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
                           .concat(result)
                     : result;
 
+                state.idCache = {};
+                for (const row of newRows) {
+                    const id = row[idField] as any;
+                    state.idCache[id] = null;
+                }
+
                 // Update rows
                 setRows(newRows);
             } else {
                 state.currentPage = state.currentPage + pageAdd;
 
-                // Update rows
-                setRows([...rows, ...result]);
+                // Update rows, avoid duplicate items
+                const newRows = [...rows];
+
+                for (const item of result) {
+                    const id = item[idField] as any;
+                    if (state.idCache[id] === undefined) {
+                        newRows.push(item);
+                    }
+                }
+
+                setRows(newRows);
             }
         });
     };
@@ -327,6 +356,9 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
             height={height}
             width={width}
             itemCount={itemCount}
+            itemKey={(index, data) =>
+                DataTypes.getIdValue1(data, idField) ?? index
+            }
             itemSize={itemSize}
             outerRef={refs}
             ref={listRef}
@@ -341,6 +373,9 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
             height={height}
             width={width}
             itemCount={itemCount}
+            itemKey={(index, data) =>
+                DataTypes.getIdValue1(data, idField) ?? index
+            }
             itemSize={itemSize}
             outerRef={refs}
             ref={listRef}
