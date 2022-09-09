@@ -190,7 +190,8 @@ export const ScrollerGrid = <
         orderByAsc: defaultOrderByAsc,
         batchSize: 10,
         loadedItems: 0,
-        selectedItems: []
+        selectedItems: [],
+        idCache: {}
     });
     const state = refs.current;
 
@@ -237,14 +238,29 @@ export const ScrollerGrid = <
                           .concat(result)
                     : result;
 
+                state.idCache = {};
+                for (const row of newRows) {
+                    const id = row[idField] as any;
+                    state.idCache[id] = null;
+                }
+
                 // Update rows
                 setRows(newRows);
             } else {
                 // Set current page
                 state.currentPage = state.currentPage + pageAdd;
 
-                // Update rows
-                setRows([...rows, ...result]);
+                // Update rows, avoid duplicate items
+                const newRows = [...rows];
+
+                for (const item of result) {
+                    const id = item[idField] as any;
+                    if (state.idCache[id] === undefined) {
+                        newRows.push(item);
+                    }
+                }
+
+                setRows(newRows);
             }
         });
     };

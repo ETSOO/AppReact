@@ -150,4 +150,9 @@ export type GridLoaderStates<T> = GridLoadDataProps & {
      * Selected items of id
      */
     selectedItems: T[];
+
+    /**
+     * Id cache
+     */
+    idCache: Record<any, null>;
 };
