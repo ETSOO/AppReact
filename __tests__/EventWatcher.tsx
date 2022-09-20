@@ -13,7 +13,7 @@ function App(props: { callback: () => void }) {
             once: true
         });
     }, []);
-    return <button onClick={watcher.do}></button>;
+    return <button onClick={(event) => watcher.do(event)}></button>;
 }
 
 test('Tests for EventWatcher', () => {

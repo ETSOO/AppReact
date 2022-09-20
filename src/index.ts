@@ -1,5 +1,6 @@
 // app
 export * from './app/CoreConstants';
+export * from './app/EventWatcher';
 export * from './app/InputDialogProps';
 export * from './app/ReactUtils';
 export * from './app/RefreshTokenRQ';
