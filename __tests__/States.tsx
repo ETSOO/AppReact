@@ -1,11 +1,15 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useAsyncState } from '../src/uses/useAsyncState';
 import { act } from 'react-dom/test-utils';
 
 function App(props: { callback: (state: number) => void }) {
     const { callback } = props;
     const [state, setState] = useAsyncState(0);
+
+    const [state1] = useAsyncState<number>();
+    expect(state1).toBeUndefined();
+
     const click = async () => {
         const currentState = await setState((prev) => prev + 1);
         callback(currentState + 1);

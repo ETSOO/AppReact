@@ -1,5 +1,10 @@
 import React from 'react';
 
+export function useAsyncState<S = undefined>(): [
+    S | undefined,
+    (newState: React.SetStateAction<S | undefined>) => Promise<S | undefined>
+];
+
 /**
  * Returns a stateful value, and a async function to update it.
  * @param initialState initial stat
@@ -7,12 +12,27 @@ import React from 'react';
  */
 export function useAsyncState<S>(
     initialState: S | (() => S)
-): [S, (newState: React.SetStateAction<S>) => Promise<S>] {
+): [S, (newState: React.SetStateAction<S>) => Promise<S>];
+
+/**
+ * Returns a stateful value, and a async function to update it.
+ * @param initialState initial stat
+ * @returns Current state and update action
+ */
+export function useAsyncState<S>(
+    initialState?: S | (() => S)
+): [
+    S | undefined,
+    (newState: React.SetStateAction<S | undefined>) => Promise<S | undefined>
+] {
     // State
     const [state, setState] = React.useState(initialState);
 
     // Resolve sate
-    const resolveState = React.useRef<(value: S | PromiseLike<S>) => void>();
+    const resolveState =
+        React.useRef<
+            (value: S | undefined | PromiseLike<S | undefined>) => void
+        >();
 
     // Is mounted or not
     const isMounted = React.useRef(false);
@@ -32,8 +52,8 @@ export function useAsyncState<S>(
     }, [state]);
 
     const setAsyncState = React.useCallback(
-        (newState: React.SetStateAction<S>) =>
-            new Promise<S>((resolve) => {
+        (newState: React.SetStateAction<S | undefined>) =>
+            new Promise<S | undefined>((resolve) => {
                 if (isMounted.current) {
                     resolveState.current = resolve;
                     setState(newState);
