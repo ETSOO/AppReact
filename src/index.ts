@@ -25,6 +25,7 @@ export * from './states/State';
 export * from './states/UserState';
 
 // uses
+export * from './uses/useAsyncState';
 export * from './uses/useCombinedRefs';
 export * from './uses/useDelayedExecutor';
 export * from './uses/useDimensions';
