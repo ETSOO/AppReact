@@ -17,9 +17,7 @@ export interface EventWatcherAction {
     /**
      * Action
      */
-    action: (
-        event: React.BaseSyntheticEvent | string
-    ) => void | PromiseLike<void>;
+    action: (event: React.BaseSyntheticEvent | string) => any;
 }
 
 /**
