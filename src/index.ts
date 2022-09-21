@@ -7,6 +7,7 @@ export * from './app/RefreshTokenRQ';
 
 // components
 export * from './components/DnDList';
+export * from './components/DynamicRouter';
 export * from './components/GridColumn';
 export * from './components/GridLoader';
 export * from './components/GridMethodRef';
