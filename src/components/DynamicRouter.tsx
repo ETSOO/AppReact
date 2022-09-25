@@ -5,7 +5,12 @@ import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 /**
  * Dynamic router props
  */
-export type DynamicRouterProps = { basename: string };
+export type DynamicRouterProps = {
+    /**
+     * basename of the router
+     */
+    basename?: string;
+};
 
 function getEntries(host: IBridgeHost) {
     const startUrl = host.getStartUrl();
