@@ -67,6 +67,7 @@ export interface NotificationReactCallProps extends NotificationCallProps {
      * Buttons to override default buttons
      */
     buttons?: (
+        notification: INotificationReact,
         callback: (
             event: React.MouseEvent<HTMLButtonElement>,
             value?: any
