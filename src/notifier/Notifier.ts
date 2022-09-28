@@ -69,7 +69,7 @@ export interface NotificationReactCallProps extends NotificationCallProps {
     buttons?: (
         callback: (
             event: React.MouseEvent<HTMLButtonElement>,
-            value?: unknown
+            value?: any
         ) => Promise<void>
     ) => React.ReactNode;
 }
