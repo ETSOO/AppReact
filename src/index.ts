@@ -30,6 +30,7 @@ export * from './uses/useAsyncState';
 export * from './uses/useCombinedRefs';
 export * from './uses/useDelayedExecutor';
 export * from './uses/useDimensions';
+export * from './uses/useIsPrinting';
 export * from './uses/useParamsEx';
 export * from './uses/useSearchParamsEx';
 export * from './uses/useTimeout';
