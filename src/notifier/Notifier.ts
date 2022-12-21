@@ -111,10 +111,9 @@ interface INotifierAction extends IAction {
 /**
  * React notification
  */
-export abstract class NotificationReact extends Notification<
-    React.ReactNode,
-    NotificationReactCallProps
-> {}
+export abstract class NotificationReact
+    extends Notification<React.ReactNode, NotificationReactCallProps>
+    implements INotificationReact {}
 
 /**
  * React notification render props
@@ -221,7 +220,10 @@ export abstract class NotifierReact
 
                 // UI collections
                 const ui = notifications.map((notification) =>
-                    notification.render(props, className + '-item')
+                    notification.render(
+                        props,
+                        className ? className + '-item' : className
+                    )
                 );
 
                 // Add to the collection
