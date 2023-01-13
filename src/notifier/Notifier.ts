@@ -54,6 +54,11 @@ export interface NotificationReactCallProps extends NotificationCallProps {
     cancelLabel?: string;
 
     /**
+     * Window is closable
+     */
+    closable?: boolean;
+
+    /**
      * Type
      */
     type?: string;
