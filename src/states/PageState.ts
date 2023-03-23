@@ -10,6 +10,11 @@ export interface IPageData extends IState {
      * Page title
      */
     title?: string;
+
+    /**
+     * Page subtitle
+     */
+    subtitle?: string;
 }
 
 /**
@@ -78,12 +83,16 @@ export class PageState<D extends IPageData> {
                         return { ...state, ...data };
                     case PageActionType.Title:
                         // Same title
-                        if (state.title === data.title) return state;
+                        if (
+                            state.title === data.title &&
+                            state.subtitle === data.subtitle
+                        )
+                            return state;
 
                         // Set page title
                         return {
                             ...state,
-                            title: data.title
+                            ...data
                         };
                     default:
                         return state;
