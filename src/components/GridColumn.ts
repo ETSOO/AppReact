@@ -1,3 +1,4 @@
+import { EntityStatus } from '@etsoo/appscript';
 import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import { GridLoaderStates } from './GridLoader';
@@ -30,6 +31,29 @@ export const GridAlignGet = (align?: GridAlign, type?: GridDataType) => {
         else if (type === GridDataType.Boolean) return 'center';
     }
     return align;
+};
+
+/**
+ * Grid deleted cell box style
+ * @param data Data
+ * @returns Result
+ */
+export const GridDeletedCellBoxStyle = (
+    data: undefined | { status: EntityStatus } | { entityStatus: EntityStatus }
+): React.CSSProperties => {
+    if (data == null) return {};
+
+    const status =
+        'status' in data
+            ? data.status
+            : 'entityStatus' in data
+            ? data.entityStatus
+            : EntityStatus.Normal;
+
+    if (status >= EntityStatus.Inactivated)
+        return { textDecoration: 'line-through', color: 'red' };
+
+    return {};
 };
 
 /**
@@ -210,7 +234,9 @@ export type GridColumn<T> = {
     /**
      * Cell box style
      */
-    cellBoxStyle?: ((data: T) => React.CSSProperties) | React.CSSProperties;
+    cellBoxStyle?:
+        | ((data: T | undefined) => React.CSSProperties)
+        | React.CSSProperties;
 
     /**
      * Render props
