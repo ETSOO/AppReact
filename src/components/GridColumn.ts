@@ -208,6 +208,11 @@ export type GridColumn<T> = {
     cellRenderer?: (props: GridCellRendererProps<T>) => React.ReactNode;
 
     /**
+     * Cell box style
+     */
+    cellBoxStyle?: ((data: T) => React.CSSProperties) | React.CSSProperties;
+
+    /**
      * Render props
      */
     renderProps?: GridColumnRenderProps;
