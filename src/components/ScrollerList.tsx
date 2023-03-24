@@ -154,6 +154,7 @@ export const ScrollerList = <
     };
 
     // States
+    const batchSize = GridSizeGet(loadBatchSize, height);
     const stateRefs = React.useRef<GridLoaderStates<T>>({
         autoLoad,
         currentPage: 0,
@@ -162,7 +163,7 @@ export const ScrollerList = <
         isNextPageLoading: false,
         orderBy: defaultOrderBy,
         orderByAsc: defaultOrderByAsc,
-        batchSize: GridSizeGet(loadBatchSize, height),
+        batchSize: batchSize,
         selectedItems: [],
         idCache: {}
     });
@@ -195,7 +196,7 @@ export const ScrollerList = <
 
             const newItems = result.length;
             state.lastLoadedItems = newItems;
-            state.hasNextPage = newItems >= loadBatchSize;
+            state.hasNextPage = newItems >= batchSize;
             state.isNextPageLoading = false;
 
             if (pageAdd === 0) {
