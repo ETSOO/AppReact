@@ -114,11 +114,6 @@ export type GridCellRendererProps<T, P = any> = GridCellFormatterProps<T> & {
      * Render props
      */
     renderProps?: GridColumnRenderProps;
-
-    /**
-     * Set items for rerenderer
-     */
-    setItems: (items: T[]) => void;
 };
 
 /**
