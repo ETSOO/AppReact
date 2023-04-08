@@ -20,6 +20,11 @@ export type ScrollerGridItemRendererProps<T> = Omit<
     selectedItems: T[];
 
     /**
+     * Set items for rerenderer
+     */
+    setItems: (items: T[]) => void;
+
+    /**
      * Data
      */
     data?: T;
@@ -278,7 +283,8 @@ export const ScrollerGrid = <
         return itemRenderer({
             ...itemProps,
             data,
-            selectedItems: state.selectedItems
+            selectedItems: state.selectedItems,
+            setItems: setRows
         });
     };
 
