@@ -24,8 +24,10 @@ export type ScrollerGridItemRendererProps<T> = Omit<
      * @param callback Callback
      */
     setItems: (
-        callback: (items: T[]) => T[] | undefined,
-        ref?: React.Ref<ScrollerGridForwardRef<T>>
+        callback: (
+            items: T[],
+            ref?: React.Ref<ScrollerGridForwardRef<T>>
+        ) => T[] | undefined | void
     ) => void;
 
     /**
@@ -292,7 +294,7 @@ export const ScrollerGrid = <
                 callback: (
                     items: T[],
                     ref?: React.Ref<ScrollerGridForwardRef<T>>
-                ) => T[] | undefined
+                ) => T[] | undefined | void
             ) => {
                 const result = callback(rows, mRef);
                 if (result == null) return;
