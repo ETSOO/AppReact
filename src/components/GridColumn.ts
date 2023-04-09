@@ -121,10 +121,12 @@ export type GridCellRendererProps<T, P = any> = GridCellFormatterProps<T> & {
      * @param callback Callback
      */
     setItems: (
-        callback: (
-            items: T[],
-            ref?: React.Ref<ScrollerGridForwardRef<T>>
-        ) => T[] | undefined | void
+        callback:
+            | ((items: T[]) => T[] | undefined | void)
+            | ((
+                  items: T[],
+                  ref: ScrollerGridForwardRef<T>
+              ) => T[] | undefined | void)
     ) => void;
 };
 

@@ -26,7 +26,7 @@ export type ScrollerGridItemRendererProps<T> = Omit<
     setItems: (
         callback: (
             items: T[],
-            ref?: React.Ref<ScrollerGridForwardRef<T>>
+            ref: ScrollerGridForwardRef<T>
         ) => T[] | undefined | void
     ) => void;
 
@@ -293,10 +293,10 @@ export const ScrollerGrid = <
             setItems: (
                 callback: (
                     items: T[],
-                    ref?: React.Ref<ScrollerGridForwardRef<T>>
+                    ref: ScrollerGridForwardRef<T>
                 ) => T[] | undefined | void
             ) => {
-                const result = callback(rows, mRef);
+                const result = callback(rows, instance);
                 if (result == null) return;
                 setRows(result);
             }
@@ -336,74 +336,72 @@ export const ScrollerGrid = <
         if (state.isMounted !== false) setRows([]);
     };
 
-    React.useImperativeHandle(
-        mRef,
-        () => ({
-            scrollTo(params: { scrollLeft: number; scrollTop: number }) {
-                ref.current?.scrollTo(params);
-            },
-            scrollToItem(params: {
-                align?: Align | undefined;
-                columnIndex?: number | undefined;
-                rowIndex?: number | undefined;
-            }) {
-                ref.current?.scrollToItem(params);
-            },
-            select(rowIndex: number) {
-                // Select only one item
-                const selectedItems = state.selectedItems;
-                selectedItems[0] = rows[rowIndex];
+    const instance: ScrollerGridForwardRef<T> = {
+        scrollTo(params: { scrollLeft: number; scrollTop: number }) {
+            ref.current?.scrollTo(params);
+        },
+        scrollToItem(params: {
+            align?: Align | undefined;
+            columnIndex?: number | undefined;
+            rowIndex?: number | undefined;
+        }) {
+            ref.current?.scrollToItem(params);
+        },
+        select(rowIndex: number) {
+            // Select only one item
+            const selectedItems = state.selectedItems;
+            selectedItems[0] = rows[rowIndex];
 
-                if (onSelectChange) onSelectChange(selectedItems);
-            },
-            selectAll(checked: boolean) {
-                const selectedItems = state.selectedItems;
+            if (onSelectChange) onSelectChange(selectedItems);
+        },
+        selectAll(checked: boolean) {
+            const selectedItems = state.selectedItems;
 
-                rows.forEach((row) => {
-                    const index = selectedItems.findIndex(
-                        (selectedItem) => selectedItem[idField] === row[idField]
-                    );
-
-                    if (checked) {
-                        if (index === -1) selectedItems.push(row);
-                    } else if (index !== -1) {
-                        selectedItems.splice(index, 1);
-                    }
-                });
-
-                if (onSelectChange) onSelectChange(selectedItems);
-            },
-            selectItem(item: T, checked: boolean) {
-                const selectedItems = state.selectedItems;
+            rows.forEach((row) => {
                 const index = selectedItems.findIndex(
-                    (selectedItem) => selectedItem[idField] === item[idField]
+                    (selectedItem) => selectedItem[idField] === row[idField]
                 );
 
                 if (checked) {
-                    if (index === -1) selectedItems.push(item);
-                } else {
-                    if (index !== -1) selectedItems.splice(index, 1);
+                    if (index === -1) selectedItems.push(row);
+                } else if (index !== -1) {
+                    selectedItems.splice(index, 1);
                 }
+            });
 
-                if (onSelectChange) onSelectChange(selectedItems);
-            },
-            reset,
-            resetAfterColumnIndex(index: number, shouldForceUpdate?: boolean) {
-                ref.current?.resetAfterColumnIndex(index, shouldForceUpdate);
-            },
-            resetAfterIndices(params: {
-                columnIndex: number;
-                rowIndex: number;
-                shouldForceUpdate?: boolean | undefined;
-            }) {
-                ref.current?.resetAfterIndices(params);
-            },
-            resetAfterRowIndex(index: number, shouldForceUpdate?: boolean) {
-                ref.current?.resetAfterRowIndex(index, shouldForceUpdate);
+            if (onSelectChange) onSelectChange(selectedItems);
+        },
+        selectItem(item: T, checked: boolean) {
+            const selectedItems = state.selectedItems;
+            const index = selectedItems.findIndex(
+                (selectedItem) => selectedItem[idField] === item[idField]
+            );
+
+            if (checked) {
+                if (index === -1) selectedItems.push(item);
+            } else {
+                if (index !== -1) selectedItems.splice(index, 1);
             }
-        }),
-        [rows]
-    );
+
+            if (onSelectChange) onSelectChange(selectedItems);
+        },
+        reset,
+        resetAfterColumnIndex(index: number, shouldForceUpdate?: boolean) {
+            ref.current?.resetAfterColumnIndex(index, shouldForceUpdate);
+        },
+        resetAfterIndices(params: {
+            columnIndex: number;
+            rowIndex: number;
+            shouldForceUpdate?: boolean | undefined;
+        }) {
+            ref.current?.resetAfterIndices(params);
+        },
+        resetAfterRowIndex(index: number, shouldForceUpdate?: boolean) {
+            ref.current?.resetAfterRowIndex(index, shouldForceUpdate);
+        }
+    };
+
+    React.useImperativeHandle(mRef, () => instance, [rows]);
 
     React.useEffect(() => {
         return () => {
