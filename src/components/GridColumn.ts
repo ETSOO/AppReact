@@ -51,7 +51,7 @@ export const GridDeletedCellBoxStyle = (
             ? data.entityStatus
             : EntityStatus.Normal;
 
-    if (status >= EntityStatus.Inactivated)
+    if (status === EntityStatus.Inactivated || status === EntityStatus.Deleted)
         return { textDecoration: 'line-through' };
 
     return {};
