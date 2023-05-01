@@ -13,6 +13,7 @@ export * from './components/GridMethodRef';
 export * from './components/ListItemReact';
 export * from './components/ScrollerGrid';
 export * from './components/ScrollerList';
+export * from './components/ScrollRestoration';
 
 // notifier
 export * from './notifier/Notifier';

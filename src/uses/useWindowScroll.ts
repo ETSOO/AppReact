@@ -1,6 +1,9 @@
 import React from 'react';
 
-interface IScrollPos {
+/**
+ * Window scroll position
+ */
+export interface IScrollPos {
     x: number;
     y: number;
 }
@@ -32,7 +35,7 @@ export const useWindowScroll = () => {
                     ticking = false;
                     requestAnimationFrameSeed = 0;
 
-                    if (lastPos.x != lastPos.x || lastPos.y != lastPos.y) {
+                    if (lastPos.x != pos.x || lastPos.y != pos.y) {
                         setPos(lastPos);
                     }
                 });
