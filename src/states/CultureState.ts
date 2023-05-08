@@ -31,7 +31,9 @@ const calls = {
      * @param key Item key
      */
     get<T = string>(key: string) {
-        const value = this.state.resources[key];
+        const resources = this.state.resources;
+        const value =
+            typeof resources === 'object' ? resources[key] : undefined;
         if (value == null) return undefined;
         return value as T;
     }
@@ -59,6 +61,10 @@ export class CultureState {
     constructor(item?: DataTypes.CultureDefinition) {
         // Default
         const defaultItem = item ?? ({} as ICulture);
+
+        // Load resources
+        if (item != null && typeof item.resources !== 'object')
+            item.resources().then((result) => (item.resources = result));
 
         // Act
         const { context, provider } = State.create(
