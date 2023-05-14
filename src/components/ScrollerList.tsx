@@ -69,7 +69,10 @@ export interface ScrollerListProps<
     itemSize: ((index: number) => number) | number;
 }
 
-interface ScrollerListRef {
+/**
+ * Scroller list ref
+ */
+export interface ScrollerListRef {
     /**
      * Scroll to the specified offset (scrollTop or scrollLeft, depending on the direction prop).
      */

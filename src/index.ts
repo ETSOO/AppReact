@@ -14,7 +14,11 @@ export * from './components/ListItemReact';
 export * from './components/ScrollerGrid';
 export * from './components/ScrollerList';
 export * from './components/ScrollRestoration';
-export type { ListOnScrollProps, GridOnScrollProps } from 'react-window';
+export type {
+    ListOnScrollProps,
+    GridOnScrollProps,
+    VariableSizeGrid
+} from 'react-window';
 
 // notifier
 export * from './notifier/Notifier';
