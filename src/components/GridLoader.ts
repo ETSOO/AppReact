@@ -106,6 +106,22 @@ export type GridLoader<T extends object> = {
     loadData: (props: GridLoadDataProps) => PromiseLike<T[] | null | undefined>;
 
     /**
+     * Handler for init load
+     * @param ref Ref
+     * @returns Result
+     */
+    onInitLoad?: (
+        ref: any
+    ) => [T[], Partial<GridLoaderStates<T>>?] | null | undefined;
+
+    /**
+     * Handler for updating rows
+     * @param rows Rows
+     * @param state State
+     */
+    onUpdateRows?: (rows: T[], state: GridLoaderStates<T>) => void;
+
+    /**
      * Threshold at which to pre-fetch data; default is half of loadBatchSize
      */
     threshold?: number | undefined;

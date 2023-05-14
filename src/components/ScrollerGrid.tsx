@@ -181,6 +181,8 @@ export const ScrollerGrid = <
         rowHeight = 53,
         threshold = 6,
         width,
+        onInitLoad,
+        onUpdateRows,
         ...rest
     } = props;
 
@@ -189,6 +191,8 @@ export const ScrollerGrid = <
     const setRows = (rows: T[]) => {
         state.loadedItems = rows.length;
         updateRows(rows);
+
+        if (onUpdateRows) onUpdateRows(rows, state);
     };
 
     // Refs
@@ -320,7 +324,7 @@ export const ScrollerGrid = <
     };
 
     // Reset the state and load again
-    const reset = (add?: Partial<GridLoaderStates<T>>) => {
+    const reset = (add?: Partial<GridLoaderStates<T>>, items: T[] = []) => {
         const resetState: Partial<GridLoaderStates<T>> = {
             autoLoad: true,
             currentPage: 0,
@@ -333,7 +337,7 @@ export const ScrollerGrid = <
         Object.assign(state, resetState);
 
         // Reset items
-        if (state.isMounted !== false) setRows([]);
+        if (state.isMounted !== false) setRows(items);
     };
 
     const instance: ScrollerGridForwardRef<T> = {
@@ -425,7 +429,12 @@ export const ScrollerGrid = <
     const rowCount = state.hasNextPage ? rowLength + 1 : rowLength;
 
     // Auto load data when current page is 0
-    if (state.currentPage === 0 && state.autoLoad) loadDataLocal();
+    if (state.currentPage === 0 && state.autoLoad) {
+        const initItems =
+            onInitLoad == null ? undefined : onInitLoad(ref.current);
+        if (initItems) reset(initItems[1], initItems[0]);
+        else loadDataLocal();
+    }
 
     // Layout
     return (

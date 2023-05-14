@@ -130,6 +130,8 @@ export const ScrollerList = <
         loadData,
         threshold = GridSizeGet(loadBatchSize, height) / 2,
         onItemsRendered,
+        onInitLoad,
+        onUpdateRows,
         ...rest
     } = props;
 
@@ -151,6 +153,8 @@ export const ScrollerList = <
     const setRows = (rows: T[]) => {
         state.loadedItems = rows.length;
         updateRows(rows);
+
+        if (onUpdateRows) onUpdateRows(rows, state);
     };
 
     // States
@@ -244,15 +248,21 @@ export const ScrollerList = <
         });
     };
 
-    // Update scroll location
-    const updateScroll = (scrollY: number) => {
-        const outerItem = outerRef.current;
-        const refMethods = listRef.current as ScrollerListRef;
-        if (outerItem == null || refMethods == null) return;
+    // Reset the state and load again
+    const reset = (add?: Partial<GridLoaderStates<T>>, items: T[] = []) => {
+        const resetState: Partial<GridLoaderStates<T>> = {
+            autoLoad: true,
+            lastLoadedItems: undefined,
+            loadedItems: 0,
+            currentPage: 0,
+            hasNextPage: true,
+            isNextPageLoading: false,
+            ...add
+        };
+        Object.assign(state, resetState);
 
-        const scrollTop = scrollY - outerItem.offsetTop;
-
-        refMethods.scrollTo(scrollTop);
+        // Reset
+        if (state.isMounted !== false) setRows(items);
     };
 
     React.useImperativeHandle(
@@ -265,21 +275,7 @@ export const ScrollerList = <
                     loadDataLocal(0);
                 },
 
-                reset(add?: Partial<GridLoaderStates<T>>): void {
-                    const resetState: Partial<GridLoaderStates<T>> = {
-                        autoLoad: true,
-                        lastLoadedItems: undefined,
-                        loadedItems: 0,
-                        currentPage: 0,
-                        hasNextPage: true,
-                        isNextPageLoading: false,
-                        ...add
-                    };
-                    Object.assign(state, resetState);
-
-                    // Reset
-                    if (state.isMounted !== false) setRows([]);
-                },
+                reset,
 
                 scrollTo(scrollOffset: number): void {
                     refMethods.scrollTo(scrollOffset);
@@ -295,36 +291,8 @@ export const ScrollerList = <
 
     // When layout ready
     React.useEffect(() => {
-        let ticking = false;
-        let lastKnownScrollPosition = 0;
-        let requestAnimationFrameSeed = 0;
-
-        // Window scroll handler
-        const handleWindowScroll = () => {
-            lastKnownScrollPosition = window.scrollY;
-
-            if (!ticking) {
-                requestAnimationFrameSeed = window.requestAnimationFrame(() => {
-                    updateScroll(lastKnownScrollPosition);
-                    ticking = false;
-                    requestAnimationFrameSeed = 0;
-                });
-                ticking = true;
-            }
-        };
-
-        // Add scroll event
-        window.addEventListener('scroll', handleWindowScroll);
-
         // Return clear function
         return () => {
-            // Cancel animation frame
-            if (requestAnimationFrameSeed > 0)
-                window.cancelAnimationFrame(requestAnimationFrameSeed);
-
-            // Remove scroll event
-            window.removeEventListener('scroll', handleWindowScroll);
-
             state.isMounted = false;
         };
     }, []);
@@ -349,7 +317,12 @@ export const ScrollerList = <
     const itemCount = state.hasNextPage ? rowCount + 1 : rowCount;
 
     // Auto load data when current page is 0
-    if (state.currentPage === 0 && state.autoLoad) loadDataLocal();
+    if (state.currentPage === 0 && state.autoLoad) {
+        const initItems =
+            onInitLoad == null ? undefined : onInitLoad(listRef.current);
+        if (initItems) reset(initItems[1], initItems[0]);
+        else loadDataLocal();
+    }
 
     // Layout
     return typeof itemSize === 'function' ? (
