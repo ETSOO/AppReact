@@ -188,11 +188,11 @@ export const ScrollerGrid = <
 
     // Rows
     const [rows, updateRows] = React.useState<T[]>([]);
-    const setRows = (rows: T[]) => {
+    const setRows = (rows: T[], reset: boolean = false) => {
         state.loadedItems = rows.length;
         updateRows(rows);
 
-        if (onUpdateRows) onUpdateRows(rows, state);
+        if (!reset && onUpdateRows) onUpdateRows(rows, state);
     };
 
     // Refs
@@ -337,7 +337,7 @@ export const ScrollerGrid = <
         Object.assign(state, resetState);
 
         // Reset items
-        if (state.isMounted !== false) setRows(items);
+        if (state.isMounted !== false) setRows(items, true);
     };
 
     const instance: ScrollerGridForwardRef<T> = {
