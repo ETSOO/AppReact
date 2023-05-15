@@ -32,6 +32,19 @@ export function GridDataGet<F extends DataTypes.BasicTemplate>(
     // Destruct
     const { data, ...rest } = props;
 
+    // DomUtils.dataAs(data, template);
+    return { ...GridDataGetData(data, template), ...rest };
+}
+
+/**
+ * Grid data get with format
+ * @param data Data
+ * @returns Json data
+ */
+export function GridDataGetData<F extends DataTypes.BasicTemplate>(
+    data?: GridData,
+    template?: F
+): DataTypes.BasicTemplateType<F> {
     // Clear form empty value
     if (data instanceof FormData) {
         DomUtils.clearFormData(data);
@@ -41,8 +54,7 @@ export function GridDataGet<F extends DataTypes.BasicTemplate>(
     const conditions: DataTypes.BasicTemplateType<F> =
         data == null ? {} : DomUtils.dataAs(data, template ?? {}, true); // Set keepSource to true to hold form data, even they are invisible from the conditions
 
-    // DomUtils.dataAs(data, template);
-    return { ...conditions, ...rest };
+    return conditions;
 }
 
 /**
