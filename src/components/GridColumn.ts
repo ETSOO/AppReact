@@ -253,7 +253,9 @@ export type GridColumn<T> = {
     /**
      * Render props
      */
-    renderProps?: GridColumnRenderProps;
+    renderProps?:
+        | GridColumnRenderProps
+        | ((data: T | undefined) => GridColumnRenderProps);
 
     /**
      * Header cell renderer
