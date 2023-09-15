@@ -136,7 +136,10 @@ export namespace ReactUtils {
 
             if (local && local(item, value) !== false) {
                 continue;
-            } else if (item instanceof HTMLInputElement) {
+            } else if (
+                item instanceof HTMLInputElement ||
+                item instanceof HTMLTextAreaElement
+            ) {
                 item.value = `${value ?? ''}`;
             } else {
                 (item as any).value = value;
@@ -177,6 +180,8 @@ export namespace ReactUtils {
                 data[k] = local(item);
             } else if (item instanceof HTMLInputElement) {
                 data[k] = DomUtils.getInputValue(item) as any;
+            } else if (item instanceof HTMLTextAreaElement) {
+                data[k] = item.value as any;
             } else {
                 data[k] = (item as any).value;
             }
