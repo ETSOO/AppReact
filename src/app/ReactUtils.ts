@@ -1,4 +1,4 @@
-import { DataTypes } from '@etsoo/shared';
+import { DataTypes, DomUtils } from '@etsoo/shared';
 import React from 'react';
 
 /**
@@ -104,7 +104,7 @@ export namespace ReactUtils {
      * Update refs
      * @param refs Refs
      * @param data Data
-     * @param callback Callback to update refs' value
+     * @param callback Callback to update refs' value, return false continue to process
      */
     export function updateRefs<D, T = HTMLInputElement>(
         refs: Partial<
@@ -114,7 +114,9 @@ export namespace ReactUtils {
             >
         >,
         data: D,
-        callback?: ((item: T, value: D[keyof D & string]) => void) | keyof T
+        callback?:
+            | ((item: T, value: D[keyof D & string]) => void | boolean)
+            | keyof T
     ) {
         const local: typeof callback =
             callback == null
@@ -132,11 +134,12 @@ export namespace ReactUtils {
             if (item == null) continue;
             const value = data[k];
 
-            if (local) {
-                local(item, value);
+            if (local && local(item, value) !== false) {
+                continue;
+            } else if (item instanceof HTMLInputElement) {
+                item.value = `${value ?? ''}`;
             } else {
-                // Straightforward set string value to property "value"
-                (item as any).value = value ?? '';
+                (item as any).value = value;
             }
         }
     }
@@ -172,6 +175,8 @@ export namespace ReactUtils {
 
             if (local) {
                 data[k] = local(item);
+            } else if (item instanceof HTMLInputElement) {
+                data[k] = DomUtils.getInputValue(item) as any;
             } else {
                 data[k] = (item as any).value;
             }
