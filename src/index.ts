@@ -37,6 +37,7 @@ export * from './uses/useCombinedRefs';
 export * from './uses/useDelayedExecutor';
 export * from './uses/useDimensions';
 export * from './uses/useParamsEx';
+export * from './uses/useRefs';
 export * from './uses/useSearchParamsEx';
 export * from './uses/useTimeout';
 export * from './uses/useWindowScroll';

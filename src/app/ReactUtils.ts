@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 
 /**
@@ -96,6 +97,84 @@ export namespace ReactUtils {
                 cancelable
             });
             input.dispatchEvent(inputEvent);
+        }
+    }
+
+    /**
+     * Update refs
+     * @param refs Refs
+     * @param data Data
+     * @param callback Callback to update refs' value
+     */
+    export function updateRefs<D, T = HTMLInputElement>(
+        refs: Partial<
+            DataTypes.DI<
+                ReadonlyArray<keyof D & string>,
+                React.MutableRefObject<T | undefined>
+            >
+        >,
+        data: D,
+        callback?: ((item: T, value: D[keyof D & string]) => void) | keyof T
+    ) {
+        const local: typeof callback =
+            callback == null
+                ? undefined
+                : typeof callback === 'function'
+                ? callback
+                : (item, value) => {
+                      item[callback] = value as any;
+                  };
+
+        let k: keyof typeof refs;
+        for (k in refs) {
+            const ref = refs[k];
+            const item = ref?.current;
+            if (item == null) continue;
+            const value = data[k];
+
+            if (local) {
+                local(item, value);
+            } else {
+                // Straightforward set string value to property "value"
+                (item as any).value = value ?? '';
+            }
+        }
+    }
+
+    /**
+     * Update data with refs
+     * @param refs Refs
+     * @param data Data
+     * @param callback Callback to return new value
+     */
+    export function updateRefValues<D, T = HTMLInputElement>(
+        refs: Partial<
+            DataTypes.DI<
+                ReadonlyArray<keyof D & string>,
+                React.MutableRefObject<T | undefined>
+            >
+        >,
+        data: D,
+        callback?: ((item: T) => any) | keyof T
+    ) {
+        const local: typeof callback =
+            callback == null
+                ? undefined
+                : typeof callback === 'function'
+                ? callback
+                : (item) => item[callback];
+
+        let k: keyof typeof refs;
+        for (k in refs) {
+            const ref = refs[k];
+            const item = ref?.current;
+            if (item == null) continue;
+
+            if (local) {
+                data[k] = local(item);
+            } else {
+                data[k] = (item as any).value;
+            }
         }
     }
 }
