@@ -145,7 +145,10 @@ export namespace ReactUtils {
                 const isDateTime = item.type === 'datetime-local';
                 if (isDateTime || item.type === 'date') {
                     item.value =
-                        DateUtils.formatForInput(value, isDateTime) ?? '';
+                        DateUtils.formatForInput(
+                            value,
+                            isDateTime ? false : undefined
+                        ) ?? '';
                 } else {
                     item.value = `${value ?? ''}`;
                 }
