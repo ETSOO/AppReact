@@ -1,4 +1,4 @@
-import { DataTypes, DomUtils, Utils } from '@etsoo/shared';
+import { DataTypes, DateUtils, DomUtils, Utils } from '@etsoo/shared';
 import React from 'react';
 
 /**
@@ -140,9 +140,15 @@ export namespace ReactUtils {
                 item instanceof HTMLTextAreaElement ||
                 item instanceof HTMLSelectElement
             ) {
-                item.value = `${
-                    Utils.getNestedValue(data, item.name || k) ?? ''
-                }`;
+                const value = Utils.getNestedValue(data, item.name || k);
+
+                const isDateTime = item.type === 'datetime-local';
+                if (isDateTime || item.type === 'date') {
+                    item.value =
+                        DateUtils.formatForInput(value, isDateTime) ?? '';
+                } else {
+                    item.value = `${value ?? ''}`;
+                }
             } else {
                 (item as any).value = data[k];
             }
