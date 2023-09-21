@@ -23,6 +23,36 @@ export namespace ReactUtils {
     }
 
     /**
+     * Get nested value
+     * @param data Data
+     * @param name Field name, support property chain like 'jsonData.logSize'
+     * @returns Result
+     */
+    export function getNestedValue(data: object, name: string) {
+        const properties = name.split('.');
+        const len = properties.length;
+        if (len === 1) {
+            return Reflect.get(data, name);
+        } else {
+            let curr = data;
+            for (let i = 0; i < len; i++) {
+                const property = properties[i];
+
+                if (i + 1 === len) {
+                    return Reflect.get(curr, property);
+                } else {
+                    let p = Reflect.get(curr, property);
+                    if (p == null) {
+                        return undefined;
+                    }
+
+                    curr = p;
+                }
+            }
+        }
+    }
+
+    /**
      * Is safe click
      * @param event Mouse event
      * @returns Result
@@ -50,6 +80,36 @@ export namespace ReactUtils {
         }
 
         return true;
+    }
+
+    /**
+     * Set nested value
+     * @param data Data
+     * @param name Field name, support property chain like 'jsonData.logSize'
+     * @param value Value
+     */
+    export function setNestedValue(data: object, name: string, value: unknown) {
+        const properties = name.split('.');
+        const len = properties.length;
+        if (len === 1) Reflect.set(data, name, value);
+        else {
+            let curr = data;
+            for (let i = 0; i < len; i++) {
+                const property = properties[i];
+
+                if (i + 1 === len) {
+                    Reflect.set(curr, property, value);
+                } else {
+                    let p = Reflect.get(curr, property);
+                    if (p == null) {
+                        p = {};
+                        Reflect.set(curr, property, p);
+                    }
+
+                    curr = p;
+                }
+            }
+        }
     }
 
     /**
@@ -106,7 +166,7 @@ export namespace ReactUtils {
      * @param data Data
      * @param callback Callback to update refs' value, return false continue to process
      */
-    export function updateRefs<D, T = HTMLInputElement>(
+    export function updateRefs<D extends object, T = HTMLInputElement>(
         refs: Partial<
             DataTypes.DI<
                 ReadonlyArray<keyof D & string>,
@@ -132,17 +192,17 @@ export namespace ReactUtils {
             const ref = refs[k];
             const item = ref?.current;
             if (item == null) continue;
-            const value = data[k];
 
-            if (local && local(item, value) !== false) {
+            if (local && local(item, data[k]) !== false) {
                 continue;
             } else if (
                 item instanceof HTMLInputElement ||
-                item instanceof HTMLTextAreaElement
+                item instanceof HTMLTextAreaElement ||
+                item instanceof HTMLSelectElement
             ) {
-                item.value = `${value ?? ''}`;
+                item.value = `${getNestedValue(data, item.name || k) ?? ''}`;
             } else {
-                (item as any).value = value;
+                (item as any).value = data[k];
             }
         }
     }
@@ -153,7 +213,7 @@ export namespace ReactUtils {
      * @param data Data
      * @param callback Callback to return new value
      */
-    export function updateRefValues<D, T = HTMLInputElement>(
+    export function updateRefValues<D extends object, T = HTMLInputElement>(
         refs: Partial<
             DataTypes.DI<
                 ReadonlyArray<keyof D & string>,
@@ -179,9 +239,16 @@ export namespace ReactUtils {
             if (local) {
                 data[k] = local(item);
             } else if (item instanceof HTMLInputElement) {
-                data[k] = DomUtils.getInputValue(item) as any;
-            } else if (item instanceof HTMLTextAreaElement) {
-                data[k] = item.value as any;
+                setNestedValue(
+                    data,
+                    item.name || k,
+                    DomUtils.getInputValue(item)
+                );
+            } else if (
+                item instanceof HTMLTextAreaElement ||
+                item instanceof HTMLSelectElement
+            ) {
+                setNestedValue(data, item.name || k, item.value);
             } else {
                 data[k] = (item as any).value;
             }
