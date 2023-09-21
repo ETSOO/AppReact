@@ -1,4 +1,4 @@
-import { DataTypes, DomUtils } from '@etsoo/shared';
+import { DataTypes, DomUtils, Utils } from '@etsoo/shared';
 import React from 'react';
 
 /**
@@ -20,36 +20,6 @@ export namespace ReactUtils {
         if (Array.isArray(value)) return value;
 
         return String(value);
-    }
-
-    /**
-     * Get nested value
-     * @param data Data
-     * @param name Field name, support property chain like 'jsonData.logSize'
-     * @returns Result
-     */
-    export function getNestedValue(data: object, name: string) {
-        const properties = name.split('.');
-        const len = properties.length;
-        if (len === 1) {
-            return Reflect.get(data, name);
-        } else {
-            let curr = data;
-            for (let i = 0; i < len; i++) {
-                const property = properties[i];
-
-                if (i + 1 === len) {
-                    return Reflect.get(curr, property);
-                } else {
-                    let p = Reflect.get(curr, property);
-                    if (p == null) {
-                        return undefined;
-                    }
-
-                    curr = p;
-                }
-            }
-        }
     }
 
     /**
@@ -80,36 +50,6 @@ export namespace ReactUtils {
         }
 
         return true;
-    }
-
-    /**
-     * Set nested value
-     * @param data Data
-     * @param name Field name, support property chain like 'jsonData.logSize'
-     * @param value Value
-     */
-    export function setNestedValue(data: object, name: string, value: unknown) {
-        const properties = name.split('.');
-        const len = properties.length;
-        if (len === 1) Reflect.set(data, name, value);
-        else {
-            let curr = data;
-            for (let i = 0; i < len; i++) {
-                const property = properties[i];
-
-                if (i + 1 === len) {
-                    Reflect.set(curr, property, value);
-                } else {
-                    let p = Reflect.get(curr, property);
-                    if (p == null) {
-                        p = {};
-                        Reflect.set(curr, property, p);
-                    }
-
-                    curr = p;
-                }
-            }
-        }
     }
 
     /**
@@ -200,7 +140,9 @@ export namespace ReactUtils {
                 item instanceof HTMLTextAreaElement ||
                 item instanceof HTMLSelectElement
             ) {
-                item.value = `${getNestedValue(data, item.name || k) ?? ''}`;
+                item.value = `${
+                    Utils.getNestedValue(data, item.name || k) ?? ''
+                }`;
             } else {
                 (item as any).value = data[k];
             }
@@ -239,7 +181,7 @@ export namespace ReactUtils {
             if (local) {
                 data[k] = local(item);
             } else if (item instanceof HTMLInputElement) {
-                setNestedValue(
+                Utils.setNestedValue(
                     data,
                     item.name || k,
                     DomUtils.getInputValue(item)
@@ -248,7 +190,7 @@ export namespace ReactUtils {
                 item instanceof HTMLTextAreaElement ||
                 item instanceof HTMLSelectElement
             ) {
-                setNestedValue(data, item.name || k, item.value);
+                Utils.setNestedValue(data, item.name || k, item.value);
             } else {
                 data[k] = (item as any).value;
             }
