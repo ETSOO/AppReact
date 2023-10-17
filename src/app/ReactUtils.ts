@@ -163,6 +163,7 @@ export namespace ReactUtils {
      * @param refs Refs
      * @param data Data
      * @param callback Callback to return new value
+     * @param ignoreEmpty Ignore empty string or not, default true
      */
     export function updateRefValues<D extends object, T = HTMLInputElement>(
         refs: Partial<
@@ -172,7 +173,8 @@ export namespace ReactUtils {
             >
         >,
         data: D,
-        callback?: ((item: T) => any) | keyof T
+        callback?: ((item: T) => any) | keyof T,
+        ignoreEmpty: boolean = true
     ) {
         const local: typeof callback =
             callback == null
@@ -180,6 +182,11 @@ export namespace ReactUtils {
                 : typeof callback === 'function'
                 ? callback
                 : (item) => item[callback];
+
+        const formatValue = (value: unknown) => {
+            if (ignoreEmpty && value === '') return null;
+            return value;
+        };
 
         let k: keyof typeof refs;
         for (k in refs) {
@@ -193,13 +200,17 @@ export namespace ReactUtils {
                 Utils.setNestedValue(
                     data,
                     item.name || k,
-                    DomUtils.getInputValue(item)
+                    formatValue(DomUtils.getInputValue(item))
                 );
             } else if (
                 item instanceof HTMLTextAreaElement ||
                 item instanceof HTMLSelectElement
             ) {
-                Utils.setNestedValue(data, item.name || k, item.value);
+                Utils.setNestedValue(
+                    data,
+                    item.name || k,
+                    formatValue(item.value)
+                );
             } else {
                 data[k] = (item as any).value;
             }
