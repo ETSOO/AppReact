@@ -341,6 +341,20 @@ export const ScrollerGrid = <
     };
 
     const instance: ScrollerGridForwardRef<T> = {
+        delete(index) {
+            const item = rows.at(index);
+            if (item) {
+                const newRows = [...rows];
+                newRows.splice(index, 1);
+                setRows(newRows);
+            }
+            return item;
+        },
+        insert(item, start) {
+            const newRows = [...rows];
+            newRows.splice(start, 0, item);
+            setRows(newRows);
+        },
         scrollTo(params: { scrollLeft: number; scrollTop: number }) {
             ref.current?.scrollTo(params);
         },
@@ -350,6 +364,13 @@ export const ScrollerGrid = <
             rowIndex?: number | undefined;
         }) {
             ref.current?.scrollToItem(params);
+        },
+        scrollToRef(scrollOffset: number): void {
+            ref.current?.scrollTo({ scrollLeft: 0, scrollTop: scrollOffset });
+        },
+
+        scrollToItemRef(index: number, align?: Align): void {
+            ref.current?.scrollToItem({ rowIndex: index, align });
         },
         select(rowIndex: number) {
             // Select only one item

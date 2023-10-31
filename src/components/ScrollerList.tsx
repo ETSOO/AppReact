@@ -87,9 +87,7 @@ export interface ScrollerListRef {
 /**
  * Scroller list forward ref
  */
-export interface ScrollerListForwardRef<T>
-    extends GridMethodRef<T>,
-        ScrollerListRef {
+export interface ScrollerListForwardRef<T> extends GridMethodRef<T> {
     /**
      * Refresh latest page data
      */
@@ -274,17 +272,31 @@ export const ScrollerList = <
             const refMethods = listRef.current as ScrollerListRef;
 
             return {
+                delete(index) {
+                    const item = rows.at(index);
+                    if (item) {
+                        const newRows = [...rows];
+                        newRows.splice(index, 1);
+                        setRows(newRows);
+                    }
+                    return item;
+                },
+                insert(item, start) {
+                    const newRows = [...rows];
+                    newRows.splice(start, 0, item);
+                    setRows(newRows);
+                },
                 refresh(): void {
                     loadDataLocal(0);
                 },
 
                 reset,
 
-                scrollTo(scrollOffset: number): void {
+                scrollToRef(scrollOffset: number): void {
                     refMethods.scrollTo(scrollOffset);
                 },
 
-                scrollToItem(index: number, align?: Align): void {
+                scrollToItemRef(index: number, align?: Align): void {
                     refMethods.scrollToItem(index, align);
                 }
             };
