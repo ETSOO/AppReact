@@ -1,6 +1,6 @@
 {
     "name": "@etsoo/react",
-    "version": "1.7.26",
+    "version": "1.7.27",
     "description": "TypeScript ReactJs UI Independent Framework",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -50,7 +50,7 @@
         "@emotion/css": "^11.11.2",
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.0",
-        "@etsoo/appscript": "^1.4.76",
+        "@etsoo/appscript": "^1.4.77",
         "@etsoo/notificationbase": "^1.1.35",
         "@etsoo/shared": "^1.2.26",
         "@types/react": "^18.2.60",
