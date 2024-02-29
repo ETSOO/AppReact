@@ -434,14 +434,14 @@ export const ScrollerGrid = <
         };
     }, []);
 
-    // Force update to work with the new width
+    // Force update to work with the new width and rowHeight
     React.useEffect(() => {
         ref.current?.resetAfterIndices({
             columnIndex: 0,
             rowIndex: 0,
             shouldForceUpdate: true
         });
-    }, [width]);
+    }, [width, rowHeight]);
 
     // Rows
     const rowLength = rows.length;
@@ -462,10 +462,11 @@ export const ScrollerGrid = <
         <React.Fragment>
             {headerRenderer && headerRenderer(state)}
             <VariableSizeGrid<T>
-                itemKey={({ columnIndex, rowIndex }) => {
-                    const data = rows[rowIndex];
+                itemKey={({ columnIndex, rowIndex, data }) => {
                     if (data == null) return [rowIndex, columnIndex].join(',');
-                    return [data[idField], columnIndex].join(',');
+                    return [`${data[idField]}-${rowIndex}`, columnIndex].join(
+                        ','
+                    );
                 }}
                 onItemsRendered={onItemsRenderedLocal}
                 ref={ref}
