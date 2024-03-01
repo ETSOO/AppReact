@@ -39,60 +39,60 @@ export type ScrollerGridItemRendererProps<T> = Omit<
 /**
  * Scroller vertical grid props
  */
-export type ScrollerGridProps<
+export interface ScrollerGridProps<
     T extends object,
     D extends DataTypes.Keys<T>
-> = GridLoader<T> &
-    Omit<
-        VariableSizeGridProps<T>,
-        'children' | 'rowCount' | 'rowHeight' | 'ref'
-    > & {
-        /**
-         * Default order by asc
-         * @default true
-         */
-        defaultOrderByAsc?: boolean;
+> extends GridLoader<T>,
+        Omit<
+            VariableSizeGridProps<T>,
+            'children' | 'rowCount' | 'rowHeight' | 'ref'
+        > {
+    /**
+     * Default order by asc
+     * @default true
+     */
+    defaultOrderByAsc?: boolean;
 
-        /**
-         * Footer renderer
-         */
-        footerRenderer?: (
-            rows: T[],
-            states: GridLoaderStates<T>
-        ) => React.ReactNode;
+    /**
+     * Footer renderer
+     */
+    footerRenderer?: (
+        rows: T[],
+        states: GridLoaderStates<T>
+    ) => React.ReactNode;
 
-        /**
-         * Header renderer
-         */
-        headerRenderer?: (states: GridLoaderStates<T>) => React.ReactNode;
+    /**
+     * Header renderer
+     */
+    headerRenderer?: (states: GridLoaderStates<T>) => React.ReactNode;
 
-        /**
-         * Id field
-         */
-        idField?: D;
+    /**
+     * Id field
+     */
+    idField?: D;
 
-        /**
-         * Item renderer
-         */
-        itemRenderer: (
-            props: ScrollerGridItemRendererProps<T>
-        ) => React.ReactElement;
+    /**
+     * Item renderer
+     */
+    itemRenderer: (
+        props: ScrollerGridItemRendererProps<T>
+    ) => React.ReactElement;
 
-        /**
-         * Methods
-         */
-        mRef?: React.Ref<ScrollerGridForwardRef<T>>;
+    /**
+     * Methods
+     */
+    mRef?: React.Ref<ScrollerGridForwardRef<T>>;
 
-        /**
-         * On items select change
-         */
-        onSelectChange?: (selectedItems: T[]) => void;
+    /**
+     * On items select change
+     */
+    onSelectChange?: (selectedItems: T[]) => void;
 
-        /**
-         * Returns the height of the specified row.
-         */
-        rowHeight?: ((index: number) => number) | number;
-    };
+    /**
+     * Returns the height of the specified row.
+     */
+    rowHeight?: ((index: number) => number) | number;
+}
 
 /**
  * Scroller grid forward ref

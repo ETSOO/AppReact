@@ -95,7 +95,7 @@ export type GridLoadDataProps = {
 /**
  * Grid data loader
  */
-export type GridLoader<T extends object> = {
+export interface GridLoader<T extends object> {
     /**
      * Auto load data, otherwise call reset
      * @default true
@@ -137,7 +137,7 @@ export type GridLoader<T extends object> = {
      * Threshold at which to pre-fetch data; default is half of loadBatchSize
      */
     threshold?: number | undefined;
-};
+}
 
 /**
  * Grid loader states
