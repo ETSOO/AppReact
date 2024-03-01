@@ -1,4 +1,4 @@
-import { DataTypes, IdDefaultType, Utils } from '@etsoo/shared';
+import { DataTypes, Utils } from '@etsoo/shared';
 import React from 'react';
 import {
     Align,
@@ -20,10 +20,8 @@ import { GridMethodRef } from './GridMethodRef';
 /**
  * Scroller vertical list props
  */
-export interface ScrollerListProps<
-    T extends object,
-    D extends DataTypes.Keys<T>
-> extends GridLoader<T>,
+export interface ScrollerListProps<T extends object>
+    extends GridLoader<T>,
         Omit<
             ListProps<T>,
             'ref' | 'outerRef' | 'height' | 'width' | 'children' | 'itemCount'
@@ -56,7 +54,7 @@ export interface ScrollerListProps<
     /**
      * Id field
      */
-    idField?: D;
+    idField?: DataTypes.Keys<T>;
 
     /**
      * Item renderer
@@ -108,12 +106,7 @@ const calculateBatchSize = (
  * @param props Props
  * @returns Component
  */
-export const ScrollerList = <
-    T extends object,
-    D extends DataTypes.Keys<T> = IdDefaultType<T>
->(
-    props: ScrollerListProps<T, D>
-) => {
+export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     // Destruct
     const {
         autoLoad = true,
@@ -124,7 +117,7 @@ export const ScrollerList = <
         mRef,
         oRef,
         style = {},
-        idField = 'id' as D,
+        idField = 'id' as DataTypes.Keys<T>,
         itemRenderer,
         itemSize,
         loadBatchSize = calculateBatchSize(height, itemSize),

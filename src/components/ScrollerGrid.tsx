@@ -1,4 +1,4 @@
-import { DataTypes, IdDefaultType } from '@etsoo/shared';
+import { DataTypes } from '@etsoo/shared';
 import React from 'react';
 import {
     Align,
@@ -39,10 +39,8 @@ export type ScrollerGridItemRendererProps<T> = Omit<
 /**
  * Scroller vertical grid props
  */
-export interface ScrollerGridProps<
-    T extends object,
-    D extends DataTypes.Keys<T>
-> extends GridLoader<T>,
+export interface ScrollerGridProps<T extends object>
+    extends GridLoader<T>,
         Omit<
             VariableSizeGridProps<T>,
             'children' | 'rowCount' | 'rowHeight' | 'ref'
@@ -69,7 +67,7 @@ export interface ScrollerGridProps<
     /**
      * Id field
      */
-    idField?: D;
+    idField?: DataTypes.Keys<T>;
 
     /**
      * Item renderer
@@ -158,12 +156,7 @@ export interface ScrollerGridForwardRef<T> extends GridMethodRef<T> {
  * @param props Props
  * @returns Component
  */
-export const ScrollerGrid = <
-    T extends object,
-    D extends DataTypes.Keys<T> = IdDefaultType<T>
->(
-    props: ScrollerGridProps<T, D>
-) => {
+export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
     // Destruct
     const {
         autoLoad = true,
@@ -172,7 +165,7 @@ export const ScrollerGrid = <
         footerRenderer,
         headerRenderer,
         itemRenderer,
-        idField = 'id' as D,
+        idField = 'id' as DataTypes.Keys<T>,
         loadBatchSize,
         loadData,
         mRef,
