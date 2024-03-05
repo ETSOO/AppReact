@@ -21,7 +21,7 @@ test('Tests for EventWatcher', () => {
     render(<App callback={callback} />);
     const button = screen.getByRole<HTMLButtonElement>('button');
     button.click();
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
     button.click();
-    expect(callback).toBeCalledTimes(1);
+    expect(callback).toHaveBeenCalledTimes(1);
 });

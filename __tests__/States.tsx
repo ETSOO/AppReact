@@ -31,7 +31,7 @@ test('Tests for useAsyncState', (done) => {
 
     setTimeout(function () {
         // Expect to happen
-        expect(callback).lastCalledWith(2);
+        expect(callback).toHaveBeenLastCalledWith(2);
 
         // Notify jest to complete
         done();
