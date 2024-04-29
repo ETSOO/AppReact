@@ -145,10 +145,10 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     // Rows
     const [rows, updateRows] = React.useState<T[]>([]);
     const setRows = (rows: T[], reset: boolean = false) => {
-        state.loadedItems = rows.length;
+        stateRefs.current.loadedItems = rows.length;
         updateRows(rows);
 
-        if (!reset && onUpdateRows) onUpdateRows(rows, state);
+        if (!reset && onUpdateRows) onUpdateRows(rows, stateRefs.current);
     };
 
     // States
@@ -165,18 +165,22 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
         selectedItems: [],
         idCache: {}
     });
-    const state = stateRefs.current;
 
     // Load data
     const loadDataLocal = (pageAdd: number = 1) => {
         // Prevent multiple loadings
-        if (!state.hasNextPage || state.isNextPageLoading) return;
+        if (
+            !stateRefs.current.hasNextPage ||
+            stateRefs.current.isNextPageLoading
+        )
+            return;
 
         // Update state
-        state.isNextPageLoading = true;
+        stateRefs.current.isNextPageLoading = true;
 
         // Parameters
-        const { currentPage, batchSize, orderBy, orderByAsc, data } = state;
+        const { currentPage, batchSize, orderBy, orderByAsc, data } =
+            stateRefs.current;
 
         const loadProps: GridLoadDataProps = {
             currentPage,
@@ -187,44 +191,45 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
         };
 
         loadData(loadProps).then((result) => {
-            if (result == null || state.isMounted === false) {
+            if (result == null || stateRefs.current.isMounted === false) {
                 return;
             }
-            state.isMounted = true;
+            stateRefs.current.isMounted = true;
 
             const newItems = result.length;
-            state.lastLoadedItems = newItems;
-            state.hasNextPage = newItems >= batchSize;
-            state.isNextPageLoading = false;
+            stateRefs.current.lastLoadedItems = newItems;
+            stateRefs.current.hasNextPage = newItems >= batchSize;
+            stateRefs.current.isNextPageLoading = false;
 
             if (pageAdd === 0) {
                 // New items
-                const newRows = state.lastLoadedItems
+                const newRows = stateRefs.current.lastLoadedItems
                     ? [...rows]
                           .splice(
-                              rows.length - state.lastLoadedItems,
-                              state.lastLoadedItems
+                              rows.length - stateRefs.current.lastLoadedItems,
+                              stateRefs.current.lastLoadedItems
                           )
                           .concat(result)
                     : result;
 
-                state.idCache = {};
+                stateRefs.current.idCache = {};
                 for (const row of newRows) {
                     const id = row[idField] as any;
-                    state.idCache[id] = null;
+                    stateRefs.current.idCache[id] = null;
                 }
 
                 // Update rows
                 setRows(newRows);
             } else {
-                state.currentPage = state.currentPage + pageAdd;
+                stateRefs.current.currentPage =
+                    stateRefs.current.currentPage + pageAdd;
 
                 // Update rows, avoid duplicate items
                 const newRows = [...rows];
 
                 for (const item of result) {
                     const id = item[idField] as any;
-                    if (state.idCache[id] === undefined) {
+                    if (stateRefs.current.idCache[id] === undefined) {
                         newRows.push(item);
                     }
                 }
@@ -253,10 +258,10 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
             isNextPageLoading: false,
             ...add
         };
-        Object.assign(state, resetState);
+        Object.assign(stateRefs.current, resetState);
 
         // Reset
-        if (state.isMounted !== false) setRows(items, true);
+        if (stateRefs.current.isMounted !== false) setRows(items, true);
     };
 
     React.useImperativeHandle(
@@ -301,7 +306,7 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     React.useEffect(() => {
         // Return clear function
         return () => {
-            state.isMounted = false;
+            stateRefs.current.isMounted = false;
         };
     }, []);
 
@@ -322,10 +327,10 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     };
 
     // Item count
-    const itemCount = state.hasNextPage ? rowCount + 1 : rowCount;
+    const itemCount = stateRefs.current.hasNextPage ? rowCount + 1 : rowCount;
 
     // Auto load data when current page is 0
-    if (state.currentPage === 0 && state.autoLoad) {
+    if (stateRefs.current.currentPage === 0 && stateRefs.current.autoLoad) {
         const initItems =
             onInitLoad == null ? undefined : onInitLoad(listRef.current);
         if (initItems) reset(initItems[1], initItems[0]);
