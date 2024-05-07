@@ -1,3 +1,4 @@
+import { QueryPagingData } from '@etsoo/appscript';
 import { DataTypes, DomUtils } from '@etsoo/shared';
 
 /**
@@ -67,24 +68,9 @@ export type GridJsonData = Omit<GridLoadDataProps, 'data'>;
  */
 export type GridLoadDataProps = {
     /**
-     * Current page
+     * Query paging data
      */
-    currentPage: number;
-
-    /**
-     * Load batch size
-     */
-    batchSize: number;
-
-    /**
-     * Current order field
-     */
-    orderBy?: string;
-
-    /**
-     * Order ascending or not?
-     */
-    orderByAsc?: boolean;
+    queryPaging: QueryPagingData;
 
     /**
      * Data related

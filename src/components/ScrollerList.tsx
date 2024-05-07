@@ -154,14 +154,16 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     // States
     const batchSize = GridSizeGet(loadBatchSize, height);
     const stateRefs = React.useRef<GridLoaderStates<T>>({
+        queryPaging: {
+            currentPage: 0,
+            orderBy: defaultOrderBy,
+            orderByAsc: defaultOrderByAsc,
+            batchSize: batchSize
+        },
         autoLoad,
-        currentPage: 0,
         loadedItems: 0,
         hasNextPage: true,
         isNextPageLoading: false,
-        orderBy: defaultOrderBy,
-        orderByAsc: defaultOrderByAsc,
-        batchSize: batchSize,
         selectedItems: [],
         idCache: {}
     });
@@ -179,14 +181,10 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
         stateRefs.current.isNextPageLoading = true;
 
         // Parameters
-        const { currentPage, batchSize, orderBy, orderByAsc, data } =
-            stateRefs.current;
+        const { queryPaging, data } = stateRefs.current;
 
         const loadProps: GridLoadDataProps = {
-            currentPage,
-            batchSize,
-            orderBy,
-            orderByAsc,
+            queryPaging,
             data
         };
 
@@ -221,8 +219,10 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
                 // Update rows
                 setRows(newRows);
             } else {
-                stateRefs.current.currentPage =
-                    stateRefs.current.currentPage + pageAdd;
+                var currentPage =
+                    stateRefs.current.queryPaging.currentPage ?? 0;
+                stateRefs.current.queryPaging.currentPage =
+                    currentPage + pageAdd;
 
                 // Update rows, avoid duplicate items
                 const newRows = [...rows];
@@ -250,10 +250,13 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     // Reset the state and load again
     const reset = (add?: Partial<GridLoaderStates<T>>, items: T[] = []) => {
         const resetState: Partial<GridLoaderStates<T>> = {
+            queryPaging: {
+                ...stateRefs.current.queryPaging,
+                currentPage: 0
+            },
             autoLoad: true,
             lastLoadedItems: undefined,
             loadedItems: 0,
-            currentPage: 0,
             hasNextPage: true,
             isNextPageLoading: false,
             ...add
@@ -330,7 +333,10 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     const itemCount = stateRefs.current.hasNextPage ? rowCount + 1 : rowCount;
 
     // Auto load data when current page is 0
-    if (stateRefs.current.currentPage === 0 && stateRefs.current.autoLoad) {
+    if (
+        stateRefs.current.queryPaging?.currentPage === 0 &&
+        stateRefs.current.autoLoad
+    ) {
         const initItems =
             onInitLoad == null ? undefined : onInitLoad(listRef.current);
         if (initItems) reset(initItems[1], initItems[0]);
