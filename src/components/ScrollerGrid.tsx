@@ -318,17 +318,19 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
 
     // Reset the state and load again
     const reset = (add?: Partial<GridLoaderStates<T>>, items: T[] = []) => {
+        const { queryPaging, ...rest } = add ?? {};
         const resetState: Partial<GridLoaderStates<T>> = {
             queryPaging: {
                 ...refs.current.queryPaging,
-                currentPage: 0
+                currentPage: 0,
+                ...queryPaging
             },
             autoLoad: true,
             loadedItems: 0,
             hasNextPage: true,
             isNextPageLoading: false,
             lastLoadedItems: undefined,
-            ...add
+            ...rest
         };
         Object.assign(refs.current, resetState);
 
