@@ -7,7 +7,12 @@ import {
     VariableSizeGrid,
     VariableSizeGridProps
 } from 'react-window';
-import { GridLoadDataProps, GridLoader, GridLoaderStates } from './GridLoader';
+import {
+    GridLoadDataProps,
+    GridLoader,
+    GridLoaderPartialStates,
+    GridLoaderStates
+} from './GridLoader';
 import { GridMethodRef } from './GridMethodRef';
 
 export type ScrollerGridItemRendererProps<T> = Omit<
@@ -317,11 +322,10 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
     };
 
     // Reset the state and load again
-    const reset = (add?: Partial<GridLoaderStates<T>>, items: T[] = []) => {
+    const reset = (add?: GridLoaderPartialStates<T>, items: T[] = []) => {
         const { queryPaging, ...rest } = add ?? {};
-        const resetState: Partial<GridLoaderStates<T>> = {
+        const resetState: GridLoaderPartialStates<T> = {
             queryPaging: {
-                ...refs.current.queryPaging,
                 currentPage: 0,
                 ...queryPaging
             },

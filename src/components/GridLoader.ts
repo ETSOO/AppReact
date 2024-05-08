@@ -125,7 +125,7 @@ export interface GridLoader<T extends object> {
      */
     onInitLoad?: (
         ref: any
-    ) => [T[], Partial<GridLoaderStates<T>>?] | null | undefined;
+    ) => [T[], GridLoaderPartialStates<T>?] | null | undefined;
 
     /**
      * Handler for updating rows

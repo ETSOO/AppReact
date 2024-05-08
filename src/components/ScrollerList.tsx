@@ -12,6 +12,7 @@ import { useCombinedRefs } from '../uses/useCombinedRefs';
 import {
     GridLoadDataProps,
     GridLoader,
+    GridLoaderPartialStates,
     GridLoaderStates,
     GridSizeGet
 } from './GridLoader';
@@ -248,9 +249,9 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     };
 
     // Reset the state and load again
-    const reset = (add?: Partial<GridLoaderStates<T>>, items: T[] = []) => {
+    const reset = (add?: GridLoaderPartialStates<T>, items: T[] = []) => {
         const { queryPaging, ...rest } = add ?? {};
-        const resetState: Partial<GridLoaderStates<T>> = {
+        const resetState: GridLoaderPartialStates<T> = {
             queryPaging: {
                 ...stateRefs.current.queryPaging,
                 currentPage: 0,
