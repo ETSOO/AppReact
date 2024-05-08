@@ -1,5 +1,5 @@
 import { Align } from 'react-window';
-import { GridLoaderStates } from './GridLoader';
+import { GridLoaderPartialStates } from './GridLoader';
 
 /**
  * Grid method ref
@@ -22,7 +22,7 @@ export interface GridMethodRef<T> {
      * Reset
      * @param add Additional data
      */
-    reset(add?: Partial<GridLoaderStates<T>>): void;
+    reset(add?: GridLoaderPartialStates<T>): void;
 
     /**
      * Scroll to the specified offset (scrollTop or scrollLeft, depending on the direction prop).

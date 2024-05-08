@@ -79,6 +79,21 @@ export type GridLoadDataProps = {
 };
 
 /**
+ * Grid data load partial props
+ */
+export type GridLoadDataPartialProps = {
+    /**
+     * Query paging data
+     */
+    queryPaging?: Partial<QueryPagingData>;
+
+    /**
+     * Data related
+     */
+    data?: GridData;
+};
+
+/**
  * Grid data loader
  */
 export interface GridLoader<T extends object> {
@@ -125,10 +140,7 @@ export interface GridLoader<T extends object> {
     threshold?: number | undefined;
 }
 
-/**
- * Grid loader states
- */
-export type GridLoaderStates<T> = GridLoadDataProps & {
+type GridLoaderProps<T> = {
     /**
      * Auto load data, otherwise call reset
      * @default true
@@ -170,3 +182,14 @@ export type GridLoaderStates<T> = GridLoadDataProps & {
      */
     idCache: Record<any, null>;
 };
+
+/**
+ * Grid loader states
+ */
+export type GridLoaderStates<T> = GridLoadDataProps & GridLoaderProps<T>;
+
+/**
+ * Grid loader states
+ */
+export type GridLoaderPartialStates<T> = GridLoadDataPartialProps &
+    Partial<GridLoaderProps<T>>;
