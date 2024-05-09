@@ -159,7 +159,7 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
             currentPage: 0,
             orderBy: defaultOrderBy,
             orderByAsc: defaultOrderByAsc,
-            batchSize: batchSize
+            batchSize
         },
         autoLoad,
         loadedItems: 0,
@@ -220,10 +220,7 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
                 // Update rows
                 setRows(newRows);
             } else {
-                var currentPage =
-                    stateRefs.current.queryPaging.currentPage ?? 0;
-                stateRefs.current.queryPaging.currentPage =
-                    currentPage + pageAdd;
+                stateRefs.current.queryPaging.currentPage += pageAdd;
 
                 // Update rows, avoid duplicate items
                 const newRows = [...rows];
@@ -252,11 +249,6 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     const reset = (add?: GridLoaderPartialStates<T>, items: T[] = []) => {
         const { queryPaging, ...rest } = add ?? {};
         const resetState: GridLoaderPartialStates<T> = {
-            queryPaging: {
-                ...stateRefs.current.queryPaging,
-                currentPage: 0,
-                ...queryPaging
-            },
             autoLoad: true,
             lastLoadedItems: undefined,
             loadedItems: 0,
@@ -265,6 +257,10 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
             ...rest
         };
         Object.assign(stateRefs.current, resetState);
+        Object.assign(stateRefs.current.queryPaging, {
+            currentPage: 0,
+            ...queryPaging
+        });
 
         // Reset
         if (stateRefs.current.isMounted !== false) setRows(items, true);

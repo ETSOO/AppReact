@@ -260,8 +260,7 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
                 setRows(newRows);
             } else {
                 // Set current page
-                var currentPage = refs.current.queryPaging.currentPage ?? 0;
-                refs.current.queryPaging.currentPage = currentPage + pageAdd;
+                refs.current.queryPaging.currentPage += pageAdd;
 
                 // Update rows, avoid duplicate items
                 const newRows = [...rows];
@@ -325,10 +324,6 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
     const reset = (add?: GridLoaderPartialStates<T>, items: T[] = []) => {
         const { queryPaging, ...rest } = add ?? {};
         const resetState: GridLoaderPartialStates<T> = {
-            queryPaging: {
-                currentPage: 0,
-                ...queryPaging
-            },
             autoLoad: true,
             loadedItems: 0,
             hasNextPage: true,
@@ -337,6 +332,10 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
             ...rest
         };
         Object.assign(refs.current, resetState);
+        Object.assign(refs.current.queryPaging, {
+            currentPage: 0,
+            ...queryPaging
+        });
 
         // Reset items
         if (refs.current.isMounted !== false) setRows(items, true);
