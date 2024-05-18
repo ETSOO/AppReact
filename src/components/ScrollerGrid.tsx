@@ -46,10 +46,7 @@ export type ScrollerGridItemRendererProps<T> = Omit<
  */
 export interface ScrollerGridProps<T extends object>
     extends GridLoader<T>,
-        Omit<
-            VariableSizeGridProps<T>,
-            'children' | 'rowCount' | 'rowHeight' | 'ref'
-        > {
+        Omit<VariableSizeGridProps<T>, 'children' | 'rowCount' | 'rowHeight'> {
     /**
      * Default order by asc
      * @default true

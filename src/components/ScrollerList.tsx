@@ -25,7 +25,7 @@ export interface ScrollerListProps<T extends object>
     extends GridLoader<T>,
         Omit<
             ListProps<T>,
-            'ref' | 'outerRef' | 'height' | 'width' | 'children' | 'itemCount'
+            'outerRef' | 'height' | 'width' | 'children' | 'itemCount' // Exclude these props, shoud be exisited otherwise will be failed
         > {
     /**
      * Default order by asc/desc
