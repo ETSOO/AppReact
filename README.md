@@ -15,7 +15,4 @@ Using yarn:
 $ yarn add @etsoo/react
 ```
 
-## UI Implmentation
-
-- @etsoo/materialui, targeting administration applications
-- @etsoo/bootstrap, targeting websites
+## React UI Implmentation

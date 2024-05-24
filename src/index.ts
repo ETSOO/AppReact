@@ -20,6 +20,9 @@ export type {
     VariableSizeGrid
 } from 'react-window';
 
+// custom
+export * from './custom/CustomFieldReact';
+
 // notifier
 export * from './notifier/Notifier';
 export * from '@etsoo/notificationbase';
