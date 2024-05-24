@@ -9,14 +9,18 @@ import {
  * React custom field interface
  * React自定义字段接口
  */
-export interface ICustomFieldReact<D extends CustomFieldData = CustomFieldData>
-    extends ICustomField<D, React.JSX.Element> {}
+export interface ICustomFieldReact<
+    V,
+    D extends CustomFieldData = CustomFieldData
+> extends ICustomField<V, D, CustomFieldReactProps<V, D>, React.JSX.Element> {}
 
 /**
  * React custom field props
  * React自定义字段属性
  */
-export type CustomFieldReactProps<D extends CustomFieldData = CustomFieldData> =
-    CustomFieldProps<D> & {
-        mref: React.Ref<CustomFieldRef>;
-    };
+export type CustomFieldReactProps<
+    V,
+    D extends CustomFieldData = CustomFieldData
+> = CustomFieldProps<D, V> & {
+    mref: React.Ref<CustomFieldRef<V>>;
+};
