@@ -24,3 +24,12 @@ export type CustomFieldReactProps<
 > = CustomFieldProps<D, V> & {
     mref: React.Ref<CustomFieldRef<V>>;
 };
+
+/**
+ * React custom field renderer collection
+ * React自定义字段渲染结果集合
+ */
+export type CustomFieldReactCollection<D extends CustomFieldData> = Record<
+    string,
+    [React.RefObject<CustomFieldRef<unknown>>, D]
+>;
