@@ -8,8 +8,8 @@ import React from 'react';
  */
 export function useRefs<F extends ReadonlyArray<string>, T = HTMLInputElement>(
     fields: F
-): DataTypes.DI<F, React.MutableRefObject<T | undefined>> {
-    const refs: Record<string, React.MutableRefObject<T | undefined>> = {};
-    fields.forEach((field) => (refs[field] = React.useRef<T>()));
+): DataTypes.DI<F, React.MutableRefObject<T | null>> {
+    const refs: Record<string, React.MutableRefObject<T | null>> = {};
+    fields.forEach((field) => (refs[field] = React.useRef<T>(null)));
     return refs as any;
 }
