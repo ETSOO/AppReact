@@ -110,7 +110,7 @@ export namespace ReactUtils {
         refs: Partial<
             DataTypes.DI<
                 ReadonlyArray<keyof D & string>,
-                React.MutableRefObject<T | undefined>
+                React.MutableRefObject<T | null>
             >
         >,
         data: D,
@@ -169,7 +169,7 @@ export namespace ReactUtils {
         refs: Partial<
             DataTypes.DI<
                 ReadonlyArray<keyof D & string>,
-                React.MutableRefObject<T | undefined>
+                React.MutableRefObject<T | null>
             >
         >,
         data: D,
