@@ -200,7 +200,8 @@ export namespace ReactUtils {
                 Utils.setNestedValue(
                     data,
                     item.name || k,
-                    formatValue(DomUtils.getInputValue(item))
+                    formatValue(DomUtils.getInputValue(item)),
+                    true
                 );
             } else if (
                 item instanceof HTMLTextAreaElement ||
@@ -209,7 +210,8 @@ export namespace ReactUtils {
                 Utils.setNestedValue(
                     data,
                     item.name || k,
-                    formatValue(item.value)
+                    formatValue(item.value),
+                    true
                 );
             } else {
                 data[k] = (item as any).value;
