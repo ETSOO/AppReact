@@ -217,6 +217,15 @@ export abstract class NotifierReact
             // Hold the current state update
             this.stateUpdate = update;
 
+            // Debug
+            if (this.debug) {
+                console.debug(
+                    'NotifierReact.createProvider.render',
+                    state,
+                    props
+                );
+            }
+
             // Aligns collection
             const aligns: React.ReactNode[] = [];
             for (const align in state) {
