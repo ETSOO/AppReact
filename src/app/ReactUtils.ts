@@ -61,7 +61,7 @@ export namespace ReactUtils {
     export function triggerChange(
         input: HTMLInputElement,
         value: string,
-        cancelable: boolean
+        cancelable: boolean = false
     ) {
         // Radio type not supported
         if (input.type === 'radio') return;
