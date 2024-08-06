@@ -135,20 +135,13 @@ export interface INotifierReact
     /**
      * Create state provider
      * @param className Style class name
-     * @param optionGenerator Options generator
+     * @param debug Is debug mode
      * @returns Provider
      */
     createProvider(
         className?: string,
-        optionGenerator?: INotifierOptions
+        debug?: boolean
     ): React.FunctionComponent<NotificationReactRenderProps>;
-}
-
-/**
- * Notifier options generator
- */
-export interface INotifierOptions {
-    (): any;
 }
 
 /**
@@ -181,6 +174,16 @@ export abstract class NotifierReact
      */
     protected constructor() {
         super((notification, dismiss) => {
+            // Debug
+            if (this.debug) {
+                console.debug(
+                    'NotifierReact.updateCallback',
+                    notification,
+                    dismiss,
+                    this.loadingCount
+                );
+            }
+
             // Make sure the state update is set
             if (this.stateUpdate) this.stateUpdate({ notification, dismiss });
         });
@@ -207,7 +210,7 @@ export abstract class NotifierReact
      * @param className Style class name
      * @returns Provider
      */
-    createProvider(className?: string) {
+    createProvider(className?: string, debug?: boolean) {
         // Custom creator
         const creator = (
             state: ReactNotifications,
@@ -216,15 +219,6 @@ export abstract class NotifierReact
         ) => {
             // Hold the current state update
             this.stateUpdate = update;
-
-            // Debug
-            if (this.debug) {
-                console.debug(
-                    'NotifierReact.createProvider.render',
-                    state,
-                    props
-                );
-            }
 
             // Aligns collection
             const aligns: React.ReactNode[] = [];
@@ -242,6 +236,16 @@ export abstract class NotifierReact
 
                 // Add to the collection
                 aligns.push(this.createContainer(Number(align), ui));
+            }
+
+            // Debug
+            if (debug) {
+                console.debug(
+                    'NotifierReact.createProvider',
+                    className,
+                    state,
+                    aligns
+                );
             }
 
             // Generate the component
