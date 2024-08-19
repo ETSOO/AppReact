@@ -20,5 +20,5 @@ export namespace CoreConstants {
     /**
      * Refresh token header field name
      */
-    export const TokenHeaderRefresh = 'SmartERPRefreshToken';
+    export const TokenHeaderRefresh = 'Smarterp-Refresh-Token';
 }
