@@ -64,9 +64,14 @@ export interface NotificationReactCallProps extends NotificationCallProps {
     type?: string;
 
     /**
+     * false to hide primary button
+     */
+    primaryButton?: boolean;
+
+    /**
      * Primary button props
      */
-    primaryButton?: {};
+    primaryButtonProps?: {};
 
     /**
      * Buttons to override default buttons
