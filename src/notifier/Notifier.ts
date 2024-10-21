@@ -59,6 +59,11 @@ export interface NotificationReactCallProps extends NotificationCallProps {
     closable?: boolean;
 
     /**
+     * Draggable
+     */
+    draggable?: boolean;
+
+    /**
      * Type
      */
     type?: string;
