@@ -1,6 +1,12 @@
 import { BridgeUtils, IBridgeHost } from '@etsoo/appscript';
 import React from 'react';
-import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import {
+    BrowserRouter,
+    createBrowserRouter,
+    createMemoryRouter,
+    MemoryRouter,
+    RouteObject
+} from 'react-router-dom';
 
 /**
  * Dynamic router props
@@ -37,4 +43,23 @@ export function DynamicRouter(
             {children}
         </MemoryRouter>
     );
+}
+
+/**
+ * Create dynamic router
+ * @param routes Routes
+ * @param opts Options
+ * @returns Router
+ */
+export function createDynamicRouter(
+    routes: RouteObject[],
+    opts?: DynamicRouterProps
+) {
+    // Is host?
+    const host = BridgeUtils.host;
+    if (host == null) {
+        return createBrowserRouter(routes, opts);
+    } else {
+        return createMemoryRouter(routes, opts);
+    }
 }
