@@ -1,5 +1,5 @@
-import { QueryPagingData } from '@etsoo/appscript';
-import { DataTypes, DomUtils } from '@etsoo/shared';
+import { QueryPagingData } from "@etsoo/appscript";
+import { DataTypes, DomUtils } from "@etsoo/shared";
 
 /**
  * Grid size
@@ -12,8 +12,8 @@ export type GridSize = number | ((input: number) => number);
  * @param input Input
  */
 export const GridSizeGet = (size: GridSize, input: number) => {
-    if (typeof size === 'function') return size(input);
-    return size;
+  if (typeof size === "function") return size(input);
+  return size;
 };
 
 /**
@@ -27,14 +27,14 @@ export type GridData = FormData | DataTypes.StringRecord;
  * @returns Json data
  */
 export function GridDataGet<F extends DataTypes.BasicTemplate>(
-    props: GridLoadDataProps,
-    template?: F
+  props: GridLoadDataProps,
+  template?: F
 ): GridJsonData & DataTypes.BasicTemplateType<F> {
-    // Destruct
-    const { data, ...rest } = props;
+  // Destruct
+  const { data, ...rest } = props;
 
-    // DomUtils.dataAs(data, template);
-    return { ...GridDataGetData(data, template), ...rest };
+  // DomUtils.dataAs(data, template);
+  return { ...GridDataGetData(data, template), ...rest };
 }
 
 /**
@@ -43,144 +43,144 @@ export function GridDataGet<F extends DataTypes.BasicTemplate>(
  * @returns Json data
  */
 export function GridDataGetData<F extends DataTypes.BasicTemplate>(
-    data?: GridData,
-    template?: F
+  data?: GridData,
+  template?: F
 ): DataTypes.BasicTemplateType<F> {
-    // Clear form empty value
-    if (data instanceof FormData) {
-        DomUtils.clearFormData(data);
-    }
+  // Clear form empty value
+  if (data instanceof FormData) {
+    DomUtils.clearFormData(data);
+  }
 
-    // Conditions
-    const conditions: DataTypes.BasicTemplateType<F> =
-        data == null ? {} : DomUtils.dataAs(data, template ?? {}, true); // Set keepSource to true to hold form data, even they are invisible from the conditions
+  // Conditions
+  const conditions: DataTypes.BasicTemplateType<F> =
+    data == null ? {} : DomUtils.dataAs(data, template ?? {}, true); // Set keepSource to true to hold form data, even they are invisible from the conditions
 
-    return conditions;
+  return conditions;
 }
 
 /**
  * Grid Json data
  */
-export type GridJsonData = Omit<GridLoadDataProps, 'data'>;
+export type GridJsonData = Omit<GridLoadDataProps, "data">;
 
 /**
  * Grid data load props
  */
 export type GridLoadDataProps = {
-    /**
-     * Query paging data
-     */
-    queryPaging: QueryPagingData;
+  /**
+   * Query paging data
+   */
+  queryPaging: QueryPagingData;
 
-    /**
-     * Data related
-     */
-    data?: GridData;
+  /**
+   * Data related
+   */
+  data?: GridData;
 };
 
 /**
  * Grid data load partial props
  */
 export type GridLoadDataPartialProps = {
-    /**
-     * Query paging data
-     */
-    queryPaging?: Partial<QueryPagingData>;
+  /**
+   * Query paging data
+   */
+  queryPaging?: Partial<QueryPagingData>;
 
-    /**
-     * Data related
-     */
-    data?: GridData;
+  /**
+   * Data related
+   */
+  data?: GridData;
 };
 
 /**
  * Grid data loader
  */
 export interface GridLoader<T extends object> {
-    /**
-     * Auto load data, otherwise call reset
-     * @default true
-     */
-    autoLoad?: boolean;
+  /**
+   * Auto load data, otherwise call reset
+   * @default true
+   */
+  autoLoad?: boolean;
 
-    /**
-     * Default order by
-     */
-    defaultOrderBy?: string;
+  /**
+   * Default order by
+   */
+  defaultOrderBy?: Record<string, boolean>;
 
-    /**
-     * Batch size when load data, default will be calcuated with height and itemSize
-     */
-    loadBatchSize?: GridSize;
+  /**
+   * Batch size when load data, default will be calcuated with height and itemSize
+   */
+  loadBatchSize?: GridSize;
 
-    /**
-     * Load data
-     */
-    loadData: (props: GridLoadDataProps) => PromiseLike<T[] | null | undefined>;
+  /**
+   * Load data
+   */
+  loadData: (props: GridLoadDataProps) => PromiseLike<T[] | null | undefined>;
 
-    /**
-     * Handler for init load
-     * @param ref Ref
-     * @returns Result
-     */
-    onInitLoad?: (
-        ref: any
-    ) => [T[], GridLoaderPartialStates<T>?] | null | undefined;
+  /**
+   * Handler for init load
+   * @param ref Ref
+   * @returns Result
+   */
+  onInitLoad?: (
+    ref: any
+  ) => [T[], GridLoaderPartialStates<T>?] | null | undefined;
 
-    /**
-     * Handler for updating rows
-     * @param rows Rows
-     * @param state State
-     */
-    onUpdateRows?: (rows: T[], state: GridLoaderStates<T>) => void;
+  /**
+   * Handler for updating rows
+   * @param rows Rows
+   * @param state State
+   */
+  onUpdateRows?: (rows: T[], state: GridLoaderStates<T>) => void;
 
-    /**
-     * Threshold at which to pre-fetch data; default is half of loadBatchSize
-     */
-    threshold?: number | undefined;
+  /**
+   * Threshold at which to pre-fetch data; default is half of loadBatchSize
+   */
+  threshold?: number | undefined;
 }
 
 type GridLoaderProps<T> = {
-    /**
-     * Auto load data, otherwise call reset
-     * @default true
-     */
-    autoLoad: boolean;
+  /**
+   * Auto load data, otherwise call reset
+   * @default true
+   */
+  autoLoad: boolean;
 
-    /**
-     * Last loaded items
-     */
-    lastLoadedItems?: number;
+  /**
+   * Last loaded items
+   */
+  lastLoadedItems?: number;
 
-    /**
-     * All loaded items count
-     */
-    loadedItems: number;
+  /**
+   * All loaded items count
+   */
+  loadedItems: number;
 
-    /**
-     * Has next page?
-     */
-    hasNextPage: boolean;
+  /**
+   * Has next page?
+   */
+  hasNextPage: boolean;
 
-    /**
-     * Is next page loading?
-     */
-    isNextPageLoading: boolean;
+  /**
+   * Is next page loading?
+   */
+  isNextPageLoading: boolean;
 
-    /**
-     * Is mounted
-     */
-    isMounted?: boolean;
+  /**
+   * Is mounted
+   */
+  isMounted?: boolean;
 
-    /**
-     * Selected items of id
-     */
-    selectedItems: T[];
+  /**
+   * Selected items of id
+   */
+  selectedItems: T[];
 
-    /**
-     * Id cache
-     */
-    idCache: Record<any, null>;
+  /**
+   * Id cache
+   */
+  idCache: Record<any, null>;
 };
 
 /**
@@ -192,4 +192,4 @@ export type GridLoaderStates<T> = GridLoadDataProps & GridLoaderProps<T>;
  * Grid loader states
  */
 export type GridLoaderPartialStates<T> = GridLoadDataPartialProps &
-    Partial<GridLoaderProps<T>>;
+  Partial<GridLoaderProps<T>>;

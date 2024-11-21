@@ -1,5 +1,5 @@
-import { ListItem } from '@etsoo/appscript';
-import React from 'react';
+import { ListItem } from "@etsoo/appscript";
+import React from "react";
 
 /**
  * React list item
