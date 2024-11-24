@@ -1,5 +1,5 @@
 import { DataTypes, DomUtils } from "@etsoo/shared";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 /**
  * Extended useSearchParams of react-router-dom

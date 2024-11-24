@@ -1,5 +1,5 @@
 import { DataTypes, DomUtils } from "@etsoo/shared";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 /**
  * Extended useParams of react-router-dom

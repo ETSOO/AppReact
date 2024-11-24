@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { IScrollPos, useWindowScroll } from "../uses/useWindowScroll";
 
 const urls: Record<string, IScrollPos | undefined> = {};

@@ -6,7 +6,7 @@ import {
   createMemoryRouter,
   MemoryRouter,
   RouteObject
-} from "react-router-dom";
+} from "react-router";
 
 /**
  * Dynamic router props
