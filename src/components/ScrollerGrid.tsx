@@ -211,7 +211,7 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
       data
     };
 
-    loadData(loadProps).then((result) => {
+    loadData(loadProps, refs.current.lastItem).then((result) => {
       if (result == null || refs.current.isMounted === false) {
         return;
       }
@@ -219,6 +219,7 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
 
       const newItems = result.length;
       refs.current.lastLoadedItems = newItems;
+      refs.current.lastItem = result.at(-1);
       refs.current.isNextPageLoading = false;
       refs.current.hasNextPage = newItems >= refs.current.queryPaging.batchSize;
 

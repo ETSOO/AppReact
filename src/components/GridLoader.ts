@@ -116,7 +116,10 @@ export interface GridLoader<T extends object> {
   /**
    * Load data
    */
-  loadData: (props: GridLoadDataProps) => PromiseLike<T[] | null | undefined>;
+  loadData: (
+    props: GridLoadDataProps,
+    lastItem?: T
+  ) => PromiseLike<T[] | null | undefined>;
 
   /**
    * Handler for init load
@@ -146,6 +149,11 @@ type GridLoaderProps<T> = {
    * @default true
    */
   autoLoad: boolean;
+
+  /**
+   * Last loaded item
+   */
+  lastItem?: T;
 
   /**
    * Last loaded items
