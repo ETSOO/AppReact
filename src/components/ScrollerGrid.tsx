@@ -310,6 +310,7 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
       hasNextPage: true,
       isNextPageLoading: false,
       lastLoadedItems: undefined,
+      lastItem: undefined,
       ...rest
     };
     Object.assign(refs.current, resetState);

@@ -243,10 +243,11 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     const { queryPaging, ...rest } = add ?? {};
     const resetState: GridLoaderPartialStates<T> = {
       autoLoad: true,
-      lastLoadedItems: undefined,
       loadedItems: 0,
       hasNextPage: true,
       isNextPageLoading: false,
+      lastLoadedItems: undefined,
+      lastItem: undefined,
       ...rest
     };
     Object.assign(stateRefs.current, resetState);
