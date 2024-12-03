@@ -106,7 +106,7 @@ export interface GridLoader<T extends object> {
   /**
    * Default order by
    */
-  defaultOrderBy?: Record<string, boolean>;
+  defaultOrderBy?: Map<string, boolean>;
 
   /**
    * Batch size when load data, default will be calcuated with height and itemSize
