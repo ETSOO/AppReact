@@ -179,7 +179,7 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
       data
     };
 
-    loadData(loadProps).then((result) => {
+    loadData(loadProps, stateRefs.current.lastItem).then((result) => {
       if (result == null || stateRefs.current.isMounted === false) {
         return;
       }
@@ -187,6 +187,7 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
 
       const newItems = result.length;
       stateRefs.current.lastLoadedItems = newItems;
+      stateRefs.current.lastItem = result.at(-1);
       stateRefs.current.hasNextPage = newItems >= batchSize;
       stateRefs.current.isNextPageLoading = false;
 
