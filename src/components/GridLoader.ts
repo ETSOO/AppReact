@@ -1,4 +1,4 @@
-import { QueryPagingData } from "@etsoo/appscript";
+import { QueryPagingData, QueryPagingOrder } from "@etsoo/appscript";
 import { DataTypes, DomUtils } from "@etsoo/shared";
 
 /**
@@ -106,7 +106,7 @@ export interface GridLoader<T extends object> {
   /**
    * Default order by
    */
-  defaultOrderBy?: Map<string, boolean>;
+  defaultOrderBy?: QueryPagingOrder[];
 
   /**
    * Batch size when load data, default will be calcuated with height and itemSize
