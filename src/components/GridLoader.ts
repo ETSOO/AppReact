@@ -22,38 +22,58 @@ export const GridSizeGet = (size: GridSize, input: number) => {
 export type GridData = FormData | DataTypes.StringRecord;
 
 /**
+ * Grid template type
+ */
+export type GridTemplateType<o extends object> = DataTypes.BasicTemplateType<{
+  [k in keyof o]: k extends "date"
+    ? "date" | "string"
+    : k extends DataTypes.BasicNames
+    ? DataTypes.BasicNames
+    : never;
+}>;
+
+/**
  * Grid data get with format
  * @param data Data
+ * @param template Template
+ * @param keepSource Keep source data
  * @returns Json data
  */
-export function GridDataGet<F extends DataTypes.BasicTemplate>(
+export function GridDataGet(
   props: GridLoadDataProps,
-  template?: F
-): GridJsonData & DataTypes.BasicTemplateType<F> {
+  template: object = {} satisfies DataTypes.BasicTemplate,
+  keepSource: boolean = true
+): GridJsonData & GridTemplateType<typeof template> {
   // Destruct
   const { data, ...rest } = props;
 
   // DomUtils.dataAs(data, template);
-  return { ...GridDataGetData(data, template), ...rest };
+  return { ...GridDataGetData(data, template, keepSource), ...rest };
 }
 
 /**
  * Grid data get with format
  * @param data Data
+ * @param template Template
+ * @param keepSource Keep source data
  * @returns Json data
  */
-export function GridDataGetData<F extends DataTypes.BasicTemplate>(
+export function GridDataGetData(
   data?: GridData,
-  template?: F
-): DataTypes.BasicTemplateType<F> {
+  template: object = {} satisfies DataTypes.BasicTemplate,
+  keepSource: boolean = true
+): GridTemplateType<typeof template> {
   // Clear form empty value
   if (data instanceof FormData) {
     DomUtils.clearFormData(data);
   }
 
   // Conditions
-  const conditions: DataTypes.BasicTemplateType<F> =
-    data == null ? {} : DomUtils.dataAs(data, template ?? {}, true); // Set keepSource to true to hold form data, even they are invisible from the conditions
+  // Set keepSource to true to hold form data, even they are invisible from the conditions
+  const conditions: GridTemplateType<typeof template> =
+    data == null
+      ? {}
+      : DomUtils.dataAs(data, template as DataTypes.BasicTemplate, keepSource);
 
   return conditions;
 }
