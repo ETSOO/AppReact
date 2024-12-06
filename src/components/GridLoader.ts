@@ -24,11 +24,11 @@ export type GridData = FormData | DataTypes.StringRecord;
 /**
  * Grid template type
  */
-export type GridTemplateType<o extends object> = DataTypes.BasicTemplateType<{
-  [k in keyof o]: k extends "date"
+export type GridTemplateType<T> = DataTypes.BasicTemplateType<{
+  [k in keyof T]: T[k] extends "date"
     ? "date" | "string"
-    : k extends DataTypes.BasicNames
-    ? DataTypes.BasicNames
+    : T[k] extends DataTypes.BasicNames
+    ? T[k]
     : never;
 }>;
 
@@ -39,16 +39,16 @@ export type GridTemplateType<o extends object> = DataTypes.BasicTemplateType<{
  * @param keepSource Keep source data
  * @returns Json data
  */
-export function GridDataGet(
+export function GridDataGet<const T>(
   props: GridLoadDataProps,
-  template: object = {} satisfies DataTypes.BasicTemplate,
-  keepSource: boolean = true
-): GridJsonData & GridTemplateType<typeof template> {
+  template?: T,
+  keepSource?: boolean
+): GridJsonData & GridTemplateType<T> {
   // Destruct
   const { data, ...rest } = props;
 
   // DomUtils.dataAs(data, template);
-  return { ...GridDataGetData(data, template, keepSource), ...rest };
+  return { ...GridDataGetData<T>(data, template, keepSource), ...rest };
 }
 
 /**
@@ -58,11 +58,11 @@ export function GridDataGet(
  * @param keepSource Keep source data
  * @returns Json data
  */
-export function GridDataGetData(
+export function GridDataGetData<const T>(
   data?: GridData,
-  template: object = {} satisfies DataTypes.BasicTemplate,
-  keepSource: boolean = true
-): GridTemplateType<typeof template> {
+  template?: T,
+  keepSource?: boolean
+): GridTemplateType<T> {
   // Clear form empty value
   if (data instanceof FormData) {
     DomUtils.clearFormData(data);
@@ -70,12 +70,12 @@ export function GridDataGetData(
 
   // Conditions
   // Set keepSource to true to hold form data, even they are invisible from the conditions
-  const conditions: GridTemplateType<typeof template> =
+  const conditions =
     data == null
       ? {}
       : DomUtils.dataAs(data, template as DataTypes.BasicTemplate, keepSource);
 
-  return conditions;
+  return conditions as any;
 }
 
 /**
