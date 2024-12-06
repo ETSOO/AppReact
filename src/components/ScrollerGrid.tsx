@@ -8,6 +8,7 @@ import {
   VariableSizeGridProps
 } from "react-window";
 import {
+  GridJsonData,
   GridLoadDataProps,
   GridLoader,
   GridLoaderPartialStates,
@@ -44,7 +45,10 @@ export type ScrollerGridItemRendererProps<T> = Omit<
 /**
  * Scroller vertical grid props
  */
-export type ScrollerGridProps<T extends object> = GridLoader<T> &
+export type ScrollerGridProps<
+  T extends object,
+  P extends GridJsonData = GridLoadDataProps
+> = GridLoader<T, P> &
   Omit<VariableSizeGridProps<T>, "children" | "rowCount" | "rowHeight"> & {
     /**
      * Footer renderer
