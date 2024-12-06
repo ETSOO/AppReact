@@ -21,47 +21,46 @@ import { GridMethodRef } from "./GridMethodRef";
 /**
  * Scroller vertical list props
  */
-export interface ScrollerListProps<T extends object>
-  extends GridLoader<T>,
-    Omit<
-      ListProps<T>,
-      "outerRef" | "height" | "width" | "children" | "itemCount" // Exclude these props, shoud be exisited otherwise will be failed
-    > {
-  /**
-   * Methods ref
-   */
-  mRef?: React.Ref<ScrollerListForwardRef<T>>;
+export type ScrollerListProps<T extends object> = GridLoader<T> &
+  Omit<
+    ListProps<T>,
+    "outerRef" | "height" | "width" | "children" | "itemCount" // Exclude these props, shoud be exisited otherwise will be failed
+  > & {
+    /**
+     * Methods ref
+     */
+    mRef?: React.Ref<ScrollerListForwardRef<T>>;
 
-  /**
-   * Outer div ref
-   */
-  oRef?: React.Ref<HTMLDivElement>;
+    /**
+     * Outer div ref
+     */
+    oRef?: React.Ref<HTMLDivElement>;
 
-  /**
-   * Height of the list
-   */
-  height?: number;
+    /**
+     * Height of the list
+     */
+    height?: number;
 
-  /**
-   * Width of the list
-   */
-  width?: number | string;
+    /**
+     * Width of the list
+     */
+    width?: number | string;
 
-  /**
-   * Id field
-   */
-  idField?: DataTypes.Keys<T>;
+    /**
+     * Id field
+     */
+    idField?: DataTypes.Keys<T>;
 
-  /**
-   * Item renderer
-   */
-  itemRenderer: (props: ListChildComponentProps<T>) => React.ReactElement;
+    /**
+     * Item renderer
+     */
+    itemRenderer: (props: ListChildComponentProps<T>) => React.ReactElement;
 
-  /**
-   * Item size, a function indicates its a variable size list
-   */
-  itemSize: ((index: number) => number) | number;
-}
+    /**
+     * Item size, a function indicates its a variable size list
+     */
+    itemSize: ((index: number) => number) | number;
+  };
 
 /**
  * Scroller list ref

@@ -44,44 +44,48 @@ export type ScrollerGridItemRendererProps<T> = Omit<
 /**
  * Scroller vertical grid props
  */
-export interface ScrollerGridProps<T extends object>
-  extends GridLoader<T>,
-    Omit<VariableSizeGridProps<T>, "children" | "rowCount" | "rowHeight"> {
-  /**
-   * Footer renderer
-   */
-  footerRenderer?: (rows: T[], states: GridLoaderStates<T>) => React.ReactNode;
+export type ScrollerGridProps<T extends object> = GridLoader<T> &
+  Omit<VariableSizeGridProps<T>, "children" | "rowCount" | "rowHeight"> & {
+    /**
+     * Footer renderer
+     */
+    footerRenderer?: (
+      rows: T[],
+      states: GridLoaderStates<T>
+    ) => React.ReactNode;
 
-  /**
-   * Header renderer
-   */
-  headerRenderer?: (states: GridLoaderStates<T>) => React.ReactNode;
+    /**
+     * Header renderer
+     */
+    headerRenderer?: (states: GridLoaderStates<T>) => React.ReactNode;
 
-  /**
-   * Id field
-   */
-  idField?: DataTypes.Keys<T>;
+    /**
+     * Id field
+     */
+    idField?: DataTypes.Keys<T>;
 
-  /**
-   * Item renderer
-   */
-  itemRenderer: (props: ScrollerGridItemRendererProps<T>) => React.ReactElement;
+    /**
+     * Item renderer
+     */
+    itemRenderer: (
+      props: ScrollerGridItemRendererProps<T>
+    ) => React.ReactElement;
 
-  /**
-   * Methods
-   */
-  mRef?: React.Ref<ScrollerGridForwardRef<T>>;
+    /**
+     * Methods
+     */
+    mRef?: React.Ref<ScrollerGridForwardRef<T>>;
 
-  /**
-   * On items select change
-   */
-  onSelectChange?: (selectedItems: T[]) => void;
+    /**
+     * On items select change
+     */
+    onSelectChange?: (selectedItems: T[]) => void;
 
-  /**
-   * Returns the height of the specified row.
-   */
-  rowHeight?: ((index: number) => number) | number;
-}
+    /**
+     * Returns the height of the specified row.
+     */
+    rowHeight?: ((index: number) => number) | number;
+  };
 
 /**
  * Scroller grid forward ref

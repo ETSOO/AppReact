@@ -1,6 +1,6 @@
 {
   "name": "@etsoo/react",
-  "version": "1.8.11",
+  "version": "1.8.12",
   "description": "TypeScript ReactJs UI Independent Framework",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
