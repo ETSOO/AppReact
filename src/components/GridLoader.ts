@@ -81,17 +81,17 @@ export function GridDataGetData<const T>(
 /**
  * Grid Json data
  */
-export type GridJsonData = Omit<GridLoadDataProps, "data">;
-
-/**
- * Grid data load props
- */
-export type GridLoadDataProps = {
+export type GridJsonData = {
   /**
    * Query paging data
    */
   queryPaging: QueryPagingData;
+};
 
+/**
+ * Grid data load props
+ */
+export type GridLoadDataProps = GridJsonData & {
   /**
    * Data related
    */
@@ -116,7 +116,10 @@ export type GridLoadDataPartialProps = {
 /**
  * Grid data loader
  */
-export type GridLoader<T extends object> = {
+export type GridLoader<
+  T extends object,
+  P extends GridJsonData = GridLoadDataProps
+> = {
   /**
    * Auto load data, otherwise call reset
    * @default true
@@ -136,10 +139,7 @@ export type GridLoader<T extends object> = {
   /**
    * Load data
    */
-  loadData: (
-    props: GridLoadDataProps,
-    lastItem?: T
-  ) => PromiseLike<T[] | null | undefined>;
+  loadData: (props: P, lastItem?: T) => PromiseLike<T[] | null | undefined>;
 
   /**
    * Handler for init load
