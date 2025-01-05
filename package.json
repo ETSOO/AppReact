@@ -1,6 +1,6 @@
 {
   "name": "@etsoo/react",
-  "version": "1.8.16",
+  "version": "1.8.17",
   "description": "TypeScript ReactJs UI Independent Framework",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -53,7 +53,7 @@
     "@etsoo/shared": "^1.2.55",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "7.0.2",
+    "react-router-dom": "^7.1.1",
     "react-window": "^1.8.10"
   },
   "devDependencies": {
