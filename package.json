@@ -1,12 +1,18 @@
 {
   "name": "@etsoo/react",
-  "version": "1.8.22",
+  "version": "1.8.23",
   "description": "TypeScript ReactJs UI Independent Framework",
-  "main": "lib/index.js",
-  "type": "module",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "module": "lib/mjs/index.js",
+  "types": "lib/mjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/mjs/index.js",
+      "require": "./lib/cjs/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
     "test": "vitest"
   },
   "repository": {
