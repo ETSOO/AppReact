@@ -13,11 +13,12 @@ function App(props: { callback: () => void }) {
       once: true
     });
   }, []);
+
   return <button onClick={(event) => watcher.do(event)}></button>;
 }
 
 test("Tests for EventWatcher", () => {
-  const callback = jest.fn();
+  const callback = vi.fn();
   render(<App callback={callback} />);
   const button = screen.getByRole<HTMLButtonElement>("button");
   button.click();
