@@ -42,11 +42,11 @@
     "@emotion/styled": "^11.13.5",
     "@etsoo/appscript": "^1.5.88",
     "@etsoo/notificationbase": "^1.1.55",
-    "@etsoo/shared": "^1.2.57",
+    "@etsoo/shared": "^1.2.58",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.1",
-    "react-window": "^1.8.10"
+    "react-window": "^1.8.11"
   },
   "overrides": {
     "react": "$react",
