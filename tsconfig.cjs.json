@@ -14,7 +14,8 @@
     "esModuleInterop": true,
     "skipLibCheck": false,
     "jsx": "react-jsx",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["dom", "dom.iterable", "ESNext"]
   },
   "include": ["src"]
 }
