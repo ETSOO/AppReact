@@ -92,7 +92,7 @@ const calculateBatchSize = (
   height: number,
   itemSize: ((index: number) => number) | number
 ) => {
-  const size = Utils.getResult(itemSize, 0);
+  const size = Utils.getResult<number>(itemSize, 0);
   return 2 + Math.ceil(height / size);
 };
 
