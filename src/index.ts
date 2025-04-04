@@ -43,6 +43,7 @@ export * from "./uses/useParamsEx";
 export * from "./uses/useRefs";
 export * from "./uses/useRequiredContext";
 export * from "./uses/useSearchParamsEx";
+export * from "./uses/useSearchParamsWithCache";
 export * from "./uses/useTimeout";
 export * from "./uses/useWindowScroll";
 export * from "./uses/useWindowSize";
