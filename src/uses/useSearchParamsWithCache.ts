@@ -1,5 +1,5 @@
 import { IStorage, WindowStorage } from "@etsoo/shared";
-import { useSearchParams } from "react-router-dom";
+import { useInRouterContext, useSearchParams } from "react-router-dom";
 
 /**
  * Read search parameters with cache
@@ -10,8 +10,6 @@ export function useSearchParamsWithCache(
   cacheKey?: string,
   storage?: IStorage
 ) {
-  const [sp] = useSearchParams();
-
   const data = {};
 
   if (cacheKey) {
@@ -22,7 +20,10 @@ export function useSearchParamsWithCache(
     }
   }
 
-  Object.assign(data, Object.fromEntries(sp.entries()));
+  if (useInRouterContext()) {
+    const [sp] = useSearchParams();
+    Object.assign(data, Object.fromEntries(sp.entries()));
+  }
 
   return data;
 }
