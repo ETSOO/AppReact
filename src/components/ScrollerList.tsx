@@ -164,7 +164,11 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
   // Load data
   const loadDataLocal = (pageAdd: number = 1) => {
     // Prevent multiple loadings
-    if (!stateRefs.current.hasNextPage || stateRefs.current.isNextPageLoading)
+    if (
+      !stateRefs.current.hasNextPage ||
+      stateRefs.current.isNextPageLoading ||
+      stateRefs.current.isMounted === false
+    )
       return;
 
     // Update state

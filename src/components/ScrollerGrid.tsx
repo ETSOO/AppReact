@@ -206,7 +206,12 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
   // Load data
   const loadDataLocal = (pageAdd: number = 1) => {
     // Prevent multiple loadings
-    if (!refs.current.hasNextPage || refs.current.isNextPageLoading) return;
+    if (
+      !refs.current.hasNextPage ||
+      refs.current.isNextPageLoading ||
+      refs.current.isMounted === false
+    )
+      return;
 
     // Update state
     refs.current.isNextPageLoading = true;
