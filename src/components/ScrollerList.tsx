@@ -297,14 +297,6 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     []
   );
 
-  // When layout ready
-  React.useEffect(() => {
-    // Return clear function
-    return () => {
-      stateRefs.current.isMounted = false;
-    };
-  }, []);
-
   // Row count
   const rowCount = rows.length;
 
@@ -324,16 +316,26 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
   // Item count
   const itemCount = stateRefs.current.hasNextPage ? rowCount + 1 : rowCount;
 
-  // Auto load data when current page is 0
-  if (
-    stateRefs.current.queryPaging?.currentPage === 0 &&
-    stateRefs.current.autoLoad
-  ) {
-    const initItems =
-      onInitLoad == null ? undefined : onInitLoad(listRef.current);
-    if (initItems) reset(initItems[1], initItems[0]);
-    else loadDataLocal();
-  }
+  React.useEffect(() => {
+    // Auto load data when current page is 0
+    if (
+      stateRefs.current.queryPaging?.currentPage === 0 &&
+      stateRefs.current.autoLoad
+    ) {
+      const initItems =
+        onInitLoad == null ? undefined : onInitLoad(listRef.current);
+      if (initItems) reset(initItems[1], initItems[0]);
+      else loadDataLocal();
+    }
+  }, [onInitLoad, loadDataLocal]);
+
+  // When layout ready
+  React.useEffect(() => {
+    // Return clear function
+    return () => {
+      stateRefs.current.isMounted = false;
+    };
+  }, []);
 
   // Layout
   return typeof itemSize === "function" ? (

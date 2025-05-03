@@ -419,12 +419,6 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
 
   React.useImperativeHandle(mRef, () => instance, [rows]);
 
-  React.useEffect(() => {
-    return () => {
-      refs.current.isMounted = false;
-    };
-  }, []);
-
   // Force update to work with the new width and rowHeight
   React.useEffect(() => {
     ref.current?.resetAfterIndices({
@@ -440,12 +434,21 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
   // Row count
   const rowCount = refs.current.hasNextPage ? rowLength + 1 : rowLength;
 
-  // Auto load data when current page is 0
-  if (refs.current.queryPaging.currentPage === 0 && refs.current.autoLoad) {
-    const initItems = onInitLoad == null ? undefined : onInitLoad(ref.current);
-    if (initItems) reset(initItems[1], initItems[0]);
-    else loadDataLocal();
-  }
+  React.useEffect(() => {
+    // Auto load data when current page is 0
+    if (refs.current.queryPaging.currentPage === 0 && refs.current.autoLoad) {
+      const initItems =
+        onInitLoad == null ? undefined : onInitLoad(ref.current);
+      if (initItems) reset(initItems[1], initItems[0]);
+      else loadDataLocal();
+    }
+  }, [onInitLoad, loadDataLocal]);
+
+  React.useEffect(() => {
+    return () => {
+      refs.current.isMounted = false;
+    };
+  }, []);
 
   // Layout
   return (
