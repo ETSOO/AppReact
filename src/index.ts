@@ -39,6 +39,7 @@ export * from "./uses/useAsyncState";
 export * from "./uses/useCombinedRefs";
 export * from "./uses/useDelayedExecutor";
 export * from "./uses/useDimensions";
+export * from "./uses/useLocationState";
 export * from "./uses/useParamsEx";
 export * from "./uses/useRefs";
 export * from "./uses/useRequiredContext";
