@@ -87,7 +87,24 @@ export interface DnDListRef<D extends object> {
 /**
  * DnD sortable list properties
  */
-export interface DnDListPros<D extends object, K extends DataTypes.Keys<D>> {
+export interface DnDListPros<
+  D extends object,
+  K extends DataTypes.Keys<D>,
+  E extends React.ExoticComponent<{
+    children?: React.ReactNode | undefined;
+  }> = typeof React.Fragment
+> {
+  /**
+   * Component type to render the list into
+   * Default is React.Fragment
+   */
+  component?: E;
+
+  /**
+   * Component props
+   */
+  componentProps?: React.ComponentProps<E>;
+
   /**
    * Get list item style callback
    */
@@ -148,6 +165,7 @@ export function DnDList<
 >(props: DnDListPros<D, K>) {
   // Destruct
   const {
+    componentProps,
     getItemStyle,
     keyField,
     itemRenderer,
@@ -156,6 +174,8 @@ export function DnDList<
     onChange,
     onDragEnd
   } = props;
+
+  const Component = props.component || React.Fragment;
 
   // States
   const [items, setItems] = React.useState<D[]>([]);
@@ -287,19 +307,21 @@ export function DnDList<
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        {items.map((item, index) => {
-          const id = item[keyField] as unknown as UniqueIdentifier;
-          return (
-            <SortableItem
-              id={id}
-              key={id}
-              style={getItemStyle(index, id === activeId)}
-              itemRenderer={(nodeRef, actionNodeRef) =>
-                itemRenderer(item, index, nodeRef, actionNodeRef)
-              }
-            />
-          );
-        })}
+        <Component {...componentProps}>
+          {items.map((item, index) => {
+            const id = item[keyField] as unknown as UniqueIdentifier;
+            return (
+              <SortableItem
+                id={id}
+                key={id}
+                style={getItemStyle(index, id === activeId)}
+                itemRenderer={(nodeRef, actionNodeRef) =>
+                  itemRenderer(item, index, nodeRef, actionNodeRef)
+                }
+              />
+            );
+          })}
+        </Component>
       </SortableContext>
     </DndContext>
   );
