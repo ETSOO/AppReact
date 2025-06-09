@@ -5,7 +5,6 @@ export * from "./app/InputDialogProps";
 export * from "./app/ReactUtils";
 
 // components
-export * from "./components/DnDList";
 export * from "./components/DynamicRouter";
 export * from "./components/GridColumn";
 export * from "./components/GridLoader";
