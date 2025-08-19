@@ -8,7 +8,7 @@ export function useDelayedExecutor<P extends any[]>(
   func: (...args: P) => void,
   delayMiliseconcs: number
 ) {
-  const ref = React.useRef<DelayedExecutorType<P>>();
+  const ref = React.useRef<DelayedExecutorType<P>>(null);
   if (ref.current == null)
     ref.current = ExtendUtils.delayedExecutor(func, delayMiliseconcs);
   return ref.current;

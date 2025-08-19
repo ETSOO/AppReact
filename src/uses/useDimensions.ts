@@ -22,7 +22,10 @@ export function useDimensions(
     d1?: DOMRect,
     d2?: DOMRect
   ) => boolean = DomUtils.dimensionEqual
-) {
+): {
+  dimensions: [React.RefCallback<Element>, Element?, DOMRect?][];
+  state: states;
+} {
   // State
   const [state, setState] = React.useState<states>({
     count: 0,
@@ -31,7 +34,7 @@ export function useDimensions(
 
   // Dimentions
   const dimensions =
-    React.useRef<[React.RefCallback<Element>, Element?, DOMRect?][]>();
+    React.useRef<[React.RefCallback<Element>, Element?, DOMRect?][]>(null);
   if (dimensions.current == null) {
     // Init
     const init: [React.RefCallback<Element>, Element?, DOMRect?][] = [];

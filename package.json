@@ -1,6 +1,6 @@
 {
   "name": "@etsoo/react",
-  "version": "1.8.49",
+  "version": "1.8.50",
   "description": "TypeScript ReactJs UI Independent Framework",
   "main": "lib/cjs/index.js",
   "module": "lib/mjs/index.js",
@@ -37,34 +37,29 @@
   "dependencies": {
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@etsoo/appscript": "^1.6.39",
+    "@emotion/styled": "^11.14.1",
+    "@etsoo/appscript": "^1.6.43",
     "@etsoo/notificationbase": "^1.1.63",
     "@etsoo/shared": "^1.2.75",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^7.6.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.8.1",
     "react-window": "^1.8.11"
   },
-  "overrides": {
-    "react": "$react",
-    "react-dom": "$react-dom",
-    "@emotion/react": "$@emotion/react"
-  },
   "devDependencies": {
-    "@babel/cli": "^7.27.2",
-    "@babel/core": "^7.27.4",
-    "@babel/plugin-transform-runtime": "^7.27.4",
-    "@babel/preset-env": "^7.27.2",
-    "@babel/runtime-corejs3": "^7.27.6",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@babel/cli": "^7.28.3",
+    "@babel/core": "^7.28.3",
+    "@babel/plugin-transform-runtime": "^7.28.3",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/runtime-corejs3": "^7.28.3",
+    "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.7",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
     "@types/react-window": "^1.8.8",
-    "@vitejs/plugin-react": "^4.5.2",
+    "@vitejs/plugin-react": "^5.0.1",
     "jsdom": "^26.1.0",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.3"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }

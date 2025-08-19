@@ -131,8 +131,8 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
   });
 
   // Refs
-  const listRef = React.useRef<any>();
-  const outerRef = React.useRef<HTMLDivElement>();
+  const listRef = React.useRef<any>(null);
+  const outerRef = React.useRef<HTMLDivElement>(null);
 
   const refs = useCombinedRefs(oRef, outerRef);
 

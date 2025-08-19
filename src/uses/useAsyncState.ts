@@ -30,7 +30,9 @@ export function useAsyncState<S>(
 
   // Resolve sate
   const resolveState =
-    React.useRef<(value: S | undefined | PromiseLike<S | undefined>) => void>();
+    React.useRef<(value: S | undefined | PromiseLike<S | undefined>) => void>(
+      null
+    );
 
   // Is mounted or not
   const isMounted = React.useRef(false);
