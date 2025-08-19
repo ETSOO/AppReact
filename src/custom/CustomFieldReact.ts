@@ -31,5 +31,5 @@ export type CustomFieldReactProps<
  */
 export type CustomFieldReactCollection<D extends CustomFieldData> = Record<
   string,
-  [React.RefObject<CustomFieldRef<unknown>>, D]
+  [React.RefObject<CustomFieldRef<unknown> | null>, D]
 >;
