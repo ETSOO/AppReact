@@ -1,50 +1,36 @@
 import { DataTypes, Utils } from "@etsoo/shared";
 import React from "react";
-import {
-  Align,
-  FixedSizeList,
-  ListChildComponentProps,
-  ListOnItemsRenderedProps,
-  ListProps,
-  VariableSizeList
-} from "react-window";
+import { List, ListProps, useListRef } from "react-window";
 import { useCombinedRefs } from "../uses/useCombinedRefs";
 import {
   GridLoadDataProps,
   GridLoader,
   GridLoaderPartialStates,
-  GridLoaderStates,
-  GridSizeGet
+  GridLoaderStates
 } from "./GridLoader";
-import { GridMethodRef } from "./GridMethodRef";
+import { GridMethodRef, ScrollToRowParam } from "./GridMethodRef";
+
+type ScrollerListRowProps<T extends object> = {
+  items: T[];
+};
+
+/**
+ * Scroller list forward ref
+ */
+export interface ScrollerListForwardRef<T> extends GridMethodRef<T> {}
 
 /**
  * Scroller vertical list props
  */
 export type ScrollerListProps<T extends object> = GridLoader<T> &
   Omit<
-    ListProps<T>,
-    "outerRef" | "height" | "width" | "children" | "itemCount" // Exclude these props, shoud be exisited otherwise will be failed
+    ListProps<ScrollerListRowProps<T>>,
+    "rowCount" | "rowProps" | "overscanCount"
   > & {
-    /**
-     * Methods ref
-     */
-    mRef?: React.Ref<ScrollerListForwardRef<T>>;
-
-    /**
-     * Outer div ref
-     */
-    oRef?: React.Ref<HTMLDivElement>;
-
     /**
      * Height of the list
      */
-    height?: number;
-
-    /**
-     * Width of the list
-     */
-    width?: number | string;
+    height?: number | string;
 
     /**
      * Id field
@@ -52,48 +38,27 @@ export type ScrollerListProps<T extends object> = GridLoader<T> &
     idField?: DataTypes.Keys<T>;
 
     /**
-     * Item renderer
+     * Methods ref
      */
-    itemRenderer: (props: ListChildComponentProps<T>) => React.ReactElement;
+    mRef?: React.Ref<ScrollerListForwardRef<T>>;
 
     /**
-     * Item size, a function indicates its a variable size list
+     * Width of the list
      */
-    itemSize: ((index: number) => number) | number;
+    width?: number | string;
   };
 
-/**
- * Scroller list ref
- */
-export interface ScrollerListRef {
-  /**
-   * Scroll to the specified offset (scrollTop or scrollLeft, depending on the direction prop).
-   */
-  scrollTo(scrollOffset: number): void;
-
-  /**
-   * Scroll to the specified item.
-   */
-  scrollToItem(index: number, align?: Align): void;
-}
-
-/**
- * Scroller list forward ref
- */
-export interface ScrollerListForwardRef<T> extends GridMethodRef<T> {
-  /**
-   * Refresh latest page data
-   */
-  refresh(): void;
-}
-
 // Calculate loadBatchSize
-const calculateBatchSize = (
-  height: number,
-  itemSize: ((index: number) => number) | number
-) => {
-  const size = Utils.getResult<number>(itemSize, 0);
-  return 2 + Math.ceil(height / size);
+const calculateBatchSize = (height: unknown, rowHeight: unknown) => {
+  if (
+    typeof height === "number" &&
+    typeof rowHeight === "number" &&
+    rowHeight > 0
+  ) {
+    return 1 + Math.ceil(height / rowHeight);
+  }
+
+  return 10;
 };
 
 /**
@@ -106,18 +71,17 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
   const {
     autoLoad = true,
     defaultOrderBy,
-    height = document.documentElement.clientHeight,
+    height = "100%",
     width = "100%",
     mRef,
-    oRef,
     style = {},
     idField = "id" as DataTypes.Keys<T>,
-    itemRenderer,
-    itemSize,
-    loadBatchSize = calculateBatchSize(height, itemSize),
+    rowHeight,
+    listRef,
+    loadBatchSize = calculateBatchSize(height, rowHeight),
     loadData,
-    threshold = GridSizeGet(loadBatchSize, height) / 2,
-    onItemsRendered,
+    threshold = 3,
+    onRowsRendered,
     onInitLoad,
     onUpdateRows,
     ...rest
@@ -125,19 +89,15 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
 
   // Style
   Object.assign(style, {
-    width: "100%",
-    height: "100%",
-    display: "inline-block"
+    width,
+    height
   });
 
-  // Refs
-  const listRef = React.useRef<any>(null);
-  const outerRef = React.useRef<HTMLDivElement>(null);
+  const localRef = useListRef(null);
+  const refs = useCombinedRefs(listRef, localRef);
 
-  const refs = useCombinedRefs(oRef, outerRef);
-
-  // Rows
   const [rows, updateRows] = React.useState<T[]>([]);
+
   const setRows = (rows: T[], reset: boolean = false) => {
     stateRefs.current.loadedItems = rows.length;
     updateRows(rows);
@@ -145,8 +105,8 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     if (!reset && onUpdateRows) onUpdateRows(rows, stateRefs.current);
   };
 
-  // States
-  const batchSize = GridSizeGet(loadBatchSize, height);
+  const batchSize = Utils.getResult<number>(loadBatchSize, height);
+
   const stateRefs = React.useRef<GridLoaderStates<T>>({
     queryPaging: {
       currentPage: 0,
@@ -233,14 +193,6 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     });
   };
 
-  const itemRendererLocal = (itemProps: ListChildComponentProps<T>) => {
-    // Custom render
-    return itemRenderer({
-      ...itemProps,
-      data: rows[itemProps.index]
-    });
-  };
-
   // Reset the state and load again
   const reset = (add?: GridLoaderPartialStates<T>, items: T[] = []) => {
     const { queryPaging, ...rest } = add ?? {};
@@ -266,8 +218,6 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
   React.useImperativeHandle(
     mRef,
     () => {
-      const refMethods = listRef.current as ScrollerListRef;
-
       return {
         delete(index) {
           const item = rows.at(index);
@@ -289,49 +239,13 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
 
         reset,
 
-        scrollToRef(scrollOffset: number): void {
-          refMethods.scrollTo(scrollOffset);
-        },
-
-        scrollToItemRef(index: number, align?: Align): void {
-          refMethods.scrollToItem(index, align);
+        scrollToRow(param: ScrollToRowParam): void {
+          localRef.current?.scrollToRow(param);
         }
       };
     },
     []
   );
-
-  // Row count
-  const rowCount = rows.length;
-
-  // Local items renderer callback
-  const onItemsRenderedLocal = (props: ListOnItemsRenderedProps) => {
-    // No items, means no necessary to load more data during reset
-
-    if (rowCount > 0 && props.visibleStopIndex + threshold > rowCount) {
-      // Auto load next page
-      loadDataLocal();
-    }
-
-    // Custom
-    if (onItemsRendered) onItemsRendered(props);
-  };
-
-  // Item count
-  const itemCount = stateRefs.current.hasNextPage ? rowCount + 1 : rowCount;
-
-  React.useEffect(() => {
-    // Auto load data when current page is 0
-    if (
-      stateRefs.current.queryPaging?.currentPage === 0 &&
-      stateRefs.current.autoLoad
-    ) {
-      const initItems =
-        onInitLoad == null ? undefined : onInitLoad(listRef.current);
-      if (initItems) reset(initItems[1], initItems[0]);
-      else loadDataLocal();
-    }
-  }, [onInitLoad, loadDataLocal]);
 
   // When layout ready
   React.useEffect(() => {
@@ -341,36 +255,41 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     };
   }, []);
 
+  React.useEffect(() => {
+    // Auto load data when current page is 0
+    if (
+      stateRefs.current.queryPaging?.currentPage === 0 &&
+      stateRefs.current.autoLoad
+    ) {
+      const initItems =
+        onInitLoad == null ? undefined : onInitLoad(localRef.current);
+      if (initItems) reset(initItems[1], initItems[0]);
+      else loadDataLocal();
+    }
+  }, [onInitLoad, loadDataLocal]);
+
+  // Row count
+  const rowCount = rows.length;
+
   // Layout
-  return typeof itemSize === "function" ? (
-    <VariableSizeList<T>
-      height={height}
-      width={width}
-      itemCount={itemCount}
-      itemKey={(index, data) => DataTypes.getIdValue1(data, idField) ?? index}
-      itemSize={itemSize}
-      outerRef={refs}
-      ref={listRef}
+  return (
+    <List<ScrollerListRowProps<T>>
+      listRef={refs}
+      onRowsRendered={(visibleCells, allCells) => {
+        // No items, means no necessary to load more data during reset
+        if (rowCount > 0 && visibleCells.stopIndex + threshold > rowCount) {
+          // Auto load next page
+          loadDataLocal();
+        }
+
+        onRowsRendered?.(visibleCells, allCells);
+      }}
+      overscanCount={threshold}
+      rowHeight={rowHeight}
+      rowCount={rowCount}
+      rowProps={{ items: rows }}
       style={style}
-      onItemsRendered={onItemsRenderedLocal}
       {...rest}
-    >
-      {itemRendererLocal}
-    </VariableSizeList>
-  ) : (
-    <FixedSizeList<T>
-      height={height}
-      width={width}
-      itemCount={itemCount}
-      itemKey={(index, data) => DataTypes.getIdValue1(data, idField) ?? index}
-      itemSize={itemSize}
-      outerRef={refs}
-      ref={listRef}
-      style={style}
-      onItemsRendered={onItemsRenderedLocal}
-      {...rest}
-    >
-      {itemRendererLocal}
-    </FixedSizeList>
+    />
   );
 };

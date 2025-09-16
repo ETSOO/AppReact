@@ -13,11 +13,6 @@ export * from "./components/ListItemReact";
 export * from "./components/ScrollerGrid";
 export * from "./components/ScrollerList";
 export * from "./components/ScrollRestoration";
-export type {
-  ListOnScrollProps,
-  GridOnScrollProps,
-  VariableSizeGrid
-} from "react-window";
 
 // custom
 export * from "./custom/CustomFieldReact";

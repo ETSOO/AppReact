@@ -1,5 +1,10 @@
-import { Align } from "react-window";
+import { ListImperativeAPI } from "react-window";
 import { GridLoaderPartialStates } from "./GridLoader";
+
+/**
+ * Scroll to row parameter type
+ */
+export type ScrollToRowParam = Parameters<ListImperativeAPI["scrollToRow"]>[0];
 
 /**
  * Grid method ref
@@ -19,18 +24,19 @@ export interface GridMethodRef<T> {
   insert(item: T, start: number): void;
 
   /**
+   * Refresh latest page data
+   */
+  refresh(): void;
+
+  /**
    * Reset
    * @param add Additional data
    */
   reset(add?: GridLoaderPartialStates<T>): void;
 
   /**
-   * Scroll to the specified offset (scrollTop or scrollLeft, depending on the direction prop).
+   * Scroll to the row
+   * @param param Parameters to control
    */
-  scrollToRef(scrollOffset: number): void;
-
-  /**
-   * Scroll to the specified item.
-   */
-  scrollToItemRef(index: number, align?: Align): void;
+  scrollToRow(param: ScrollToRowParam): void;
 }

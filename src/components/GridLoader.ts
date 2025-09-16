@@ -4,7 +4,7 @@ import { DataTypes, DomUtils } from "@etsoo/shared";
 /**
  * Grid size
  */
-export type GridSize = number | ((input: number) => number);
+export type GridSize = number | ((input: number | string) => number);
 
 /**
  * Grid size calculation
@@ -132,7 +132,7 @@ export type GridLoader<
   defaultOrderBy?: QueryPagingOrder[];
 
   /**
-   * Batch size when load data, default will be calcuated with height and itemSize
+   * Batch size when load data, default will be calcuated with height and rowHeight
    */
   loadBatchSize?: GridSize;
 
