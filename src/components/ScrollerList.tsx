@@ -1,6 +1,6 @@
 import { DataTypes, Utils } from "@etsoo/shared";
 import React from "react";
-import { List, ListProps, useListRef } from "react-window";
+import { List, ListImperativeAPI, ListProps, useListRef } from "react-window";
 import { useCombinedRefs } from "../uses/useCombinedRefs";
 import {
   GridLoadDataProps,
@@ -41,6 +41,15 @@ export type ScrollerListProps<T extends object> = GridLoader<T> &
      * Methods ref
      */
     mRef?: React.Ref<ScrollerListForwardRef<T>>;
+
+    /**
+     * Handler for init load
+     * @param ref Ref
+     * @returns Result
+     */
+    onInitLoad?: (
+      ref: ListImperativeAPI
+    ) => [T[], GridLoaderPartialStates<T>?] | null | undefined;
 
     /**
      * Width of the list
@@ -262,7 +271,9 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
       stateRefs.current.autoLoad
     ) {
       const initItems =
-        onInitLoad == null ? undefined : onInitLoad(localRef.current);
+        onInitLoad == null || localRef.current == null
+          ? undefined
+          : onInitLoad(localRef.current);
       if (initItems) reset(initItems[1], initItems[0]);
       else loadDataLocal();
     }

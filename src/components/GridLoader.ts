@@ -142,15 +142,6 @@ export type GridLoader<
   loadData: (props: P, lastItem?: T) => PromiseLike<T[] | null | undefined>;
 
   /**
-   * Handler for init load
-   * @param ref Ref
-   * @returns Result
-   */
-  onInitLoad?: (
-    ref: any
-  ) => [T[], GridLoaderPartialStates<T>?] | null | undefined;
-
-  /**
    * Handler for updating rows
    * @param rows Rows
    * @param state State

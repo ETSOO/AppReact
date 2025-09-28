@@ -1,6 +1,6 @@
 import { DataTypes } from "@etsoo/shared";
 import React from "react";
-import { Grid, GridProps, useGridRef } from "react-window";
+import { Grid, GridImperativeAPI, GridProps, useGridRef } from "react-window";
 import {
   GridJsonData,
   GridLoadDataProps,
@@ -16,6 +16,9 @@ type ScrollerGridCellrops<T extends object> = {
   states: GridLoaderStates<T>;
 };
 
+/**
+ * Scroller grid forward params
+ */
 export type ScrollToCellParam = {
   behavior?: ScrollToRowParam["behavior"];
   columnAlign?: ScrollToRowParam["align"];
@@ -62,6 +65,15 @@ export type ScrollerGridProps<
      * Methods
      */
     mRef?: React.Ref<ScrollerGridForwardRef<T>>;
+
+    /**
+     * Handler for init load
+     * @param ref Ref
+     * @returns Result
+     */
+    onInitLoad?: (
+      ref: GridImperativeAPI
+    ) => [T[], GridLoaderPartialStates<T>?] | null | undefined;
 
     /**
      * On items select change
@@ -352,7 +364,9 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
       stateRefs.current.autoLoad
     ) {
       const initItems =
-        onInitLoad == null ? undefined : onInitLoad(stateRefs.current);
+        onInitLoad == null || localRef.current == null
+          ? undefined
+          : onInitLoad(localRef.current);
       if (initItems) reset(initItems[1], initItems[0]);
       else loadDataLocal();
     }
