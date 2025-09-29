@@ -42,3 +42,6 @@ export * from "./uses/useSearchParamsWithCache";
 export * from "./uses/useTimeout";
 export * from "./uses/useWindowScroll";
 export * from "./uses/useWindowSize";
+
+// react-window
+export type { GridImperativeAPI, ListImperativeAPI } from "react-window";
