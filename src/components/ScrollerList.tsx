@@ -15,6 +15,13 @@ type ScrollerListRowProps<T extends object> = {
 };
 
 /**
+ * On rows rendered data
+ */
+export type OnRowsRenderedData = Parameters<
+  NonNullable<ListProps<object>["onRowsRendered"]>
+>[0];
+
+/**
  * Scroller list forward ref
  */
 export interface ScrollerListForwardRef<T> extends GridMethodRef<T> {}

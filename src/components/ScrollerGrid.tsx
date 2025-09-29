@@ -28,6 +28,13 @@ export type ScrollToCellParam = {
 };
 
 /**
+ * On cells rendered data
+ */
+export type OnCellsRenderedData = Parameters<
+  NonNullable<GridProps<object>["onCellsRendered"]>
+>[0];
+
+/**
  * Scroller vertical grid props
  */
 export type ScrollerGridProps<
