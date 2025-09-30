@@ -2,7 +2,6 @@ import { EntityStatus } from "@etsoo/appscript";
 import { DataTypes } from "@etsoo/shared";
 import React from "react";
 import { GridLoaderStates } from "./GridLoader";
-import { ScrollerGridForwardRef } from "./ScrollerGrid";
 
 /**
  * Grid data type
@@ -117,15 +116,9 @@ export type GridCellRendererProps<T, P = any> = GridCellFormatterProps<T> & {
   renderProps?: GridColumnRenderProps;
 
   /**
-   * Set items for rerenderer
-   * @param callback Callback
+   * Trigger change
    */
-  setItems: (
-    callback: (
-      items: T[],
-      ref?: ScrollerGridForwardRef<T>
-    ) => T[] | undefined | void
-  ) => void;
+  triggerChange?: () => void;
 };
 
 /**
