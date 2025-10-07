@@ -292,6 +292,9 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
   React.useImperativeHandle(
     mRef,
     () => ({
+      get element() {
+        return localRef.current?.element;
+      },
       delete(index) {
         const item = rows.at(index);
         if (item) {

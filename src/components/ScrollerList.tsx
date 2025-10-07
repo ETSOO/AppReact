@@ -235,6 +235,9 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     mRef,
     () => {
       return {
+        get element() {
+          return localRef.current?.element;
+        },
         delete(index) {
           const item = rows.at(index);
           if (item) {

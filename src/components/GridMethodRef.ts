@@ -11,6 +11,12 @@ export type ScrollToRowParam = Parameters<ListImperativeAPI["scrollToRow"]>[0];
  */
 export interface GridMethodRef<T> {
   /**
+   * Get the element
+   * @returns Element
+   */
+  get element(): HTMLElement | null | undefined;
+
+  /**
    * Delete item at the index
    * @param index Index
    */
