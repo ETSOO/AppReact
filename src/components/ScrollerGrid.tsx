@@ -151,7 +151,7 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
     mRef,
     onCellsRendered,
     onSelectChange,
-    rowHeight = 53,
+    rowHeight,
     threshold = 3,
     onInitLoad,
     onUpdateRows,
