@@ -175,7 +175,7 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
     stateRefs.current.loadedItems = rows.length;
     updateRows(rows);
 
-    if (!reset && onUpdateRows) onUpdateRows(rows, stateRefs.current);
+    onUpdateRows?.(rows, stateRefs.current, reset);
   };
 
   // State Refs

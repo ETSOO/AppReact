@@ -118,7 +118,7 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     stateRefs.current.loadedItems = rows.length;
     updateRows(rows);
 
-    if (!reset && onUpdateRows) onUpdateRows(rows, stateRefs.current);
+    onUpdateRows?.(rows, stateRefs.current, reset);
   };
 
   const batchSize = Utils.getResult<number>(loadBatchSize, height);

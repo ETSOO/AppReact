@@ -146,7 +146,11 @@ export type GridLoader<
    * @param rows Rows
    * @param state State
    */
-  onUpdateRows?: (rows: T[], state: GridLoaderStates<T>) => void;
+  onUpdateRows?: (
+    rows: T[],
+    state: GridLoaderStates<T>,
+    reset: boolean
+  ) => void;
 
   /**
    * Threshold at which to pre-fetch data; default is half of loadBatchSize
