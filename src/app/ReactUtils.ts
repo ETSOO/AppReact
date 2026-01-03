@@ -108,10 +108,7 @@ export namespace ReactUtils {
    */
   export function updateRefs<D extends object, T = HTMLInputElement>(
     refs: Partial<
-      DataTypes.DI<
-        ReadonlyArray<keyof D & string>,
-        React.MutableRefObject<T | null>
-      >
+      DataTypes.DI<ReadonlyArray<keyof D & string>, React.RefObject<T | null>>
     >,
     data: D,
     callback?:
@@ -165,10 +162,7 @@ export namespace ReactUtils {
    */
   export function updateRefValues<D extends object, T = HTMLInputElement>(
     refs: Partial<
-      DataTypes.DI<
-        ReadonlyArray<keyof D & string>,
-        React.MutableRefObject<T | null>
-      >
+      DataTypes.DI<ReadonlyArray<keyof D & string>, React.RefObject<T | null>>
     >,
     data: D,
     callback?: ((item: T) => any) | keyof T,
