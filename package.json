@@ -1,6 +1,6 @@
 {
   "name": "@etsoo/react",
-  "version": "1.8.70",
+  "version": "1.8.71",
   "description": "TypeScript ReactJs UI Independent Framework",
   "main": "lib/cjs/index.js",
   "module": "lib/mjs/index.js",
@@ -44,14 +44,14 @@
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^7.12.0",
-    "react-window": "^2.2.4"
+    "react-window": "^2.2.5"
   },
   "devDependencies": {
-    "@babel/cli": "^7.28.3",
-    "@babel/core": "^7.28.5",
+    "@babel/cli": "^7.28.6",
+    "@babel/core": "^7.28.6",
     "@babel/plugin-transform-runtime": "^7.28.5",
-    "@babel/preset-env": "^7.28.5",
-    "@babel/runtime-corejs3": "^7.28.4",
+    "@babel/preset-env": "^7.28.6",
+    "@babel/runtime-corejs3": "^7.28.6",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
     "@types/react": "^19.2.8",
@@ -59,6 +59,6 @@
     "@vitejs/plugin-react": "^5.1.2",
     "jsdom": "^27.4.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.17"
   }
 }
