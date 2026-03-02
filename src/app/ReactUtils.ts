@@ -119,10 +119,10 @@ export namespace ReactUtils {
       callback == null
         ? undefined
         : typeof callback === "function"
-        ? callback
-        : (item, value) => {
-            item[callback] = value as any;
-          };
+          ? callback
+          : (item, value) => {
+              item[callback] = value as any;
+            };
 
     let k: keyof typeof refs;
     for (k in refs) {
@@ -144,6 +144,8 @@ export namespace ReactUtils {
           item.value =
             DateUtils.formatForInput(value, isDateTime ? false : undefined) ??
             "";
+        } else if (!!value && typeof value === "object") {
+          item.value = JSON.stringify(value);
         } else {
           item.value = `${value ?? ""}`;
         }
@@ -172,8 +174,8 @@ export namespace ReactUtils {
       callback == null
         ? undefined
         : typeof callback === "function"
-        ? callback
-        : (item) => item[callback];
+          ? callback
+          : (item) => item[callback];
 
     const formatValue = (value: unknown) => {
       if (ignoreEmpty && value === "") return null;
