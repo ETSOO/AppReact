@@ -25,6 +25,7 @@ export function useDimensions(
 ): {
   dimensions: [React.RefCallback<Element>, Element?, DOMRect?][];
   state: states;
+  clear: () => void;
 } {
   // State
   const [state, setState] = React.useState<states>({
@@ -111,15 +112,17 @@ export function useDimensions(
     }
   });
 
+  // Clear the observer
+  const clear = () => {
+    resizeObserver.disconnect();
+    delayed.clear();
+  };
+
   // Layout ready
   React.useEffect(() => {
-    return () => {
-      // Clear the observer
-      resizeObserver.disconnect();
-      delayed.clear();
-    };
+    return clear;
   }, []);
 
   // Return
-  return { dimensions: dimensions.current, state };
+  return { dimensions: dimensions.current, state, clear };
 }
