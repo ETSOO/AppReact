@@ -231,40 +231,36 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     if (stateRefs.current.isMounted !== false) setRows(items, true);
   };
 
-  React.useImperativeHandle(
-    mRef,
-    () => {
-      return {
-        get element() {
-          return localRef.current?.element;
-        },
-        delete(index) {
-          const item = rows.at(index);
-          if (item) {
-            const newRows = [...rows];
-            newRows.splice(index, 1);
-            setRows(newRows);
-          }
-          return item;
-        },
-        insert(item, start) {
+  React.useImperativeHandle(mRef, () => {
+    return {
+      get element() {
+        return localRef.current?.element;
+      },
+      delete(index) {
+        const item = rows.at(index);
+        if (item) {
           const newRows = [...rows];
-          newRows.splice(start, 0, item);
+          newRows.splice(index, 1);
           setRows(newRows);
-        },
-        refresh(): void {
-          loadDataLocal(0);
-        },
-
-        reset,
-
-        scrollToRow(param: ScrollToRowParam): void {
-          localRef.current?.scrollToRow(param);
         }
-      };
-    },
-    []
-  );
+        return item;
+      },
+      insert(item, start) {
+        const newRows = [...rows];
+        newRows.splice(start, 0, item);
+        setRows(newRows);
+      },
+      refresh(): void {
+        loadDataLocal(0);
+      },
+
+      reset,
+
+      scrollToRow(param: ScrollToRowParam): void {
+        localRef.current?.scrollToRow(param);
+      }
+    };
+  }, [rows]);
 
   // When layout ready
   React.useEffect(() => {
