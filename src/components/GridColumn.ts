@@ -47,8 +47,8 @@ export const GridDeletedCellBoxStyle = (
     "status" in data
       ? data.status
       : "entityStatus" in data
-      ? data.entityStatus
-      : EntityStatus.Normal;
+        ? data.entityStatus
+        : EntityStatus.Normal;
 
   if (status === EntityStatus.Inactivated || status === EntityStatus.Deleted)
     return { textDecoration: "line-through" };
@@ -59,7 +59,13 @@ export const GridDeletedCellBoxStyle = (
 /**
  * Grid cell value type
  */
-export type GridCellValueType = string | number | Date | boolean | undefined;
+export type GridCellValueType =
+  | string
+  | number
+  | Date
+  | boolean
+  | undefined
+  | null;
 
 /**
  * Grid cell formatter props
