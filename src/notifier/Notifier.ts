@@ -93,17 +93,23 @@ export interface NotificationReactCallProps extends NotificationCallProps {
 /**
  * React notification interface
  */
-export interface INotificationReact
-  extends INotification<React.ReactNode, NotificationReactCallProps> {}
+export interface INotificationReact extends INotification<
+  React.ReactNode,
+  NotificationReactCallProps
+> {}
 
 /**
  * React notification base interface
  */
-export interface INotificationBaseReact
-  extends INotificaseBase<React.ReactNode, NotificationReactCallProps> {}
+export interface INotificationBaseReact extends INotificaseBase<
+  React.ReactNode,
+  NotificationReactCallProps
+> {}
 
-interface ReactNotifications
-  extends NotificationDictionary<React.ReactNode, NotificationReactCallProps> {}
+interface ReactNotifications extends NotificationDictionary<
+  React.ReactNode,
+  NotificationReactCallProps
+> {}
 
 /**
  * Action to manage the notifier
@@ -131,14 +137,15 @@ export abstract class NotificationReact
  * React notification render props
  */
 export interface NotificationReactRenderProps
-  extends NotificationRenderProps,
-    IProviderProps<INotifierAction> {}
+  extends NotificationRenderProps, IProviderProps<INotifierAction> {}
 
 /**
  * Notifier interface
  */
-export interface INotifierReact
-  extends INotifier<React.ReactNode, NotificationReactCallProps> {
+export interface INotifierReact extends INotifier<
+  React.ReactNode,
+  NotificationReactCallProps
+> {
   /**
    * Create state provider
    * @param className Style class name
@@ -167,6 +174,9 @@ export abstract class NotifierReact
   static get instance() {
     return NotifierReact._instance;
   }
+
+  // Cache
+  private static _cache: Record<string, React.ReactNode | null> = {};
 
   /**
    * Update notifier
@@ -234,12 +244,24 @@ export abstract class NotifierReact
         const notifications = state[align];
 
         // UI collections
-        const ui = notifications.map((notification) =>
-          notification.render(
+        const ui = notifications.map((notification) => {
+          // Id
+          const id = notification.id;
+
+          // Try cache
+          const cache = NotifierReact._cache[id];
+          if (cache) return cache;
+
+          const element = notification.render(
             props,
             className ? className + "-item" : className
-          )
-        );
+          );
+
+          // Cache the element
+          NotifierReact._cache[id] = element;
+
+          return element;
+        });
 
         // Add to the collection
         aligns.push(this.createContainer(Number(align), ui));
@@ -275,5 +297,13 @@ export abstract class NotifierReact
     );
 
     return provider;
+  }
+
+  /**
+   * Remove cache
+   * @param id Notification id
+   */
+  override removeCache(id: string): void {
+    delete NotifierReact._cache[id];
   }
 }
