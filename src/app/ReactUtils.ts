@@ -76,7 +76,9 @@ export namespace ReactUtils {
     // input type = 'hidden' will also not trigger the event
     // https://coryrylan.com/blog/trigger-input-updates-with-react-controlled-inputs
     var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-      HTMLInputElement.prototype,
+      input.type === "textarea"
+        ? HTMLTextAreaElement.prototype
+        : HTMLInputElement.prototype,
       property
     )?.set;
 

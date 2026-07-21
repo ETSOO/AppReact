@@ -1,6 +1,6 @@
 {
   "name": "@etsoo/react",
-  "version": "1.8.97",
+  "version": "1.8.98",
   "description": "TypeScript ReactJs UI Independent Framework",
   "main": "lib/cjs/index.js",
   "module": "lib/mjs/index.js",
