@@ -59,7 +59,7 @@ export namespace ReactUtils {
    * @param cancelable Cancelable
    */
   export function triggerChange(
-    input: HTMLInputElement,
+    input: HTMLInputElement | HTMLTextAreaElement,
     value: string,
     cancelable: boolean = false
   ) {
