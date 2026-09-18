@@ -1,6 +1,6 @@
 {
   "name": "@etsoo/react",
-  "version": "1.9.4",
+  "version": "1.9.5",
   "description": "TypeScript ReactJs UI Independent Framework",
   "main": "lib/cjs/index.js",
   "module": "lib/mjs/index.js",
@@ -38,12 +38,12 @@
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@etsoo/appscript": "^1.6.78",
+    "@etsoo/appscript": "^1.6.79",
     "@etsoo/notificationbase": "^1.1.75",
     "@etsoo/shared": "^1.2.91",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-router-dom": "^7.18.3",
+    "react-router-dom": "^7.18.4",
     "react-window": "^2.3.1"
   },
   "devDependencies": {
@@ -52,8 +52,8 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "jsdom": "^30.0.1",
+    "jsdom": "^30.1.0",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.1"
   }
 }
