@@ -146,7 +146,6 @@ export const ScrollerGrid = <T extends object>(props: ScrollerGridProps<T>) => {
     width = "100%",
     style = {},
     idField = "id" as DataTypes.Keys<T>,
-    loadBatchSize,
     loadData,
     mRef,
     onCellsRendered,

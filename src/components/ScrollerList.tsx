@@ -1,4 +1,4 @@
-import { DataTypes, Utils } from "@etsoo/shared";
+import { DataTypes } from "@etsoo/shared";
 import React from "react";
 import { List, ListImperativeAPI, ListProps, useListRef } from "react-window";
 import { useCombinedRefs } from "../uses/useCombinedRefs";
@@ -64,19 +64,6 @@ export type ScrollerListProps<T extends object> = GridLoader<T> &
     width?: number | string;
   };
 
-// Calculate loadBatchSize
-const calculateBatchSize = (height: unknown, rowHeight: unknown) => {
-  if (
-    typeof height === "number" &&
-    typeof rowHeight === "number" &&
-    rowHeight > 0
-  ) {
-    return 1 + Math.ceil(height / rowHeight);
-  }
-
-  return 10;
-};
-
 /**
  * Scroller vertical list
  * @param props Props
@@ -94,7 +81,6 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     idField = "id" as DataTypes.Keys<T>,
     rowHeight,
     listRef,
-    loadBatchSize = calculateBatchSize(height, rowHeight),
     loadData,
     threshold = 3,
     onRowsRendered,
@@ -121,13 +107,11 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
     onUpdateRows?.(rows, stateRefs.current, reset);
   };
 
-  const batchSize = Utils.getResult<number>(loadBatchSize, height);
-
   const stateRefs = React.useRef<GridLoaderStates<T>>({
     queryPaging: {
       currentPage: 0,
       orderBy: defaultOrderBy,
-      batchSize
+      batchSize: 10
     },
     autoLoad,
     loadedItems: 0,
@@ -167,7 +151,8 @@ export const ScrollerList = <T extends object>(props: ScrollerListProps<T>) => {
       const newItems = result.length;
       stateRefs.current.lastLoadedItems = newItems;
       stateRefs.current.lastItem = result.at(-1);
-      stateRefs.current.hasNextPage = newItems >= batchSize;
+      stateRefs.current.hasNextPage =
+        newItems >= stateRefs.current.queryPaging.batchSize;
       stateRefs.current.isNextPageLoading = false;
 
       if (pageAdd === 0) {

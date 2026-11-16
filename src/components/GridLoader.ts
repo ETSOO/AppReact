@@ -28,8 +28,8 @@ export type GridTemplateType<T> = DataTypes.BasicTemplateType<{
   [k in keyof T]: T[k] extends "date"
     ? "date" | "string"
     : T[k] extends DataTypes.BasicNames
-    ? T[k]
-    : never;
+      ? T[k]
+      : never;
 }>;
 
 /**
@@ -130,11 +130,6 @@ export type GridLoader<
    * Default order by
    */
   defaultOrderBy?: QueryPagingOrder[];
-
-  /**
-   * Batch size when load data, default will be calcuated with height and rowHeight
-   */
-  loadBatchSize?: GridSize;
 
   /**
    * Load data
